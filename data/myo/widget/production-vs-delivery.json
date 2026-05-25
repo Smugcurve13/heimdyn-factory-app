@@ -1,0 +1,14 @@
+[
+  { "label": "Jun 2025", "produced": 118400, "delivered": 112300 },
+  { "label": "Jul 2025", "produced": 124600, "delivered": 119800 },
+  { "label": "Aug 2025", "produced": 121300, "delivered": 117500 },
+  { "label": "Sep 2025", "produced": 128900, "delivered": 124100 },
+  { "label": "Oct 2025", "produced": 132400, "delivered": 127600 },
+  { "label": "Nov 2025", "produced": 126700, "delivered": 123200 },
+  { "label": "Dec 2025", "produced": 119800, "delivered": 115400 },
+  { "label": "Jan 2026", "produced": 131200, "delivered": 126800 },
+  { "label": "Feb 2026", "produced": 127500, "delivered": 124300 },
+  { "label": "Mar 2026", "produced": 135800, "delivered": 130200 },
+  { "label": "Apr 2026", "produced": 138200, "delivered": 131500 },
+  { "label": "May 2026", "produced": 142500, "delivered": 136800 }
+]

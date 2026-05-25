@@ -1,0 +1,5 @@
+[
+  { "username": "admin", "email": "admin@heimdyn.com", "password": "Admin@123", "role": "superadmin" },
+  { "username": "manager", "email": "manager@heimdyn.com", "password": "Manager@123", "role": "manager" },
+  { "username": "operator", "email": "operator@heimdyn.com", "password": "Operator@123", "role": "operator" }
+]

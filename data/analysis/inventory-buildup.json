@@ -1,0 +1,7 @@
+[
+  { "month": "Jan 2026", "produced": 131200, "delivered": 126800, "cumulative": 4400 },
+  { "month": "Feb 2026", "produced": 127500, "delivered": 124300, "cumulative": 7600 },
+  { "month": "Mar 2026", "produced": 135800, "delivered": 130200, "cumulative": 13200 },
+  { "month": "Apr 2026", "produced": 138200, "delivered": 131500, "cumulative": 19900 },
+  { "month": "May 2026", "produced": 142500, "delivered": 136800, "cumulative": 25600 }
+]

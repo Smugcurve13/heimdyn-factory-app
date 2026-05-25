@@ -1,0 +1,16 @@
+{
+  "product_lines": [
+    { "label": "Industrial Bearings", "value": 38200 },
+    { "label": "Precision Gears", "value": 31400 },
+    { "label": "Hydraulic Valves", "value": 26800 },
+    { "label": "Motor Assemblies", "value": 22100 },
+    { "label": "Control Panels", "value": 14600 }
+  ],
+  "components": [
+    { "label": "Steel Bracket A", "value": 6200 },
+    { "label": "Aluminum Casing B", "value": 5400 },
+    { "label": "Rubber Seal C", "value": 4100 },
+    { "label": "Copper Wire D", "value": 3600 },
+    { "label": "Plastic Housing E", "value": 2800 }
+  ]
+}

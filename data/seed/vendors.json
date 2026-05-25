@@ -1,0 +1,14 @@
+[
+  { "name": "Tata Steel Ltd.", "contact_person": "Rajan Tiwari", "email": "rajan@tatasteel.com", "phone": "9876543211", "category": "Raw Materials", "address": "Jamshedpur Works", "city": "Jamshedpur", "state": "Jharkhand", "status": "active" },
+  { "name": "Hindalco Industries", "contact_person": "Meera Rao", "email": "meera@hindalco.com", "phone": "9823456780", "category": "Raw Materials", "address": "Aditya Birla Centre", "city": "Mumbai", "state": "Maharashtra", "status": "active" },
+  { "name": "Supreme Rubber", "contact_person": "Pankaj Jain", "email": "pankaj@supremerubber.in", "phone": "9845678902", "category": "Raw Materials", "address": "RIICO Industrial Area", "city": "Jaipur", "state": "Rajasthan", "status": "active" },
+  { "name": "Havells Cables", "contact_person": "Sunita Verma", "email": "sunita@havells.com", "phone": "9812345679", "category": "Raw Materials", "address": "QRG Towers", "city": "Noida", "state": "Uttar Pradesh", "status": "active" },
+  { "name": "Nilkamal Plastics", "contact_person": "Ramesh Shah", "email": "ramesh@nilkamal.com", "phone": "9867890124", "category": "Raw Materials", "address": "Vasai East", "city": "Mumbai", "state": "Maharashtra", "status": "active" },
+  { "name": "Flex Packaging Solutions", "contact_person": "Divya Menon", "email": "divya@flexpack.in", "phone": "9878901235", "category": "Packaging", "address": "Whitefield", "city": "Bangalore", "state": "Karnataka", "status": "active" },
+  { "name": "SafeWrap Industries", "contact_person": "Ashish Kumar", "email": "ashish@safewrap.com", "phone": "9889012346", "category": "Packaging", "address": "Sector 58", "city": "Noida", "state": "Uttar Pradesh", "status": "active" },
+  { "name": "Ace Machinery", "contact_person": "Kishore Naidu", "email": "kishore@acemachinery.in", "phone": "9890123457", "category": "Equipment", "address": "KPHB Colony", "city": "Hyderabad", "state": "Telangana", "status": "active" },
+  { "name": "GreenTech Lubricants", "contact_person": "Farhan Ali", "email": "farhan@greentechlube.com", "phone": "9801234568", "category": "Consumables", "address": "Sadar Bazaar", "city": "Agra", "state": "Uttar Pradesh", "status": "active" },
+  { "name": "Precision Tools India", "contact_person": "Lata Desai", "email": "lata@precisiontools.in", "phone": "9856789013", "category": "Equipment", "address": "IMT Manesar", "city": "Gurugram", "state": "Haryana", "status": "active" },
+  { "name": "ClearView Safety", "contact_person": "Omkar Joshi", "email": "omkar@clearviewsafety.com", "phone": "9834567891", "category": "Safety Equipment", "address": "Pimpri Chinchwad", "city": "Pune", "state": "Maharashtra", "status": "active" },
+  { "name": "Metro Logistics", "contact_person": "Preeti Sinha", "email": "preeti@metrologistics.in", "phone": "9812345671", "category": "Logistics", "address": "NH8 Industrial Belt", "city": "Gurugram", "state": "Haryana", "status": "inactive" }
+]

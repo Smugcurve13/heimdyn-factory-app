@@ -1,0 +1,7 @@
+[
+  { "label": "Industrial Bearings", "yield_rate": 6.16, "units": 38200, "kgs": 6200 },
+  { "label": "Precision Gears", "yield_rate": 5.81, "units": 31400, "kgs": 5400 },
+  { "label": "Hydraulic Valves", "yield_rate": 6.54, "units": 26800, "kgs": 4100 },
+  { "label": "Motor Assemblies", "yield_rate": 6.14, "units": 22100, "kgs": 3600 },
+  { "label": "Control Panels", "yield_rate": 5.21, "units": 14600, "kgs": 2800 }
+]

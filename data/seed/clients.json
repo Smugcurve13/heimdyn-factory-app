@@ -1,0 +1,14 @@
+[
+  { "name": "Pinnacle Distributors", "contact_person": "Rajesh Malhotra", "email": "rajesh@pinnacledist.com", "phone": "9876543210", "address": "45 Industrial Area Phase II", "city": "Gurugram", "state": "Haryana", "status": "active" },
+  { "name": "Eastern Supply Co.", "contact_person": "Anita Bose", "email": "anita@easternsupply.in", "phone": "9823456789", "address": "12 Salt Lake Sector V", "city": "Kolkata", "state": "West Bengal", "status": "active" },
+  { "name": "Metro Industrial", "contact_person": "Sunil Kapoor", "email": "sunil@metroindustrial.com", "phone": "9812345678", "address": "78 MIDC Andheri East", "city": "Mumbai", "state": "Maharashtra", "status": "active" },
+  { "name": "Shree Enterprises", "contact_person": "Deepak Agarwal", "email": "deepak@shreeent.com", "phone": "9845678901", "address": "23 Lajpat Nagar", "city": "New Delhi", "state": "Delhi", "status": "active" },
+  { "name": "Reliable Trading", "contact_person": "Kavita Nair", "email": "kavita@reliabletrading.in", "phone": "9867890123", "address": "56 MG Road", "city": "Bangalore", "state": "Karnataka", "status": "active" },
+  { "name": "Apex Components", "contact_person": "Vikash Sharma", "email": "vikash@apexcomp.com", "phone": "9878901234", "address": "34 Civil Lines", "city": "Jaipur", "state": "Rajasthan", "status": "active" },
+  { "name": "Star Agencies", "contact_person": "Pooja Mehta", "email": "pooja@staragencies.in", "phone": "9889012345", "address": "89 Anna Salai", "city": "Chennai", "state": "Tamil Nadu", "status": "active" },
+  { "name": "National Parts Hub", "contact_person": "Arun Patel", "email": "arun@nationalparts.com", "phone": "9890123456", "address": "67 SG Highway", "city": "Ahmedabad", "state": "Gujarat", "status": "active" },
+  { "name": "Heritage Industries", "contact_person": "Manish Gupta", "email": "manish@heritageindustries.in", "phone": "9801234567", "address": "12 Hazratganj", "city": "Lucknow", "state": "Uttar Pradesh", "status": "inactive" },
+  { "name": "Landmark Supplies", "contact_person": "Neha Joshi", "email": "neha@landmarksupplies.com", "phone": "9856789012", "address": "45 FC Road", "city": "Pune", "state": "Maharashtra", "status": "inactive" },
+  { "name": "Pioneer Parts", "contact_person": "Sanjay Reddy", "email": "sanjay@pioneerparts.in", "phone": "9834567890", "address": "23 Jubilee Hills", "city": "Hyderabad", "state": "Telangana", "status": "inactive" },
+  { "name": "Prime Engineering", "contact_person": "Amit Saxena", "email": "amit@primeeng.com", "phone": "9812345670", "address": "78 Gomti Nagar", "city": "Lucknow", "state": "Uttar Pradesh", "status": "active" }
+]

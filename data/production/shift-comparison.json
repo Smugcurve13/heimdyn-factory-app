@@ -1,0 +1,6 @@
+[
+  { "shift": "Day Shift A", "units": 52400, "scrap": 2100 },
+  { "shift": "Day Shift B", "units": 48700, "scrap": 1950 },
+  { "shift": "Night Shift A", "units": 24300, "scrap": 1200 },
+  { "shift": "Night Shift B", "units": 17100, "scrap": 980 }
+]

@@ -1,0 +1,14 @@
+[
+  { "month": "Jun 2025", "purchased": 22400, "consumed": 21100 },
+  { "month": "Jul 2025", "purchased": 24800, "consumed": 23200 },
+  { "month": "Aug 2025", "purchased": 23100, "consumed": 22500 },
+  { "month": "Sep 2025", "purchased": 25600, "consumed": 24000 },
+  { "month": "Oct 2025", "purchased": 26900, "consumed": 25300 },
+  { "month": "Nov 2025", "purchased": 24200, "consumed": 23800 },
+  { "month": "Dec 2025", "purchased": 22800, "consumed": 21900 },
+  { "month": "Jan 2026", "purchased": 25400, "consumed": 24600 },
+  { "month": "Feb 2026", "purchased": 24700, "consumed": 23900 },
+  { "month": "Mar 2026", "purchased": 27100, "consumed": 25800 },
+  { "month": "Apr 2026", "purchased": 27800, "consumed": 26500 },
+  { "month": "May 2026", "purchased": 28500, "consumed": 26200 }
+]

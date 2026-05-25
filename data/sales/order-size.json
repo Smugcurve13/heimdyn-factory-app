@@ -1,0 +1,7 @@
+[
+  { "distributor": "Pinnacle Distributors", "total_units": 18400, "num_orders": 12, "avg_per_order": 1533 },
+  { "distributor": "Eastern Supply Co.", "total_units": 15200, "num_orders": 14, "avg_per_order": 1086 },
+  { "distributor": "Metro Industrial", "total_units": 13800, "num_orders": 10, "avg_per_order": 1380 },
+  { "distributor": "Shree Enterprises", "total_units": 12100, "num_orders": 18, "avg_per_order": 672 },
+  { "distributor": "Reliable Trading", "total_units": 10600, "num_orders": 8, "avg_per_order": 1325 }
+]

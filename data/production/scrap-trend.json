@@ -1,0 +1,14 @@
+[
+  { "month": "Jun 2025", "scrap": 5200 },
+  { "month": "Jul 2025", "scrap": 5600 },
+  { "month": "Aug 2025", "scrap": 4900 },
+  { "month": "Sep 2025", "scrap": 5100 },
+  { "month": "Oct 2025", "scrap": 5800 },
+  { "month": "Nov 2025", "scrap": 5400 },
+  { "month": "Dec 2025", "scrap": 4700 },
+  { "month": "Jan 2026", "scrap": 5300 },
+  { "month": "Feb 2026", "scrap": 4800 },
+  { "month": "Mar 2026", "scrap": 5500 },
+  { "month": "Apr 2026", "scrap": 5900 },
+  { "month": "May 2026", "scrap": 6230 }
+]

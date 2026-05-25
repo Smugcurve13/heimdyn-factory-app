@@ -1,0 +1,7 @@
+[
+  { "component": "Steel Bracket A", "total_kgs": 6200 },
+  { "component": "Aluminum Casing B", "total_kgs": 5400 },
+  { "component": "Rubber Seal C", "total_kgs": 4100 },
+  { "component": "Copper Wire D", "total_kgs": 3600 },
+  { "component": "Plastic Housing E", "total_kgs": 2800 }
+]

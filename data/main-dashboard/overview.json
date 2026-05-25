@@ -1,0 +1,13 @@
+{
+  "latestMonth": "May 2026",
+  "materialMonth": "May 2026",
+  "produced": 142500,
+  "prevProduced": 138200,
+  "delivered": 136800,
+  "prevDelivered": 131500,
+  "monthGap": 5700,
+  "stockGap": 18400,
+  "materialPurchased": 28500,
+  "materialConsumed": 26200,
+  "materialStock": 47800
+}

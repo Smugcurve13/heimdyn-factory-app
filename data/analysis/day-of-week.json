@@ -1,0 +1,9 @@
+[
+  { "day": "Mon", "avg_units": 5420, "sort": 0 },
+  { "day": "Tue", "avg_units": 5680, "sort": 1 },
+  { "day": "Wed", "avg_units": 5750, "sort": 2 },
+  { "day": "Thu", "avg_units": 5600, "sort": 3 },
+  { "day": "Fri", "avg_units": 5300, "sort": 4 },
+  { "day": "Sat", "avg_units": 3200, "sort": 5 },
+  { "day": "Sun", "avg_units": 0, "sort": 6 }
+]
