@@ -1,7 +1,11 @@
 [
-  { "label": "Pinnacle Distributors", "value": 18400 },
-  { "label": "Eastern Supply Co.", "value": 15200 },
-  { "label": "Metro Industrial", "value": 13800 },
-  { "label": "Shree Enterprises", "value": 12100 },
-  { "label": "Reliable Trading", "value": 10600 }
+  { "label": "Metro Industrial", "value": 18200 },
+  { "label": "Prime Engineering", "value": 16100 },
+  { "label": "Pinnacle Distributors", "value": 14800 },
+  { "label": "Star Agencies", "value": 13500 },
+  { "label": "Reliable Trading", "value": 10200 },
+  { "label": "Eastern Supply Co.", "value": 8600 },
+  { "label": "Apex Components", "value": 6400 },
+  { "label": "National Parts Hub", "value": 4800 },
+  { "label": "Shree Enterprises", "value": 3900 }
 ]

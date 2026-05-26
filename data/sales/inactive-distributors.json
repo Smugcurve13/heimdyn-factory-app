@@ -1,7 +1,5 @@
 [
-  { "distributor": "Heritage Industries", "last_label": "12 Mar 2026", "days_since": 74 },
-  { "distributor": "Landmark Supplies", "last_label": "28 Feb 2026", "days_since": 86 },
-  { "distributor": "Pioneer Parts", "last_label": "15 Jan 2026", "days_since": 130 },
-  { "distributor": "Global Components", "last_label": "02 Dec 2025", "days_since": 174 },
-  { "distributor": "Southern Trading Co.", "last_label": null, "days_since": null }
+  { "distributor": "Heritage Industries", "last_label": "10 Feb 2026", "days_since": 105 },
+  { "distributor": "Landmark Supplies", "last_label": "25 Jan 2026", "days_since": 121 },
+  { "distributor": "Pioneer Parts", "last_label": "05 Mar 2026", "days_since": 82 }
 ]
