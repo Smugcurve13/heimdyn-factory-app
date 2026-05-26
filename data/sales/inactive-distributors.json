@@ -1,5 +1,5 @@
 [
-  { "distributor": "Heritage Industries", "last_label": "10 Feb 2026", "days_since": 105 },
-  { "distributor": "Landmark Supplies", "last_label": "25 Jan 2026", "days_since": 121 },
-  { "distributor": "Pioneer Parts", "last_label": "05 Mar 2026", "days_since": 82 }
+  { "client": "Heritage Industries", "last_label": "10 Feb 2026", "days_since": 105 },
+  { "client": "Landmark Supplies", "last_label": "25 Jan 2026", "days_since": 121 },
+  { "client": "Pioneer Parts", "last_label": "05 Mar 2026", "days_since": 82 }
 ]

@@ -10,11 +10,11 @@ const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr
 // ── types ──────────────────────────────────────────────────────────────────
 type ViewMode = 'monthly' | 'daily';
 interface PickerOption { label: string; value: string }
-interface Summary     { total_units: number; distributors: number; bills: number }
+interface Summary     { total_units: number; clients: number; bills: number }
 interface LabelValue  { label: string; value: number }
 interface ProductMix  { product_lines: LabelValue[]; components: LabelValue[] }
-interface OrderRow    { distributor: string; total_units: number; num_orders: number; avg_per_order: number }
-interface InactiveRow { distributor: string; last_label: string; days_since: number | null }
+interface OrderRow    { client: string; total_units: number; num_orders: number; avg_per_order: number }
+interface InactiveRow { client: string; last_label: string; days_since: number | null }
 
 // ── constants ─────────────────────────────────────────────────────────────
 const BLUE   = '#3b82f6';
@@ -219,7 +219,7 @@ export default function SalesPage() {
       if (days.length   > 0) setSelectedDay(days[0].value);
     }).catch(() => {});
 
-    // Inactive distributors don't change with mode — load once
+    // Inactive clients don't change with mode — load once
     fetch('/api/sales/inactive-dealers')
       .then((r) => r.json()).then(setInactive).finally(() => setLoadingInactive(false));
   }, []);
@@ -274,7 +274,7 @@ export default function SalesPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Sales</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Delivery volumes, distributor performance, and order analytics — {mode === 'daily' ? 'daily' : 'monthly'} view
+            Delivery volumes, client performance, and order analytics — {mode === 'daily' ? 'daily' : 'monthly'} view
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -296,8 +296,8 @@ export default function SalesPage() {
           loading={loadingSum}
         />
         <MetricCard
-          label="Unique Distributors Served"
-          value={(summary?.distributors ?? 0).toLocaleString()}
+          label="Unique Clients Served"
+          value={(summary?.clients ?? 0).toLocaleString()}
           loading={loadingSum}
         />
         <MetricCard
@@ -314,7 +314,7 @@ export default function SalesPage() {
         ) : (
           <div style={{ height: distributorH + 48 }}>
             <HBarPanel
-              title="Top 10 Distributors by Units"
+              title="Top 10 Clients by Units"
               subtitle="Total units delivered — sorted highest to lowest"
               data={distributors}
               color={BLUE}
@@ -348,7 +348,7 @@ export default function SalesPage() {
 
       {/* ── Panel 3 — Average order size table ── */}
       <div className="rounded-xl border bg-card shadow-sm p-6">
-        <p className="text-sm font-bold mb-0.5">Average Order Size per Distributor</p>
+        <p className="text-sm font-bold mb-0.5">Average Order Size per Client</p>
         <p className="text-xs text-muted-foreground mb-5">
           Sorted by average units per order — descending
         </p>
@@ -361,7 +361,7 @@ export default function SalesPage() {
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="border-b border-border">
-                  {['#', 'Distributor', 'Total Units', 'Orders', 'Avg / Order'].map((h) => (
+                  {['#', 'Client', 'Total Units', 'Orders', 'Avg / Order'].map((h) => (
                     <th key={h} className="text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide py-2 pr-5 whitespace-nowrap">
                       {h}
                     </th>
@@ -370,9 +370,9 @@ export default function SalesPage() {
               </thead>
               <tbody>
                 {orders.map((row, i) => (
-                  <tr key={row.distributor} className={`border-b border-border/40 ${i % 2 === 1 ? 'bg-muted/25' : ''}`}>
+                  <tr key={row.client} className={`border-b border-border/40 ${i % 2 === 1 ? 'bg-muted/25' : ''}`}>
                     <td className="py-2 pr-5 text-muted-foreground tabular-nums">{i + 1}</td>
-                    <td className="py-2 pr-5 font-medium max-w-[200px] truncate">{row.distributor}</td>
+                    <td className="py-2 pr-5 font-medium max-w-[200px] truncate">{row.client}</td>
                     <td className="py-2 pr-5 tabular-nums">{row.total_units.toLocaleString()}</td>
                     <td className="py-2 pr-5 tabular-nums">{row.num_orders}</td>
                     <td className="py-2 font-semibold tabular-nums">{row.avg_per_order.toLocaleString()}</td>
@@ -384,13 +384,13 @@ export default function SalesPage() {
         )}
       </div>
 
-      {/* ── Panel 4 — Inactive distributor alert (always all-time) ── */}
+      {/* ── Panel 4 — Inactive client alert (always all-time) ── */}
       <div className="rounded-xl border bg-card shadow-sm p-6">
         <div className="flex items-start justify-between mb-5 flex-wrap gap-3">
           <div>
-            <p className="text-sm font-bold mb-0.5">Inactive Distributor Alert</p>
+            <p className="text-sm font-bold mb-0.5">Inactive Client Alert</p>
             <p className="text-xs text-muted-foreground">
-              Distributors with no delivery in the last 30 days (relative to the most recent delivery date)
+              Clients with no delivery in the last 30 days (relative to the most recent delivery date)
             </p>
           </div>
           {!loadingInactive && (
@@ -411,14 +411,14 @@ export default function SalesPage() {
           <div className="flex items-center justify-center h-32 text-sm text-muted-foreground">Loading…</div>
         ) : inactive.length === 0 ? (
           <div className="flex items-center justify-center h-20 text-sm text-muted-foreground">
-            All distributors have ordered within the last 30 days.
+            All clients have ordered within the last 30 days.
           </div>
         ) : (
           <div className="overflow-auto max-h-96">
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="border-b border-border">
-                  {['Distributor', 'Last Order', 'Days Inactive', 'Status'].map((h) => (
+                  {['Client', 'Last Order', 'Days Inactive', 'Status'].map((h) => (
                     <th key={h} className="text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide py-2 pr-5 whitespace-nowrap">
                       {h}
                     </th>
@@ -431,7 +431,7 @@ export default function SalesPage() {
                   const warning  = !critical && (row.days_since ?? 0) > 30;
                   return (
                     <tr
-                      key={row.distributor}
+                      key={row.client}
                       className={`border-b border-border/40 ${
                         critical ? 'bg-red-500/5'
                         : warning  ? 'bg-amber-500/5'
@@ -442,7 +442,7 @@ export default function SalesPage() {
                         <div className="flex items-center gap-2">
                           {critical && <AlertTriangle className="h-3.5 w-3.5 text-red-500 shrink-0" />}
                           {warning  && <Clock         className="h-3.5 w-3.5 text-amber-500 shrink-0" />}
-                          {row.distributor}
+                          {row.client}
                         </div>
                       </td>
                       <td className="py-2.5 pr-5 text-muted-foreground tabular-nums">{row.last_label}</td>
