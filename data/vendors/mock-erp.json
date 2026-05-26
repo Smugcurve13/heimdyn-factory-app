@@ -1,0 +1,475 @@
+{
+  "Tata Steel Ltd.": {
+    "vendorSince": "2024-03-15",
+    "vendorScore": 94,
+    "performance": "Excellent",
+    "paymentTerms": "Net 45",
+    "purchaseOrders": [
+      { "poId": "PO-3001", "date": "2026-05-20", "material": "HR Steel Coil", "quantity": 50, "amount": 425000, "status": "Delivered" },
+      { "poId": "PO-2980", "date": "2026-05-05", "material": "CR Steel Sheet", "quantity": 30, "amount": 285000, "status": "Delivered" },
+      { "poId": "PO-2955", "date": "2026-04-18", "material": "HR Steel Coil", "quantity": 45, "amount": 382500, "status": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "VINV-5001", "date": "2026-05-20", "amount": 425000, "dueDate": "2026-07-04", "status": "Pending" },
+      { "invoiceId": "VINV-4980", "date": "2026-05-05", "amount": 285000, "dueDate": "2026-06-19", "status": "Pending" },
+      { "invoiceId": "VINV-4955", "date": "2026-04-18", "amount": 382500, "dueDate": "2026-06-02", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-28", "amount": 382500, "method": "RTGS", "referenceId": "RTGS-20010", "status": "Completed" },
+      { "date": "2026-04-30", "amount": 350000, "method": "RTGS", "referenceId": "RTGS-19980", "status": "Completed" }
+    ],
+    "materials": [
+      { "material": "HR Steel Coil", "unitCost": 8500, "lastPurchased": "2026-05-20", "moq": 20, "leadTime": "7 days" },
+      { "material": "CR Steel Sheet", "unitCost": 9500, "lastPurchased": "2026-05-05", "moq": 15, "leadTime": "10 days" },
+      { "material": "Galvanized Strip", "unitCost": 7200, "lastPurchased": "2026-03-12", "moq": 25, "leadTime": "5 days" }
+    ],
+    "deliveries": [
+      { "shipmentId": "SHP-7001", "date": "2026-05-22", "status": "Delivered", "delay": "None" },
+      { "shipmentId": "SHP-6980", "date": "2026-05-08", "status": "Delivered", "delay": "1 day" },
+      { "shipmentId": "SHP-6955", "date": "2026-04-20", "status": "Delivered", "delay": "None" }
+    ],
+    "documents": [
+      { "name": "Annual Supply Contract", "type": "Contract", "date": "2024-03-15" },
+      { "name": "Quality Certificate ISO 9001", "type": "Certificate", "date": "2024-04-01" },
+      { "name": "GST Registration", "type": "GST", "date": "2024-03-15" }
+    ],
+    "activity": [
+      { "date": "2026-05-28", "description": "Payment of ₹3.82L completed via RTGS" },
+      { "date": "2026-05-22", "description": "Shipment #SHP-7001 delivered" },
+      { "date": "2026-05-20", "description": "PO #PO-3001 raised" },
+      { "date": "2026-05-08", "description": "Shipment #SHP-6980 delivered (1 day delay)" },
+      { "date": "2026-05-05", "description": "PO #PO-2980 raised" }
+    ]
+  },
+  "Hindalco Industries": {
+    "vendorSince": "2024-06-20",
+    "vendorScore": 88,
+    "performance": "Excellent",
+    "paymentTerms": "Net 30",
+    "purchaseOrders": [
+      { "poId": "PO-3005", "date": "2026-05-22", "material": "Aluminium Sheet", "quantity": 40, "amount": 320000, "status": "Delivered" },
+      { "poId": "PO-2985", "date": "2026-05-08", "material": "Aluminium Rod", "quantity": 100, "amount": 150000, "status": "Delivered" },
+      { "poId": "PO-2960", "date": "2026-04-22", "material": "Aluminium Sheet", "quantity": 35, "amount": 280000, "status": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "VINV-5005", "date": "2026-05-22", "amount": 320000, "dueDate": "2026-06-21", "status": "Pending" },
+      { "invoiceId": "VINV-4985", "date": "2026-05-08", "amount": 150000, "dueDate": "2026-06-07", "status": "Paid" },
+      { "invoiceId": "VINV-4960", "date": "2026-04-22", "amount": 280000, "dueDate": "2026-05-22", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-20", "amount": 280000, "method": "NEFT", "referenceId": "NEFT-30020", "status": "Completed" },
+      { "date": "2026-06-05", "amount": 150000, "method": "NEFT", "referenceId": "NEFT-30045", "status": "Completed" }
+    ],
+    "materials": [
+      { "material": "Aluminium Sheet", "unitCost": 8000, "lastPurchased": "2026-05-22", "moq": 20, "leadTime": "5 days" },
+      { "material": "Aluminium Rod", "unitCost": 1500, "lastPurchased": "2026-05-08", "moq": 50, "leadTime": "3 days" }
+    ],
+    "deliveries": [
+      { "shipmentId": "SHP-7005", "date": "2026-05-24", "status": "Delivered", "delay": "None" },
+      { "shipmentId": "SHP-6985", "date": "2026-05-10", "status": "Delivered", "delay": "None" },
+      { "shipmentId": "SHP-6960", "date": "2026-04-25", "status": "Delivered", "delay": "1 day" }
+    ],
+    "documents": [
+      { "name": "Supply Agreement 2024", "type": "Contract", "date": "2024-06-20" },
+      { "name": "Material Test Reports", "type": "Certificate", "date": "2026-05-22" }
+    ],
+    "activity": [
+      { "date": "2026-05-24", "description": "Shipment #SHP-7005 delivered" },
+      { "date": "2026-05-22", "description": "PO #PO-3005 raised" },
+      { "date": "2026-05-20", "description": "Payment of ₹2.8L completed via NEFT" },
+      { "date": "2026-05-10", "description": "Shipment #SHP-6985 delivered" }
+    ]
+  },
+  "Supreme Rubber": {
+    "vendorSince": "2025-01-10",
+    "vendorScore": 78,
+    "performance": "Average",
+    "paymentTerms": "Net 30",
+    "purchaseOrders": [
+      { "poId": "PO-3010", "date": "2026-05-18", "material": "Rubber Gasket", "quantity": 500, "amount": 75000, "status": "Delivered" },
+      { "poId": "PO-2990", "date": "2026-05-01", "material": "Silicone Seal", "quantity": 300, "amount": 54000, "status": "Delivered" },
+      { "poId": "PO-2965", "date": "2026-04-15", "material": "Rubber Gasket", "quantity": 400, "amount": 60000, "status": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "VINV-5010", "date": "2026-05-18", "amount": 75000, "dueDate": "2026-06-17", "status": "Pending" },
+      { "invoiceId": "VINV-4990", "date": "2026-05-01", "amount": 54000, "dueDate": "2026-05-31", "status": "Overdue" },
+      { "invoiceId": "VINV-4965", "date": "2026-04-15", "amount": 60000, "dueDate": "2026-05-15", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-12", "amount": 60000, "method": "NEFT", "referenceId": "NEFT-30100", "status": "Completed" },
+      { "date": "2026-04-10", "amount": 48000, "method": "UPI", "referenceId": "UPI-15020", "status": "Completed" }
+    ],
+    "materials": [
+      { "material": "Rubber Gasket", "unitCost": 150, "lastPurchased": "2026-05-18", "moq": 200, "leadTime": "4 days" },
+      { "material": "Silicone Seal", "unitCost": 180, "lastPurchased": "2026-05-01", "moq": 100, "leadTime": "5 days" },
+      { "material": "Neoprene Strip", "unitCost": 120, "lastPurchased": "2026-03-20", "moq": 300, "leadTime": "3 days" }
+    ],
+    "deliveries": [
+      { "shipmentId": "SHP-7010", "date": "2026-05-21", "status": "Delivered", "delay": "1 day" },
+      { "shipmentId": "SHP-6990", "date": "2026-05-05", "status": "Delivered", "delay": "2 days" },
+      { "shipmentId": "SHP-6965", "date": "2026-04-18", "status": "Delivered", "delay": "1 day" }
+    ],
+    "documents": [
+      { "name": "Supply Contract 2025", "type": "Contract", "date": "2025-01-10" },
+      { "name": "GSTIN Copy", "type": "GST", "date": "2025-01-10" }
+    ],
+    "activity": [
+      { "date": "2026-05-21", "description": "Shipment #SHP-7010 delivered (1 day delay)" },
+      { "date": "2026-05-18", "description": "PO #PO-3010 raised" },
+      { "date": "2026-05-12", "description": "Payment of ₹60K completed via NEFT" },
+      { "date": "2026-05-05", "description": "Shipment #SHP-6990 delivered (2 day delay)" }
+    ]
+  },
+  "Havells Cables": {
+    "vendorSince": "2024-09-05",
+    "vendorScore": 91,
+    "performance": "Excellent",
+    "paymentTerms": "Net 30",
+    "purchaseOrders": [
+      { "poId": "PO-3015", "date": "2026-05-19", "material": "Copper Cable 4mm", "quantity": 200, "amount": 180000, "status": "Delivered" },
+      { "poId": "PO-2995", "date": "2026-05-03", "material": "Control Cable", "quantity": 150, "amount": 97500, "status": "Delivered" },
+      { "poId": "PO-2970", "date": "2026-04-16", "material": "Copper Cable 4mm", "quantity": 180, "amount": 162000, "status": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "VINV-5015", "date": "2026-05-19", "amount": 180000, "dueDate": "2026-06-18", "status": "Pending" },
+      { "invoiceId": "VINV-4995", "date": "2026-05-03", "amount": 97500, "dueDate": "2026-06-02", "status": "Paid" },
+      { "invoiceId": "VINV-4970", "date": "2026-04-16", "amount": 162000, "dueDate": "2026-05-16", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-15", "amount": 162000, "method": "RTGS", "referenceId": "RTGS-20080", "status": "Completed" },
+      { "date": "2026-05-30", "amount": 97500, "method": "NEFT", "referenceId": "NEFT-30150", "status": "Completed" }
+    ],
+    "materials": [
+      { "material": "Copper Cable 4mm", "unitCost": 900, "lastPurchased": "2026-05-19", "moq": 100, "leadTime": "3 days" },
+      { "material": "Control Cable", "unitCost": 650, "lastPurchased": "2026-05-03", "moq": 50, "leadTime": "4 days" }
+    ],
+    "deliveries": [
+      { "shipmentId": "SHP-7015", "date": "2026-05-21", "status": "Delivered", "delay": "None" },
+      { "shipmentId": "SHP-6995", "date": "2026-05-05", "status": "Delivered", "delay": "None" },
+      { "shipmentId": "SHP-6970", "date": "2026-04-18", "status": "Delivered", "delay": "None" }
+    ],
+    "documents": [
+      { "name": "Vendor Agreement", "type": "Contract", "date": "2024-09-05" },
+      { "name": "Product Catalogue 2026", "type": "Certificate", "date": "2026-01-15" }
+    ],
+    "activity": [
+      { "date": "2026-05-30", "description": "Payment of ₹97.5K completed via NEFT" },
+      { "date": "2026-05-21", "description": "Shipment #SHP-7015 delivered on time" },
+      { "date": "2026-05-19", "description": "PO #PO-3015 raised" },
+      { "date": "2026-05-15", "description": "Payment of ₹1.62L completed via RTGS" }
+    ]
+  },
+  "Nilkamal Plastics": {
+    "vendorSince": "2025-03-22",
+    "vendorScore": 82,
+    "performance": "Average",
+    "paymentTerms": "Net 15",
+    "purchaseOrders": [
+      { "poId": "PO-3020", "date": "2026-05-16", "material": "HDPE Container", "quantity": 100, "amount": 45000, "status": "Delivered" },
+      { "poId": "PO-3000", "date": "2026-04-28", "material": "PP Crate", "quantity": 80, "amount": 32000, "status": "Delivered" },
+      { "poId": "PO-2975", "date": "2026-04-10", "material": "HDPE Container", "quantity": 120, "amount": 54000, "status": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "VINV-5020", "date": "2026-05-16", "amount": 45000, "dueDate": "2026-05-31", "status": "Paid" },
+      { "invoiceId": "VINV-5000", "date": "2026-04-28", "amount": 32000, "dueDate": "2026-05-13", "status": "Paid" },
+      { "invoiceId": "VINV-4975", "date": "2026-04-10", "amount": 54000, "dueDate": "2026-04-25", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-28", "amount": 45000, "method": "UPI", "referenceId": "UPI-15080", "status": "Completed" },
+      { "date": "2026-05-10", "amount": 32000, "method": "UPI", "referenceId": "UPI-15060", "status": "Completed" },
+      { "date": "2026-04-22", "amount": 54000, "method": "NEFT", "referenceId": "NEFT-30200", "status": "Completed" }
+    ],
+    "materials": [
+      { "material": "HDPE Container", "unitCost": 450, "lastPurchased": "2026-05-16", "moq": 50, "leadTime": "3 days" },
+      { "material": "PP Crate", "unitCost": 400, "lastPurchased": "2026-04-28", "moq": 40, "leadTime": "2 days" }
+    ],
+    "deliveries": [
+      { "shipmentId": "SHP-7020", "date": "2026-05-18", "status": "Delivered", "delay": "None" },
+      { "shipmentId": "SHP-7000", "date": "2026-04-30", "status": "Delivered", "delay": "None" },
+      { "shipmentId": "SHP-6975", "date": "2026-04-13", "status": "Delivered", "delay": "1 day" }
+    ],
+    "documents": [
+      { "name": "Purchase Agreement", "type": "Contract", "date": "2025-03-22" },
+      { "name": "GST Certificate", "type": "GST", "date": "2025-03-22" }
+    ],
+    "activity": [
+      { "date": "2026-05-28", "description": "Payment of ₹45K completed via UPI" },
+      { "date": "2026-05-18", "description": "Shipment #SHP-7020 delivered" },
+      { "date": "2026-05-16", "description": "PO #PO-3020 raised" },
+      { "date": "2026-05-10", "description": "Payment of ₹32K completed via UPI" }
+    ]
+  },
+  "Flex Packaging Solutions": {
+    "vendorSince": "2024-11-12",
+    "vendorScore": 86,
+    "performance": "Excellent",
+    "paymentTerms": "Net 30",
+    "purchaseOrders": [
+      { "poId": "PO-3025", "date": "2026-05-21", "material": "Stretch Film", "quantity": 200, "amount": 60000, "status": "Delivered" },
+      { "poId": "PO-3004", "date": "2026-05-06", "material": "Corrugated Box", "quantity": 500, "amount": 75000, "status": "Delivered" },
+      { "poId": "PO-2978", "date": "2026-04-20", "material": "Bubble Wrap", "quantity": 300, "amount": 36000, "status": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "VINV-5025", "date": "2026-05-21", "amount": 60000, "dueDate": "2026-06-20", "status": "Pending" },
+      { "invoiceId": "VINV-5004", "date": "2026-05-06", "amount": 75000, "dueDate": "2026-06-05", "status": "Paid" },
+      { "invoiceId": "VINV-4978", "date": "2026-04-20", "amount": 36000, "dueDate": "2026-05-20", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-06-02", "amount": 75000, "method": "NEFT", "referenceId": "NEFT-30250", "status": "Completed" },
+      { "date": "2026-05-18", "amount": 36000, "method": "UPI", "referenceId": "UPI-15100", "status": "Completed" }
+    ],
+    "materials": [
+      { "material": "Stretch Film", "unitCost": 300, "lastPurchased": "2026-05-21", "moq": 100, "leadTime": "2 days" },
+      { "material": "Corrugated Box", "unitCost": 150, "lastPurchased": "2026-05-06", "moq": 200, "leadTime": "3 days" },
+      { "material": "Bubble Wrap", "unitCost": 120, "lastPurchased": "2026-04-20", "moq": 150, "leadTime": "2 days" }
+    ],
+    "deliveries": [
+      { "shipmentId": "SHP-7025", "date": "2026-05-23", "status": "Delivered", "delay": "None" },
+      { "shipmentId": "SHP-7004", "date": "2026-05-08", "status": "Delivered", "delay": "None" },
+      { "shipmentId": "SHP-6978", "date": "2026-04-22", "status": "Delivered", "delay": "None" }
+    ],
+    "documents": [
+      { "name": "Packaging Supply Contract", "type": "Contract", "date": "2024-11-12" },
+      { "name": "FSSAI Certificate", "type": "Certificate", "date": "2024-12-01" }
+    ],
+    "activity": [
+      { "date": "2026-06-02", "description": "Payment of ₹75K completed via NEFT" },
+      { "date": "2026-05-23", "description": "Shipment #SHP-7025 delivered" },
+      { "date": "2026-05-21", "description": "PO #PO-3025 raised" },
+      { "date": "2026-05-18", "description": "Payment of ₹36K completed via UPI" }
+    ]
+  },
+  "SafeWrap Industries": {
+    "vendorSince": "2025-02-28",
+    "vendorScore": 74,
+    "performance": "Average",
+    "paymentTerms": "Net 15",
+    "purchaseOrders": [
+      { "poId": "PO-3030", "date": "2026-05-15", "material": "Shrink Wrap", "quantity": 400, "amount": 48000, "status": "Delivered" },
+      { "poId": "PO-3008", "date": "2026-04-30", "material": "Packing Tape", "quantity": 600, "amount": 24000, "status": "Delivered" },
+      { "poId": "PO-2982", "date": "2026-04-12", "material": "Shrink Wrap", "quantity": 350, "amount": 42000, "status": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "VINV-5030", "date": "2026-05-15", "amount": 48000, "dueDate": "2026-05-30", "status": "Paid" },
+      { "invoiceId": "VINV-5008", "date": "2026-04-30", "amount": 24000, "dueDate": "2026-05-15", "status": "Paid" },
+      { "invoiceId": "VINV-4982", "date": "2026-04-12", "amount": 42000, "dueDate": "2026-04-27", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-28", "amount": 48000, "method": "UPI", "referenceId": "UPI-15120", "status": "Completed" },
+      { "date": "2026-05-12", "amount": 24000, "method": "UPI", "referenceId": "UPI-15090", "status": "Completed" },
+      { "date": "2026-04-25", "amount": 42000, "method": "NEFT", "referenceId": "NEFT-30280", "status": "Completed" }
+    ],
+    "materials": [
+      { "material": "Shrink Wrap", "unitCost": 120, "lastPurchased": "2026-05-15", "moq": 200, "leadTime": "3 days" },
+      { "material": "Packing Tape", "unitCost": 40, "lastPurchased": "2026-04-30", "moq": 300, "leadTime": "2 days" }
+    ],
+    "deliveries": [
+      { "shipmentId": "SHP-7030", "date": "2026-05-18", "status": "Delivered", "delay": "1 day" },
+      { "shipmentId": "SHP-7008", "date": "2026-05-03", "status": "Delivered", "delay": "1 day" },
+      { "shipmentId": "SHP-6982", "date": "2026-04-15", "status": "Delivered", "delay": "1 day" }
+    ],
+    "documents": [
+      { "name": "Supply Agreement", "type": "Contract", "date": "2025-02-28" },
+      { "name": "GST Registration", "type": "GST", "date": "2025-02-28" }
+    ],
+    "activity": [
+      { "date": "2026-05-28", "description": "Payment of ₹48K completed via UPI" },
+      { "date": "2026-05-18", "description": "Shipment #SHP-7030 delivered (1 day delay)" },
+      { "date": "2026-05-15", "description": "PO #PO-3030 raised" },
+      { "date": "2026-05-12", "description": "Payment of ₹24K completed via UPI" }
+    ]
+  },
+  "Ace Machinery": {
+    "vendorSince": "2024-07-18",
+    "vendorScore": 85,
+    "performance": "Excellent",
+    "paymentTerms": "Net 45",
+    "purchaseOrders": [
+      { "poId": "PO-3035", "date": "2026-05-10", "material": "CNC Spindle Motor", "quantity": 2, "amount": 340000, "status": "Pending" },
+      { "poId": "PO-3012", "date": "2026-04-25", "material": "Hydraulic Press Unit", "quantity": 1, "amount": 520000, "status": "Delivered" },
+      { "poId": "PO-2988", "date": "2026-03-15", "material": "Lathe Chuck", "quantity": 5, "amount": 75000, "status": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "VINV-5012", "date": "2026-04-25", "amount": 520000, "dueDate": "2026-06-09", "status": "Pending" },
+      { "invoiceId": "VINV-4988", "date": "2026-03-15", "amount": 75000, "dueDate": "2026-04-29", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-04-25", "amount": 75000, "method": "RTGS", "referenceId": "RTGS-20120", "status": "Completed" },
+      { "date": "2026-03-10", "amount": 280000, "method": "RTGS", "referenceId": "RTGS-20090", "status": "Completed" }
+    ],
+    "materials": [
+      { "material": "CNC Spindle Motor", "unitCost": 170000, "lastPurchased": "2026-05-10", "moq": 1, "leadTime": "21 days" },
+      { "material": "Hydraulic Press Unit", "unitCost": 520000, "lastPurchased": "2026-04-25", "moq": 1, "leadTime": "30 days" },
+      { "material": "Lathe Chuck", "unitCost": 15000, "lastPurchased": "2026-03-15", "moq": 2, "leadTime": "14 days" }
+    ],
+    "deliveries": [
+      { "shipmentId": "SHP-7012", "date": "2026-05-02", "status": "Delivered", "delay": "2 days" },
+      { "shipmentId": "SHP-6988", "date": "2026-03-28", "status": "Delivered", "delay": "None" }
+    ],
+    "documents": [
+      { "name": "Equipment Purchase Agreement", "type": "Contract", "date": "2024-07-18" },
+      { "name": "Warranty Certificate", "type": "Certificate", "date": "2024-07-18" },
+      { "name": "AMC Agreement", "type": "Contract", "date": "2025-01-01" }
+    ],
+    "activity": [
+      { "date": "2026-05-10", "description": "PO #PO-3035 raised for CNC Spindle Motors" },
+      { "date": "2026-05-02", "description": "Shipment #SHP-7012 delivered (2 day delay)" },
+      { "date": "2026-04-25", "description": "Payment of ₹75K completed via RTGS" },
+      { "date": "2026-04-25", "description": "PO #PO-3012 raised" }
+    ]
+  },
+  "GreenTech Lubricants": {
+    "vendorSince": "2025-04-10",
+    "vendorScore": 80,
+    "performance": "Average",
+    "paymentTerms": "Net 15",
+    "purchaseOrders": [
+      { "poId": "PO-3040", "date": "2026-05-20", "material": "Machine Oil 20W", "quantity": 50, "amount": 35000, "status": "Delivered" },
+      { "poId": "PO-3018", "date": "2026-05-02", "material": "Hydraulic Fluid", "quantity": 30, "amount": 27000, "status": "Delivered" },
+      { "poId": "PO-2992", "date": "2026-04-14", "material": "Grease Cartridge", "quantity": 100, "amount": 15000, "status": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "VINV-5040", "date": "2026-05-20", "amount": 35000, "dueDate": "2026-06-04", "status": "Pending" },
+      { "invoiceId": "VINV-5018", "date": "2026-05-02", "amount": 27000, "dueDate": "2026-05-17", "status": "Paid" },
+      { "invoiceId": "VINV-4992", "date": "2026-04-14", "amount": 15000, "dueDate": "2026-04-29", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-15", "amount": 27000, "method": "UPI", "referenceId": "UPI-15140", "status": "Completed" },
+      { "date": "2026-04-27", "amount": 15000, "method": "UPI", "referenceId": "UPI-15050", "status": "Completed" }
+    ],
+    "materials": [
+      { "material": "Machine Oil 20W", "unitCost": 700, "lastPurchased": "2026-05-20", "moq": 20, "leadTime": "2 days" },
+      { "material": "Hydraulic Fluid", "unitCost": 900, "lastPurchased": "2026-05-02", "moq": 10, "leadTime": "3 days" },
+      { "material": "Grease Cartridge", "unitCost": 150, "lastPurchased": "2026-04-14", "moq": 50, "leadTime": "2 days" }
+    ],
+    "deliveries": [
+      { "shipmentId": "SHP-7040", "date": "2026-05-22", "status": "Delivered", "delay": "None" },
+      { "shipmentId": "SHP-7018", "date": "2026-05-04", "status": "Delivered", "delay": "None" },
+      { "shipmentId": "SHP-6992", "date": "2026-04-16", "status": "Delivered", "delay": "None" }
+    ],
+    "documents": [
+      { "name": "Supply Contract", "type": "Contract", "date": "2025-04-10" },
+      { "name": "MSDS Certificates", "type": "Certificate", "date": "2025-04-10" }
+    ],
+    "activity": [
+      { "date": "2026-05-22", "description": "Shipment #SHP-7040 delivered" },
+      { "date": "2026-05-20", "description": "PO #PO-3040 raised" },
+      { "date": "2026-05-15", "description": "Payment of ₹27K completed via UPI" },
+      { "date": "2026-05-04", "description": "Shipment #SHP-7018 delivered" }
+    ]
+  },
+  "Precision Tools India": {
+    "vendorSince": "2024-10-30",
+    "vendorScore": 90,
+    "performance": "Excellent",
+    "paymentTerms": "Net 30",
+    "purchaseOrders": [
+      { "poId": "PO-3045", "date": "2026-05-17", "material": "Drill Bit Set HSS", "quantity": 20, "amount": 28000, "status": "Delivered" },
+      { "poId": "PO-3022", "date": "2026-05-01", "material": "End Mill Cutter", "quantity": 15, "amount": 22500, "status": "Delivered" },
+      { "poId": "PO-2998", "date": "2026-04-12", "material": "Tap & Die Set", "quantity": 10, "amount": 18000, "status": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "VINV-5045", "date": "2026-05-17", "amount": 28000, "dueDate": "2026-06-16", "status": "Pending" },
+      { "invoiceId": "VINV-5022", "date": "2026-05-01", "amount": 22500, "dueDate": "2026-05-31", "status": "Paid" },
+      { "invoiceId": "VINV-4998", "date": "2026-04-12", "amount": 18000, "dueDate": "2026-05-12", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-28", "amount": 22500, "method": "NEFT", "referenceId": "NEFT-30320", "status": "Completed" },
+      { "date": "2026-05-10", "amount": 18000, "method": "UPI", "referenceId": "UPI-15160", "status": "Completed" }
+    ],
+    "materials": [
+      { "material": "Drill Bit Set HSS", "unitCost": 1400, "lastPurchased": "2026-05-17", "moq": 10, "leadTime": "5 days" },
+      { "material": "End Mill Cutter", "unitCost": 1500, "lastPurchased": "2026-05-01", "moq": 5, "leadTime": "7 days" },
+      { "material": "Tap & Die Set", "unitCost": 1800, "lastPurchased": "2026-04-12", "moq": 5, "leadTime": "5 days" }
+    ],
+    "deliveries": [
+      { "shipmentId": "SHP-7045", "date": "2026-05-19", "status": "Delivered", "delay": "None" },
+      { "shipmentId": "SHP-7022", "date": "2026-05-03", "status": "Delivered", "delay": "None" },
+      { "shipmentId": "SHP-6998", "date": "2026-04-14", "status": "Delivered", "delay": "None" }
+    ],
+    "documents": [
+      { "name": "Vendor Agreement", "type": "Contract", "date": "2024-10-30" },
+      { "name": "Tool Calibration Cert", "type": "Certificate", "date": "2026-01-10" }
+    ],
+    "activity": [
+      { "date": "2026-05-28", "description": "Payment of ₹22.5K completed via NEFT" },
+      { "date": "2026-05-19", "description": "Shipment #SHP-7045 delivered" },
+      { "date": "2026-05-17", "description": "PO #PO-3045 raised" },
+      { "date": "2026-05-10", "description": "Payment of ₹18K completed via UPI" }
+    ]
+  },
+  "ClearView Safety": {
+    "vendorSince": "2025-05-15",
+    "vendorScore": 76,
+    "performance": "Average",
+    "paymentTerms": "Net 15",
+    "purchaseOrders": [
+      { "poId": "PO-3050", "date": "2026-05-14", "material": "Safety Helmet", "quantity": 50, "amount": 25000, "status": "Delivered" },
+      { "poId": "PO-3028", "date": "2026-04-28", "material": "Safety Goggles", "quantity": 100, "amount": 20000, "status": "Delivered" },
+      { "poId": "PO-3002", "date": "2026-04-08", "material": "Safety Gloves", "quantity": 200, "amount": 16000, "status": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "VINV-5050", "date": "2026-05-14", "amount": 25000, "dueDate": "2026-05-29", "status": "Paid" },
+      { "invoiceId": "VINV-5028", "date": "2026-04-28", "amount": 20000, "dueDate": "2026-05-13", "status": "Paid" },
+      { "invoiceId": "VINV-5002", "date": "2026-04-08", "amount": 16000, "dueDate": "2026-04-23", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-26", "amount": 25000, "method": "UPI", "referenceId": "UPI-15180", "status": "Completed" },
+      { "date": "2026-05-10", "amount": 20000, "method": "UPI", "referenceId": "UPI-15070", "status": "Completed" },
+      { "date": "2026-04-20", "amount": 16000, "method": "NEFT", "referenceId": "NEFT-30350", "status": "Completed" }
+    ],
+    "materials": [
+      { "material": "Safety Helmet", "unitCost": 500, "lastPurchased": "2026-05-14", "moq": 25, "leadTime": "3 days" },
+      { "material": "Safety Goggles", "unitCost": 200, "lastPurchased": "2026-04-28", "moq": 50, "leadTime": "2 days" },
+      { "material": "Safety Gloves", "unitCost": 80, "lastPurchased": "2026-04-08", "moq": 100, "leadTime": "2 days" }
+    ],
+    "deliveries": [
+      { "shipmentId": "SHP-7050", "date": "2026-05-16", "status": "Delivered", "delay": "None" },
+      { "shipmentId": "SHP-7028", "date": "2026-05-01", "status": "Delivered", "delay": "1 day" },
+      { "shipmentId": "SHP-7002", "date": "2026-04-10", "status": "Delivered", "delay": "None" }
+    ],
+    "documents": [
+      { "name": "Safety Equipment Contract", "type": "Contract", "date": "2025-05-15" },
+      { "name": "BIS Certification", "type": "Certificate", "date": "2025-06-01" }
+    ],
+    "activity": [
+      { "date": "2026-05-26", "description": "Payment of ₹25K completed via UPI" },
+      { "date": "2026-05-16", "description": "Shipment #SHP-7050 delivered" },
+      { "date": "2026-05-14", "description": "PO #PO-3050 raised" },
+      { "date": "2026-05-10", "description": "Payment of ₹20K completed via UPI" }
+    ]
+  },
+  "Metro Logistics": {
+    "vendorSince": "2025-06-01",
+    "vendorScore": 55,
+    "performance": "Delayed",
+    "paymentTerms": "Net 15",
+    "purchaseOrders": [
+      { "poId": "PO-2950", "date": "2026-03-10", "material": "Freight Service", "quantity": 1, "amount": 85000, "status": "Delivered" },
+      { "poId": "PO-2920", "date": "2026-01-22", "material": "Freight Service", "quantity": 1, "amount": 72000, "status": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "VINV-4950", "date": "2026-03-10", "amount": 85000, "dueDate": "2026-03-25", "status": "Overdue" },
+      { "invoiceId": "VINV-4920", "date": "2026-01-22", "amount": 72000, "dueDate": "2026-02-06", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-02-10", "amount": 72000, "method": "NEFT", "referenceId": "NEFT-29800", "status": "Completed" }
+    ],
+    "materials": [
+      { "material": "Freight Service", "unitCost": 80000, "lastPurchased": "2026-03-10", "moq": 1, "leadTime": "N/A" }
+    ],
+    "deliveries": [
+      { "shipmentId": "SHP-6950", "date": "2026-03-18", "status": "Delivered", "delay": "5 days" },
+      { "shipmentId": "SHP-6920", "date": "2026-01-28", "status": "Delivered", "delay": "3 days" }
+    ],
+    "documents": [
+      { "name": "Logistics Agreement", "type": "Contract", "date": "2025-06-01" }
+    ],
+    "activity": [
+      { "date": "2026-03-18", "description": "Shipment #SHP-6950 delivered (5 day delay)" },
+      { "date": "2026-03-10", "description": "PO #PO-2950 raised" },
+      { "date": "2026-02-10", "description": "Payment of ₹72K completed via NEFT" },
+      { "date": "2026-01-28", "description": "Shipment #SHP-6920 delivered (3 day delay)" }
+    ]
+  }
+}

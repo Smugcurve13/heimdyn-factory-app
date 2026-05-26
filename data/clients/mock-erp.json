@@ -1,0 +1,435 @@
+{
+  "Pinnacle Distributors": {
+    "industry": "Distribution",
+    "clientSince": "2024-08-15",
+    "creditLimit": 200000,
+    "paymentTerms": "Net 30",
+    "health": "Good",
+    "orders": [
+      { "orderId": "ORD-1001", "date": "2026-05-20", "products": "Steel Frame x30", "amount": 78000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0987", "date": "2026-05-12", "products": "Bearing Set x100", "amount": 45000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0954", "date": "2026-04-28", "products": "Motor Assembly x15", "amount": 120000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0921", "date": "2026-04-10", "products": "Gear Box x20", "amount": 62000, "status": "Confirmed", "deliveryStatus": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "INV-2001", "date": "2026-05-20", "amount": 78000, "dueDate": "2026-06-19", "status": "Pending" },
+      { "invoiceId": "INV-1987", "date": "2026-05-12", "amount": 45000, "dueDate": "2026-06-11", "status": "Pending" },
+      { "invoiceId": "INV-1954", "date": "2026-04-28", "amount": 120000, "dueDate": "2026-05-28", "status": "Paid" },
+      { "invoiceId": "INV-1921", "date": "2026-04-10", "amount": 62000, "dueDate": "2026-05-10", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-26", "amount": 120000, "method": "NEFT", "referenceId": "NEFT-88210", "status": "Completed" },
+      { "date": "2026-05-08", "amount": 62000, "method": "UPI", "referenceId": "UPI-44312", "status": "Completed" },
+      { "date": "2026-04-15", "amount": 85000, "method": "Cheque", "referenceId": "CHQ-7821", "status": "Completed" }
+    ],
+    "products": [
+      { "product": "Steel Frame", "unitsBought": 180, "revenueContribution": 468000, "lastPurchased": "2026-05-20" },
+      { "product": "Bearing Set", "unitsBought": 450, "revenueContribution": 202500, "lastPurchased": "2026-05-12" },
+      { "product": "Motor Assembly", "unitsBought": 60, "revenueContribution": 480000, "lastPurchased": "2026-04-28" },
+      { "product": "Gear Box", "unitsBought": 90, "revenueContribution": 279000, "lastPurchased": "2026-04-10" }
+    ],
+    "documents": [
+      { "name": "Purchase Agreement 2024", "type": "Contract", "date": "2024-08-15" },
+      { "name": "GST Registration", "type": "GST", "date": "2024-08-15" },
+      { "name": "Credit Application", "type": "Finance", "date": "2024-09-01" }
+    ],
+    "activity": [
+      { "date": "2026-05-26", "description": "Payment received ₹1.2L via NEFT" },
+      { "date": "2026-05-20", "description": "Invoice #INV-2001 generated" },
+      { "date": "2026-05-20", "description": "Order #ORD-1001 delivered" },
+      { "date": "2026-05-12", "description": "Order #ORD-0987 created" },
+      { "date": "2026-04-28", "description": "Order #ORD-0954 delivered" }
+    ]
+  },
+  "Eastern Supply Co.": {
+    "industry": "Wholesale Supply",
+    "clientSince": "2025-01-10",
+    "creditLimit": 150000,
+    "paymentTerms": "Net 15",
+    "health": "Good",
+    "orders": [
+      { "orderId": "ORD-1003", "date": "2026-05-22", "products": "Hydraulic Pump x10", "amount": 95000, "status": "Confirmed", "deliveryStatus": "In Transit" },
+      { "orderId": "ORD-0965", "date": "2026-05-05", "products": "Valve Set x50", "amount": 37500, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0930", "date": "2026-04-18", "products": "Coupling x80", "amount": 28000, "status": "Confirmed", "deliveryStatus": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "INV-2003", "date": "2026-05-22", "amount": 95000, "dueDate": "2026-06-06", "status": "Pending" },
+      { "invoiceId": "INV-1965", "date": "2026-05-05", "amount": 37500, "dueDate": "2026-05-20", "status": "Paid" },
+      { "invoiceId": "INV-1930", "date": "2026-04-18", "amount": 28000, "dueDate": "2026-05-03", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-18", "amount": 37500, "method": "NEFT", "referenceId": "NEFT-88320", "status": "Completed" },
+      { "date": "2026-05-01", "amount": 28000, "method": "UPI", "referenceId": "UPI-44521", "status": "Completed" }
+    ],
+    "products": [
+      { "product": "Hydraulic Pump", "unitsBought": 40, "revenueContribution": 380000, "lastPurchased": "2026-05-22" },
+      { "product": "Valve Set", "unitsBought": 200, "revenueContribution": 150000, "lastPurchased": "2026-05-05" },
+      { "product": "Coupling", "unitsBought": 320, "revenueContribution": 112000, "lastPurchased": "2026-04-18" }
+    ],
+    "documents": [
+      { "name": "Supply Contract 2025", "type": "Contract", "date": "2025-01-10" },
+      { "name": "GST Certificate", "type": "GST", "date": "2025-01-10" }
+    ],
+    "activity": [
+      { "date": "2026-05-22", "description": "Order #ORD-1003 shipped" },
+      { "date": "2026-05-18", "description": "Payment received ₹37.5K via NEFT" },
+      { "date": "2026-05-05", "description": "Invoice #INV-1965 generated" },
+      { "date": "2026-04-18", "description": "Order #ORD-0930 delivered" }
+    ]
+  },
+  "Metro Industrial": {
+    "industry": "Manufacturing",
+    "clientSince": "2024-05-12",
+    "creditLimit": 500000,
+    "paymentTerms": "Net 30",
+    "health": "High Value",
+    "orders": [
+      { "orderId": "ORD-1002", "date": "2026-05-25", "products": "Wood Pallet x45", "amount": 52000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0990", "date": "2026-05-15", "products": "Steel Rod x200", "amount": 180000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0958", "date": "2026-04-30", "products": "Flange Set x60", "amount": 84000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0925", "date": "2026-04-12", "products": "Pipe Fitting x150", "amount": 112500, "status": "Confirmed", "deliveryStatus": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "INV-2002", "date": "2026-05-25", "amount": 52000, "dueDate": "2026-06-24", "status": "Pending" },
+      { "invoiceId": "INV-1990", "date": "2026-05-15", "amount": 180000, "dueDate": "2026-06-14", "status": "Pending" },
+      { "invoiceId": "INV-1958", "date": "2026-04-30", "amount": 84000, "dueDate": "2026-05-30", "status": "Paid" },
+      { "invoiceId": "INV-1925", "date": "2026-04-12", "amount": 112500, "dueDate": "2026-05-12", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-24", "amount": 84000, "method": "RTGS", "referenceId": "RTGS-10032", "status": "Completed" },
+      { "date": "2026-05-10", "amount": 112500, "method": "NEFT", "referenceId": "NEFT-88450", "status": "Completed" },
+      { "date": "2026-04-20", "amount": 95000, "method": "Cheque", "referenceId": "CHQ-7910", "status": "Completed" }
+    ],
+    "products": [
+      { "product": "Wood Pallet", "unitsBought": 270, "revenueContribution": 312000, "lastPurchased": "2026-05-25" },
+      { "product": "Steel Rod", "unitsBought": 800, "revenueContribution": 720000, "lastPurchased": "2026-05-15" },
+      { "product": "Flange Set", "unitsBought": 240, "revenueContribution": 336000, "lastPurchased": "2026-04-30" },
+      { "product": "Pipe Fitting", "unitsBought": 600, "revenueContribution": 450000, "lastPurchased": "2026-04-12" }
+    ],
+    "documents": [
+      { "name": "Master Agreement 2024", "type": "Contract", "date": "2024-05-12" },
+      { "name": "GST Registration", "type": "GST", "date": "2024-05-12" },
+      { "name": "PAN Verification", "type": "Identity", "date": "2024-05-12" }
+    ],
+    "activity": [
+      { "date": "2026-05-25", "description": "Invoice #INV-2002 generated" },
+      { "date": "2026-05-24", "description": "Payment received ₹84K via RTGS" },
+      { "date": "2026-05-15", "description": "Order #ORD-0990 created" },
+      { "date": "2026-05-10", "description": "Payment received ₹1.12L via NEFT" },
+      { "date": "2026-04-30", "description": "Order #ORD-0958 delivered" }
+    ]
+  },
+  "Shree Enterprises": {
+    "industry": "Trading",
+    "clientSince": "2025-03-20",
+    "creditLimit": 100000,
+    "paymentTerms": "Net 15",
+    "health": "Good",
+    "orders": [
+      { "orderId": "ORD-1010", "date": "2026-05-23", "products": "Bolt Set x500", "amount": 35000, "status": "Processing", "deliveryStatus": "Pending" },
+      { "orderId": "ORD-0972", "date": "2026-05-08", "products": "Nut Pack x300", "amount": 18000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0940", "date": "2026-04-22", "products": "Washer Set x400", "amount": 12000, "status": "Confirmed", "deliveryStatus": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "INV-2010", "date": "2026-05-23", "amount": 35000, "dueDate": "2026-06-07", "status": "Pending" },
+      { "invoiceId": "INV-1972", "date": "2026-05-08", "amount": 18000, "dueDate": "2026-05-23", "status": "Paid" },
+      { "invoiceId": "INV-1940", "date": "2026-04-22", "amount": 12000, "dueDate": "2026-05-07", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-21", "amount": 18000, "method": "UPI", "referenceId": "UPI-44680", "status": "Completed" },
+      { "date": "2026-05-05", "amount": 12000, "method": "UPI", "referenceId": "UPI-44590", "status": "Completed" }
+    ],
+    "products": [
+      { "product": "Bolt Set", "unitsBought": 2000, "revenueContribution": 140000, "lastPurchased": "2026-05-23" },
+      { "product": "Nut Pack", "unitsBought": 1200, "revenueContribution": 72000, "lastPurchased": "2026-05-08" },
+      { "product": "Washer Set", "unitsBought": 1600, "revenueContribution": 48000, "lastPurchased": "2026-04-22" }
+    ],
+    "documents": [
+      { "name": "Trade Agreement", "type": "Contract", "date": "2025-03-20" },
+      { "name": "GST Certificate", "type": "GST", "date": "2025-03-20" }
+    ],
+    "activity": [
+      { "date": "2026-05-23", "description": "Order #ORD-1010 created" },
+      { "date": "2026-05-21", "description": "Payment received ₹18K via UPI" },
+      { "date": "2026-05-08", "description": "Order #ORD-0972 delivered" },
+      { "date": "2026-04-22", "description": "Order #ORD-0940 delivered" }
+    ]
+  },
+  "Reliable Trading": {
+    "industry": "Retail Distribution",
+    "clientSince": "2024-11-05",
+    "creditLimit": 180000,
+    "paymentTerms": "Net 30",
+    "health": "Good",
+    "orders": [
+      { "orderId": "ORD-1015", "date": "2026-05-24", "products": "Shaft Assembly x25", "amount": 87500, "status": "Confirmed", "deliveryStatus": "In Transit" },
+      { "orderId": "ORD-0978", "date": "2026-05-10", "products": "Bearing Housing x40", "amount": 64000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0945", "date": "2026-04-25", "products": "Seal Kit x100", "amount": 25000, "status": "Confirmed", "deliveryStatus": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "INV-2015", "date": "2026-05-24", "amount": 87500, "dueDate": "2026-06-23", "status": "Pending" },
+      { "invoiceId": "INV-1978", "date": "2026-05-10", "amount": 64000, "dueDate": "2026-06-09", "status": "Pending" },
+      { "invoiceId": "INV-1945", "date": "2026-04-25", "amount": 25000, "dueDate": "2026-05-25", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-23", "amount": 25000, "method": "NEFT", "referenceId": "NEFT-88560", "status": "Completed" },
+      { "date": "2026-04-30", "amount": 72000, "method": "RTGS", "referenceId": "RTGS-10045", "status": "Completed" }
+    ],
+    "products": [
+      { "product": "Shaft Assembly", "unitsBought": 100, "revenueContribution": 350000, "lastPurchased": "2026-05-24" },
+      { "product": "Bearing Housing", "unitsBought": 160, "revenueContribution": 256000, "lastPurchased": "2026-05-10" },
+      { "product": "Seal Kit", "unitsBought": 400, "revenueContribution": 100000, "lastPurchased": "2026-04-25" }
+    ],
+    "documents": [
+      { "name": "Distribution Agreement", "type": "Contract", "date": "2024-11-05" },
+      { "name": "GSTIN Copy", "type": "GST", "date": "2024-11-05" }
+    ],
+    "activity": [
+      { "date": "2026-05-24", "description": "Order #ORD-1015 shipped" },
+      { "date": "2026-05-23", "description": "Payment received ₹25K via NEFT" },
+      { "date": "2026-05-10", "description": "Invoice #INV-1978 generated" },
+      { "date": "2026-04-30", "description": "Payment received ₹72K via RTGS" }
+    ]
+  },
+  "Apex Components": {
+    "industry": "Auto Components",
+    "clientSince": "2025-06-01",
+    "creditLimit": 120000,
+    "paymentTerms": "Net 15",
+    "health": "Good",
+    "orders": [
+      { "orderId": "ORD-1018", "date": "2026-05-21", "products": "Sprocket x60", "amount": 42000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0982", "date": "2026-05-06", "products": "Chain Link x200", "amount": 30000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0948", "date": "2026-04-20", "products": "Pulley x35", "amount": 24500, "status": "Confirmed", "deliveryStatus": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "INV-2018", "date": "2026-05-21", "amount": 42000, "dueDate": "2026-06-05", "status": "Pending" },
+      { "invoiceId": "INV-1982", "date": "2026-05-06", "amount": 30000, "dueDate": "2026-05-21", "status": "Paid" },
+      { "invoiceId": "INV-1948", "date": "2026-04-20", "amount": 24500, "dueDate": "2026-05-05", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-19", "amount": 30000, "method": "UPI", "referenceId": "UPI-44780", "status": "Completed" },
+      { "date": "2026-05-03", "amount": 24500, "method": "NEFT", "referenceId": "NEFT-88670", "status": "Completed" }
+    ],
+    "products": [
+      { "product": "Sprocket", "unitsBought": 240, "revenueContribution": 168000, "lastPurchased": "2026-05-21" },
+      { "product": "Chain Link", "unitsBought": 800, "revenueContribution": 120000, "lastPurchased": "2026-05-06" },
+      { "product": "Pulley", "unitsBought": 140, "revenueContribution": 98000, "lastPurchased": "2026-04-20" }
+    ],
+    "documents": [
+      { "name": "Supply Agreement", "type": "Contract", "date": "2025-06-01" },
+      { "name": "GST Registration", "type": "GST", "date": "2025-06-01" }
+    ],
+    "activity": [
+      { "date": "2026-05-21", "description": "Order #ORD-1018 delivered" },
+      { "date": "2026-05-19", "description": "Payment received ₹30K via UPI" },
+      { "date": "2026-05-06", "description": "Order #ORD-0982 created" },
+      { "date": "2026-04-20", "description": "Invoice #INV-1948 generated" }
+    ]
+  },
+  "Star Agencies": {
+    "industry": "Agency & Distribution",
+    "clientSince": "2025-02-14",
+    "creditLimit": 250000,
+    "paymentTerms": "Net 30",
+    "health": "High Value",
+    "orders": [
+      { "orderId": "ORD-1020", "date": "2026-05-19", "products": "Motor Unit x20", "amount": 160000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0985", "date": "2026-05-03", "products": "Control Panel x8", "amount": 96000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0950", "date": "2026-04-15", "products": "Switch Gear x30", "amount": 45000, "status": "Confirmed", "deliveryStatus": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "INV-2020", "date": "2026-05-19", "amount": 160000, "dueDate": "2026-06-18", "status": "Pending" },
+      { "invoiceId": "INV-1985", "date": "2026-05-03", "amount": 96000, "dueDate": "2026-06-02", "status": "Paid" },
+      { "invoiceId": "INV-1950", "date": "2026-04-15", "amount": 45000, "dueDate": "2026-05-15", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-30", "amount": 96000, "method": "RTGS", "referenceId": "RTGS-10058", "status": "Completed" },
+      { "date": "2026-05-12", "amount": 45000, "method": "NEFT", "referenceId": "NEFT-88780", "status": "Completed" }
+    ],
+    "products": [
+      { "product": "Motor Unit", "unitsBought": 80, "revenueContribution": 640000, "lastPurchased": "2026-05-19" },
+      { "product": "Control Panel", "unitsBought": 32, "revenueContribution": 384000, "lastPurchased": "2026-05-03" },
+      { "product": "Switch Gear", "unitsBought": 120, "revenueContribution": 180000, "lastPurchased": "2026-04-15" }
+    ],
+    "documents": [
+      { "name": "Agency Agreement", "type": "Contract", "date": "2025-02-14" },
+      { "name": "GSTIN Copy", "type": "GST", "date": "2025-02-14" },
+      { "name": "PAN Card", "type": "Identity", "date": "2025-02-14" }
+    ],
+    "activity": [
+      { "date": "2026-05-30", "description": "Payment received ₹96K via RTGS" },
+      { "date": "2026-05-19", "description": "Order #ORD-1020 delivered" },
+      { "date": "2026-05-12", "description": "Payment received ₹45K via NEFT" },
+      { "date": "2026-05-03", "description": "Order #ORD-0985 created" }
+    ]
+  },
+  "National Parts Hub": {
+    "industry": "Industrial Parts",
+    "clientSince": "2024-09-22",
+    "creditLimit": 175000,
+    "paymentTerms": "Net 30",
+    "health": "Delayed Payments",
+    "orders": [
+      { "orderId": "ORD-1022", "date": "2026-05-18", "products": "Gasket Set x80", "amount": 32000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0988", "date": "2026-05-02", "products": "O-Ring Pack x500", "amount": 25000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0955", "date": "2026-04-16", "products": "Gasket Set x60", "amount": 24000, "status": "Confirmed", "deliveryStatus": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "INV-2022", "date": "2026-05-18", "amount": 32000, "dueDate": "2026-06-17", "status": "Pending" },
+      { "invoiceId": "INV-1988", "date": "2026-05-02", "amount": 25000, "dueDate": "2026-06-01", "status": "Overdue" },
+      { "invoiceId": "INV-1955", "date": "2026-04-16", "amount": 24000, "dueDate": "2026-05-16", "status": "Overdue" }
+    ],
+    "payments": [
+      { "date": "2026-04-28", "amount": 35000, "method": "Cheque", "referenceId": "CHQ-8020", "status": "Completed" },
+      { "date": "2026-03-30", "amount": 22000, "method": "NEFT", "referenceId": "NEFT-88120", "status": "Completed" }
+    ],
+    "products": [
+      { "product": "Gasket Set", "unitsBought": 560, "revenueContribution": 224000, "lastPurchased": "2026-05-18" },
+      { "product": "O-Ring Pack", "unitsBought": 2000, "revenueContribution": 100000, "lastPurchased": "2026-05-02" }
+    ],
+    "documents": [
+      { "name": "Supply Contract", "type": "Contract", "date": "2024-09-22" },
+      { "name": "GST Certificate", "type": "GST", "date": "2024-09-22" }
+    ],
+    "activity": [
+      { "date": "2026-05-18", "description": "Invoice #INV-2022 generated" },
+      { "date": "2026-05-02", "description": "Order #ORD-0988 delivered" },
+      { "date": "2026-04-28", "description": "Payment received ₹35K via Cheque" },
+      { "date": "2026-04-16", "description": "Order #ORD-0955 created" }
+    ]
+  },
+  "Heritage Industries": {
+    "industry": "Textiles",
+    "clientSince": "2025-07-10",
+    "creditLimit": 80000,
+    "paymentTerms": "Net 15",
+    "health": "Low Activity",
+    "orders": [
+      { "orderId": "ORD-0860", "date": "2026-02-10", "products": "Loom Parts x20", "amount": 28000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0810", "date": "2025-12-15", "products": "Spindle x15", "amount": 22500, "status": "Confirmed", "deliveryStatus": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "INV-1860", "date": "2026-02-10", "amount": 28000, "dueDate": "2026-02-25", "status": "Paid" },
+      { "invoiceId": "INV-1810", "date": "2025-12-15", "amount": 22500, "dueDate": "2025-12-30", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-02-22", "amount": 28000, "method": "NEFT", "referenceId": "NEFT-87200", "status": "Completed" },
+      { "date": "2025-12-28", "amount": 22500, "method": "UPI", "referenceId": "UPI-43100", "status": "Completed" }
+    ],
+    "products": [
+      { "product": "Loom Parts", "unitsBought": 80, "revenueContribution": 112000, "lastPurchased": "2026-02-10" },
+      { "product": "Spindle", "unitsBought": 60, "revenueContribution": 90000, "lastPurchased": "2025-12-15" }
+    ],
+    "documents": [
+      { "name": "Purchase Agreement", "type": "Contract", "date": "2025-07-10" }
+    ],
+    "activity": [
+      { "date": "2026-02-22", "description": "Payment received ₹28K via NEFT" },
+      { "date": "2026-02-10", "description": "Order #ORD-0860 delivered" },
+      { "date": "2025-12-28", "description": "Payment received ₹22.5K via UPI" },
+      { "date": "2025-12-15", "description": "Order #ORD-0810 created" }
+    ]
+  },
+  "Landmark Supplies": {
+    "industry": "General Supplies",
+    "clientSince": "2025-04-18",
+    "creditLimit": 90000,
+    "paymentTerms": "Net 15",
+    "health": "Low Activity",
+    "orders": [
+      { "orderId": "ORD-0870", "date": "2026-01-25", "products": "Fastener Kit x100", "amount": 15000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0830", "date": "2025-11-20", "products": "Rivet Pack x200", "amount": 10000, "status": "Confirmed", "deliveryStatus": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "INV-1870", "date": "2026-01-25", "amount": 15000, "dueDate": "2026-02-09", "status": "Paid" },
+      { "invoiceId": "INV-1830", "date": "2025-11-20", "amount": 10000, "dueDate": "2025-12-05", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-02-06", "amount": 15000, "method": "UPI", "referenceId": "UPI-43250", "status": "Completed" },
+      { "date": "2025-12-02", "amount": 10000, "method": "UPI", "referenceId": "UPI-42800", "status": "Completed" }
+    ],
+    "products": [
+      { "product": "Fastener Kit", "unitsBought": 400, "revenueContribution": 60000, "lastPurchased": "2026-01-25" },
+      { "product": "Rivet Pack", "unitsBought": 800, "revenueContribution": 40000, "lastPurchased": "2025-11-20" }
+    ],
+    "documents": [
+      { "name": "Supply Agreement", "type": "Contract", "date": "2025-04-18" }
+    ],
+    "activity": [
+      { "date": "2026-02-06", "description": "Payment received ₹15K via UPI" },
+      { "date": "2026-01-25", "description": "Order #ORD-0870 delivered" },
+      { "date": "2025-12-02", "description": "Payment received ₹10K via UPI" }
+    ]
+  },
+  "Pioneer Parts": {
+    "industry": "Precision Engineering",
+    "clientSince": "2025-05-30",
+    "creditLimit": 100000,
+    "paymentTerms": "Net 30",
+    "health": "Low Activity",
+    "orders": [
+      { "orderId": "ORD-0880", "date": "2026-03-05", "products": "CNC Part x10", "amount": 55000, "status": "Confirmed", "deliveryStatus": "Delivered" },
+      { "orderId": "ORD-0840", "date": "2025-12-20", "products": "Precision Shaft x8", "amount": 48000, "status": "Confirmed", "deliveryStatus": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "INV-1880", "date": "2026-03-05", "amount": 55000, "dueDate": "2026-04-04", "status": "Paid" },
+      { "invoiceId": "INV-1840", "date": "2025-12-20", "amount": 48000, "dueDate": "2026-01-19", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-03-30", "amount": 55000, "method": "NEFT", "referenceId": "NEFT-87500", "status": "Completed" },
+      { "date": "2026-01-15", "amount": 48000, "method": "Cheque", "referenceId": "CHQ-7950", "status": "Completed" }
+    ],
+    "products": [
+      { "product": "CNC Part", "unitsBought": 40, "revenueContribution": 220000, "lastPurchased": "2026-03-05" },
+      { "product": "Precision Shaft", "unitsBought": 32, "revenueContribution": 192000, "lastPurchased": "2025-12-20" }
+    ],
+    "documents": [
+      { "name": "Engineering Contract", "type": "Contract", "date": "2025-05-30" },
+      { "name": "Quality Certificate", "type": "Certificate", "date": "2025-06-15" }
+    ],
+    "activity": [
+      { "date": "2026-03-30", "description": "Payment received ₹55K via NEFT" },
+      { "date": "2026-03-05", "description": "Order #ORD-0880 delivered" },
+      { "date": "2026-01-15", "description": "Payment received ₹48K via Cheque" }
+    ]
+  },
+  "Prime Engineering": {
+    "industry": "Engineering Services",
+    "clientSince": "2024-12-01",
+    "creditLimit": 300000,
+    "paymentTerms": "Net 30",
+    "health": "Good",
+    "orders": [
+      { "orderId": "ORD-1025", "date": "2026-05-26", "products": "Turbine Blade x12", "amount": 144000, "status": "Processing", "deliveryStatus": "Pending" },
+      { "orderId": "ORD-0992", "date": "2026-05-14", "products": "Heat Exchanger x5", "amount": 175000, "status": "Confirmed", "deliveryStatus": "In Transit" },
+      { "orderId": "ORD-0960", "date": "2026-04-29", "products": "Impeller x20", "amount": 60000, "status": "Confirmed", "deliveryStatus": "Delivered" }
+    ],
+    "invoices": [
+      { "invoiceId": "INV-1992", "date": "2026-05-14", "amount": 175000, "dueDate": "2026-06-13", "status": "Pending" },
+      { "invoiceId": "INV-1960", "date": "2026-04-29", "amount": 60000, "dueDate": "2026-05-29", "status": "Paid" },
+      { "invoiceId": "INV-1928", "date": "2026-04-11", "amount": 92000, "dueDate": "2026-05-11", "status": "Paid" }
+    ],
+    "payments": [
+      { "date": "2026-05-25", "amount": 60000, "method": "RTGS", "referenceId": "RTGS-10070", "status": "Completed" },
+      { "date": "2026-05-08", "amount": 92000, "method": "NEFT", "referenceId": "NEFT-88890", "status": "Completed" }
+    ],
+    "products": [
+      { "product": "Turbine Blade", "unitsBought": 48, "revenueContribution": 576000, "lastPurchased": "2026-05-26" },
+      { "product": "Heat Exchanger", "unitsBought": 20, "revenueContribution": 700000, "lastPurchased": "2026-05-14" },
+      { "product": "Impeller", "unitsBought": 80, "revenueContribution": 240000, "lastPurchased": "2026-04-29" }
+    ],
+    "documents": [
+      { "name": "Engineering Services Agreement", "type": "Contract", "date": "2024-12-01" },
+      { "name": "GST Registration", "type": "GST", "date": "2024-12-01" },
+      { "name": "Quality Assurance Cert", "type": "Certificate", "date": "2025-01-15" }
+    ],
+    "activity": [
+      { "date": "2026-05-26", "description": "Order #ORD-1025 created" },
+      { "date": "2026-05-25", "description": "Payment received ₹60K via RTGS" },
+      { "date": "2026-05-14", "description": "Order #ORD-0992 shipped" },
+      { "date": "2026-05-08", "description": "Payment received ₹92K via NEFT" },
+      { "date": "2026-04-29", "description": "Order #ORD-0960 delivered" }
+    ]
+  }
+}

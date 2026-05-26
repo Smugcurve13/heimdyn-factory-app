@@ -1,6 +1,7 @@
-'use client'
+'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { SignedIn } from '@/components/AuthProvider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -56,9 +57,27 @@ import {
   Trash2,
   Edit,
   Loader2,
+  Users,
+  UserCheck,
+  ShoppingCart,
+  IndianRupee,
+  BarChart3,
+  Crown,
+  Upload,
 } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
 import { clientService, type Client } from '@/services/api';
+import { KpiStrip } from '@/components/features/erp/kpi-strip';
+import { InsightCard } from '@/components/features/erp/insight-card';
+import { HealthBadge } from '@/components/features/erp/health-badge';
+import {
+  getClientKpiSummary,
+  getClientTableRow,
+  getAllClientErpData,
+  formatCurrency,
+  formatRelativeDate,
+} from '@/lib/mock-data';
 
 const emptyForm = {
   name: '',
@@ -72,13 +91,14 @@ const emptyForm = {
 };
 
 export default function ClientsPage() {
+  const router = useRouter();
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [cityFilter, setCityFilter] = useState('all');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [viewId, setViewId] = useState<number | null>(null);
-  const [viewData, setViewData] = useState<Client | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -100,12 +120,46 @@ export default function ClientsPage() {
 
   useEffect(() => { fetchClients(); }, [fetchClients]);
 
-  const filteredClients = clients.filter(c =>
-    c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (c.contact_person || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (c.email || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (c.city || '').toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const kpiSummary = useMemo(() => getClientKpiSummary(clients), [clients]);
+
+  const allErp = useMemo(() => getAllClientErpData(), []);
+  const insights = useMemo(() => {
+    const withRevenue = clients.map((c) => {
+      const erp = allErp[c.name];
+      const revenue = erp ? erp.orders.reduce((s, o) => s + o.amount, 0) : 0;
+      const orders = erp ? erp.orders.length : 0;
+      return { ...c, revenue, orders };
+    });
+    const sorted = [...withRevenue].sort((a, b) => b.revenue - a.revenue);
+    const byCdate = [...withRevenue].sort((a, b) => b.created_at.localeCompare(a.created_at));
+
+    return {
+      top: sorted.filter((c) => c.status === 'active').slice(0, 4).map((c) => ({ name: c.name, revenue: c.revenue, orders: c.orders })),
+      recent: byCdate.slice(0, 4).map((c) => ({ name: c.name, revenue: c.revenue, orders: c.orders })),
+      highRevenue: sorted.filter((c) => c.revenue > 200000).slice(0, 4).map((c) => ({ name: c.name, revenue: c.revenue, orders: c.orders })),
+      inactive: withRevenue.filter((c) => c.status === 'inactive').slice(0, 4).map((c) => ({ name: c.name, revenue: c.revenue, orders: c.orders })),
+    };
+  }, [clients, allErp]);
+
+  const cities = useMemo(() => {
+    const set = new Set(clients.map((c) => c.city).filter(Boolean) as string[]);
+    return Array.from(set).sort();
+  }, [clients]);
+
+  const filteredClients = useMemo(() => {
+    return clients.filter((c) => {
+      const q = searchQuery.toLowerCase();
+      const matchesSearch =
+        !q ||
+        c.name.toLowerCase().includes(q) ||
+        (c.contact_person || '').toLowerCase().includes(q) ||
+        (c.email || '').toLowerCase().includes(q) ||
+        (c.city || '').toLowerCase().includes(q);
+      const matchesStatus = statusFilter === 'all' || c.status === statusFilter;
+      const matchesCity = cityFilter === 'all' || c.city === cityFilter;
+      return matchesSearch && matchesStatus && matchesCity;
+    });
+  }, [clients, searchQuery, statusFilter, cityFilter]);
 
   const handleOpenCreate = () => {
     setEditingId(null);
@@ -128,11 +182,6 @@ export default function ClientsPage() {
     setIsSheetOpen(true);
   };
 
-  const handleView = (client: Client) => {
-    setViewData(client);
-    setViewId(client.id);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim()) {
@@ -144,14 +193,10 @@ export default function ClientsPage() {
     try {
       if (editingId) {
         const response = await clientService.updateClient(editingId, formData);
-        if (response.success) {
-          toast({ title: 'Success', description: 'Client updated' });
-        }
+        if (response.success) toast({ title: 'Success', description: 'Client updated' });
       } else {
         const response = await clientService.createClient(formData);
-        if (response.success) {
-          toast({ title: 'Success', description: 'Client created' });
-        }
+        if (response.success) toast({ title: 'Success', description: 'Client created' });
       }
       setIsSheetOpen(false);
       setFormData(emptyForm);
@@ -171,7 +216,7 @@ export default function ClientsPage() {
     try {
       const response = await clientService.deleteClient(deleteId);
       if (response.success) {
-        setClients(clients.filter(c => c.id !== deleteId));
+        setClients(clients.filter((c) => c.id !== deleteId));
         toast({ title: 'Success', description: 'Client deleted' });
       }
       setDeleteId(null);
@@ -183,36 +228,86 @@ export default function ClientsPage() {
     }
   };
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return '—';
-    return new Date(dateString).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-  };
+  const kpiItems = [
+    { title: 'Total Clients', value: String(kpiSummary.totalClients), icon: <Users className="h-5 w-5" /> },
+    { title: 'Active Clients', value: String(kpiSummary.activeClients), icon: <UserCheck className="h-5 w-5" /> },
+    { title: 'Pending Orders', value: String(kpiSummary.pendingOrders), icon: <ShoppingCart className="h-5 w-5" /> },
+    { title: 'Revenue This Month', value: formatCurrency(kpiSummary.revenueThisMonth), icon: <IndianRupee className="h-5 w-5" /> },
+    { title: 'Avg Order Value', value: formatCurrency(kpiSummary.avgOrderValue), icon: <BarChart3 className="h-5 w-5" /> },
+    { title: 'Top Customer', value: kpiSummary.topCustomer || '—', icon: <Crown className="h-5 w-5" /> },
+  ];
 
   return (
     <SignedIn>
       <div className="space-y-6 p-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Clients</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Manage customer relationships and track business activity
+          </p>
         </div>
 
-        <p className="text-sm text-muted-foreground">
-          Showing {filteredClients.length} of {clients.length} clients
-        </p>
+        <KpiStrip items={kpiItems} />
 
-        <div className="flex items-center justify-between">
-          <div className="relative w-80">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search clients..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
-            />
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <InsightCard title="Top Customers" items={insights.top} />
+          <InsightCard title="Recently Added" items={insights.recent} />
+          <InsightCard title="High Revenue" items={insights.highRevenue} />
+          <InsightCard title="Inactive Customers" items={insights.inactive} />
+        </div>
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-1 flex-wrap items-center gap-2">
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search clients..."
+                className="pl-9"
+              />
+            </div>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[130px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={cityFilter} onValueChange={setCityFilter}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="City" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Cities</SelectItem>
+                {cities.map((city) => (
+                  <SelectItem key={city} value={city}>{city}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <Button onClick={handleOpenCreate} className="gap-2">
-            <Plus className="h-4 w-4" />
-            Add Client
-          </Button>
+          <div className="flex items-center gap-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span>
+                    <Button variant="outline" size="sm" disabled className="gap-1.5">
+                      <Upload className="h-3.5 w-3.5" />
+                      Upload Excel
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>Coming soon</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <Button onClick={handleOpenCreate} size="sm" className="gap-1.5">
+              <Plus className="h-3.5 w-3.5" />
+              Add Client
+            </Button>
+          </div>
         </div>
 
         <Card>
@@ -223,70 +318,93 @@ export default function ClientsPage() {
                 <span>Loading clients...</span>
               </div>
             ) : filteredClients.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
+              <div className="py-12 text-center text-muted-foreground">
                 {searchQuery ? 'No clients found matching your search' : 'No clients found'}
               </div>
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[200px]">Name</TableHead>
-                    <TableHead>Contact Person</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>City</TableHead>
+                    <TableHead className="w-[220px]">Customer</TableHead>
+                    <TableHead className="text-center">Orders</TableHead>
+                    <TableHead className="text-right">Revenue</TableHead>
+                    <TableHead>Last Purchase</TableHead>
+                    <TableHead className="text-right">Outstanding</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead className="w-[80px]">Actions</TableHead>
+                    <TableHead>Health</TableHead>
+                    <TableHead className="w-[60px]">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredClients.map((client) => (
-                    <TableRow
-                      key={client.id}
-                      className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => handleView(client)}
-                    >
-                      <TableCell className="font-medium">{client.name}</TableCell>
-                      <TableCell>{client.contact_person || '—'}</TableCell>
-                      <TableCell>{client.email || '—'}</TableCell>
-                      <TableCell>{client.city || '—'}</TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={client.status === 'active' ? 'default' : 'secondary'}
-                          className={client.status === 'active' ? 'bg-green-500/10 text-green-600 hover:bg-green-500/20 dark:text-green-400' : ''}
-                        >
-                          {client.status === 'active' ? 'Active' : 'Inactive'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">{formatDate(client.created_at)}</TableCell>
-                      <TableCell onClick={(e) => e.stopPropagation()}>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleView(client)}>
-                              <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
-                              View
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleOpenEdit(client)}>
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => setDeleteId(client.id)}
-                              className="text-destructive focus:text-destructive"
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {filteredClients.map((client) => {
+                    const row = getClientTableRow(client);
+                    return (
+                      <TableRow
+                        key={client.id}
+                        className="cursor-pointer hover:bg-muted/50"
+                        onClick={() => router.push(`/clients/${client.id}`)}
+                      >
+                        <TableCell>
+                          <div>
+                            <p className="font-medium">{client.name}</p>
+                            {client.contact_person && (
+                              <p className="text-xs text-muted-foreground">{client.contact_person}</p>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">{row.orders}</TableCell>
+                        <TableCell className="text-right font-medium">
+                          {formatCurrency(row.revenue)}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {row.lastPurchase ? formatRelativeDate(row.lastPurchase) : '—'}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {row.outstanding > 0 ? formatCurrency(row.outstanding) : '—'}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={client.status === 'active' ? 'default' : 'secondary'}
+                            className={
+                              client.status === 'active'
+                                ? 'bg-green-500/10 text-green-600 hover:bg-green-500/20 dark:text-green-400'
+                                : ''
+                            }
+                          >
+                            {client.status === 'active' ? 'Active' : 'Inactive'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <HealthBadge value={row.health} />
+                        </TableCell>
+                        <TableCell onClick={(e) => e.stopPropagation()}>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => router.push(`/clients/${client.id}`)}>
+                                View Details
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleOpenEdit(client)}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => setDeleteId(client.id)}
+                                className="text-destructive focus:text-destructive"
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             )}
@@ -295,7 +413,7 @@ export default function ClientsPage() {
 
         {/* Create/Edit Sheet */}
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-          <SheetContent className="w-full sm:max-w-[500px] overflow-y-auto">
+          <SheetContent className="w-full overflow-y-auto sm:max-w-[500px]">
             <SheetHeader>
               <SheetTitle className="text-xl">{editingId ? 'Edit Client' : 'Add New Client'}</SheetTitle>
               <SheetDescription>
@@ -303,7 +421,7 @@ export default function ClientsPage() {
               </SheetDescription>
             </SheetHeader>
 
-            <form onSubmit={handleSubmit} className="space-y-5 mt-6">
+            <form onSubmit={handleSubmit} className="mt-6 space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="name">Name <span className="text-destructive">*</span></Label>
                 <Input id="name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="Company name" className="h-11" required />
@@ -347,100 +465,12 @@ export default function ClientsPage() {
                 </Select>
               </div>
               <div className="flex gap-3 pt-4">
-                <Button type="button" variant="outline" onClick={() => { setIsSheetOpen(false); setFormData(emptyForm); setEditingId(null); }} disabled={isSaving} className="flex-1 h-11">Cancel</Button>
-                <Button type="submit" disabled={isSaving} className="flex-1 h-11">
+                <Button type="button" variant="outline" onClick={() => { setIsSheetOpen(false); setFormData(emptyForm); setEditingId(null); }} disabled={isSaving} className="h-11 flex-1">Cancel</Button>
+                <Button type="submit" disabled={isSaving} className="h-11 flex-1">
                   {isSaving ? (editingId ? 'Updating...' : 'Creating...') : (editingId ? 'Update Client' : 'Create Client')}
                 </Button>
               </div>
             </form>
-          </SheetContent>
-        </Sheet>
-
-        {/* View Sheet */}
-        <Sheet open={!!viewId} onOpenChange={(open) => { if (!open) { setViewId(null); setViewData(null); } }}>
-          <SheetContent className="w-full sm:max-w-[500px] overflow-y-auto">
-            {viewData && (
-              <>
-                <SheetHeader>
-                  <div className="flex items-center gap-4 pb-4">
-                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-lg font-semibold text-primary">{viewData.name.charAt(0)}</span>
-                    </div>
-                    <div className="flex-1">
-                      <SheetTitle className="text-xl">{viewData.name}</SheetTitle>
-                      <p className="text-sm text-muted-foreground">{viewData.city}{viewData.state ? `, ${viewData.state}` : ''}</p>
-                    </div>
-                  </div>
-                </SheetHeader>
-
-                <div className="space-y-6 mt-6">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-xs text-muted-foreground">Status</Label>
-                      <div className="mt-1">
-                        <Badge
-                          variant={viewData.status === 'active' ? 'default' : 'secondary'}
-                          className={viewData.status === 'active' ? 'bg-green-500/10 text-green-600 hover:bg-green-500/20 dark:text-green-400' : ''}
-                        >
-                          {viewData.status === 'active' ? 'Active' : 'Inactive'}
-                        </Badge>
-                      </div>
-                    </div>
-                    <div>
-                      <Label className="text-xs text-muted-foreground">Created</Label>
-                      <p className="text-sm font-medium mt-1">{formatDate(viewData.created_at)}</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <Label className="text-sm font-semibold">Contact Information</Label>
-                    {viewData.contact_person && (
-                      <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30">
-                        <svg className="h-4 w-4 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-                        <span className="text-sm">{viewData.contact_person}</span>
-                      </div>
-                    )}
-                    {viewData.email && (
-                      <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30">
-                        <svg className="h-4 w-4 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
-                        <span className="text-sm">{viewData.email}</span>
-                      </div>
-                    )}
-                    {viewData.phone && (
-                      <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30">
-                        <svg className="h-4 w-4 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
-                        <span className="text-sm">{viewData.phone}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {viewData.address && (
-                    <div>
-                      <Label className="text-xs text-muted-foreground">Address</Label>
-                      <p className="text-sm mt-1">{viewData.address}</p>
-                      <p className="text-sm text-muted-foreground">{viewData.city}{viewData.state ? `, ${viewData.state}` : ''}</p>
-                    </div>
-                  )}
-
-                  <div className="flex gap-3 pt-6 border-t">
-                    <Button
-                      variant="outline"
-                      className="flex-1 h-11 text-destructive hover:text-destructive"
-                      onClick={() => { setViewId(null); setViewData(null); setDeleteId(viewData.id); }}
-                    >
-                      Delete
-                    </Button>
-                    <Button
-                      className="flex-1 h-11"
-                      onClick={() => { setViewId(null); setViewData(null); handleOpenEdit(viewData); }}
-                    >
-                      Edit Client
-                    </Button>
-                  </div>
-                  <Button variant="ghost" className="w-full h-11" onClick={() => { setViewId(null); setViewData(null); }}>Close</Button>
-                </div>
-              </>
-            )}
           </SheetContent>
         </Sheet>
 
@@ -451,7 +481,7 @@ export default function ClientsPage() {
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>
                 This will delete the client
-                {deleteId && clients.find(c => c.id === deleteId) && ` "${clients.find(c => c.id === deleteId)?.name}"`}.
+                {deleteId && clients.find((c) => c.id === deleteId) && ` "${clients.find((c) => c.id === deleteId)?.name}"`}.
                 This action cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
