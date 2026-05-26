@@ -1,6 +1,7 @@
-'use client'
+'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { SignedIn } from '@/components/AuthProvider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -56,9 +57,30 @@ import {
   Trash2,
   Edit,
   Loader2,
+  Truck,
+  UserCheck,
+  PackageOpen,
+  ClipboardList,
+  IndianRupee,
+  Crown,
+  Upload,
+  Boxes,
+  Package,
+  Wrench,
+  Cog,
 } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
 import { vendorService, type Vendor } from '@/services/api';
+import { KpiStrip } from '@/components/features/erp/kpi-strip';
+import { HealthBadge } from '@/components/features/erp/health-badge';
+import { cardShell } from '@/lib/styles';
+import {
+  getVendorKpiSummary,
+  getVendorTableRow,
+  formatCurrency,
+  formatRelativeDate,
+} from '@/lib/mock-data';
 
 const emptyForm = {
   name: '',
@@ -72,14 +94,22 @@ const emptyForm = {
   status: 'active',
 };
 
+const categoryCards = [
+  { label: 'Raw Materials', icon: <Boxes className="h-5 w-5" />, key: 'Raw Materials' },
+  { label: 'Packaging', icon: <Package className="h-5 w-5" />, key: 'Packaging' },
+  { label: 'Equipment', icon: <Wrench className="h-5 w-5" />, key: 'Equipment' },
+  { label: 'Others', icon: <Cog className="h-5 w-5" />, key: '__others' },
+];
+
 export default function VendorsPage() {
+  const router = useRouter();
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [categoryFilter, setCategoryFilter] = useState('all');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [viewId, setViewId] = useState<number | null>(null);
-  const [viewData, setViewData] = useState<Vendor | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -101,13 +131,39 @@ export default function VendorsPage() {
 
   useEffect(() => { fetchVendors(); }, [fetchVendors]);
 
-  const filteredVendors = vendors.filter(v =>
-    v.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (v.contact_person || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (v.email || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (v.city || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (v.category || '').toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const kpiSummary = useMemo(() => getVendorKpiSummary(vendors), [vendors]);
+
+  const categoryCounts = useMemo(() => {
+    const known = new Set(['Raw Materials', 'Packaging', 'Equipment']);
+    const counts: Record<string, number> = { 'Raw Materials': 0, Packaging: 0, Equipment: 0, __others: 0 };
+    vendors.forEach((v) => {
+      const cat = v.category ?? '';
+      if (known.has(cat)) counts[cat]++;
+      else counts.__others++;
+    });
+    return counts;
+  }, [vendors]);
+
+  const categories = useMemo(() => {
+    const set = new Set(vendors.map((v) => v.category).filter(Boolean) as string[]);
+    return Array.from(set).sort();
+  }, [vendors]);
+
+  const filteredVendors = useMemo(() => {
+    return vendors.filter((v) => {
+      const q = searchQuery.toLowerCase();
+      const matchesSearch =
+        !q ||
+        v.name.toLowerCase().includes(q) ||
+        (v.contact_person || '').toLowerCase().includes(q) ||
+        (v.email || '').toLowerCase().includes(q) ||
+        (v.city || '').toLowerCase().includes(q) ||
+        (v.category || '').toLowerCase().includes(q);
+      const matchesStatus = statusFilter === 'all' || v.status === statusFilter;
+      const matchesCategory = categoryFilter === 'all' || v.category === categoryFilter;
+      return matchesSearch && matchesStatus && matchesCategory;
+    });
+  }, [vendors, searchQuery, statusFilter, categoryFilter]);
 
   const handleOpenCreate = () => {
     setEditingId(null);
@@ -131,30 +187,20 @@ export default function VendorsPage() {
     setIsSheetOpen(true);
   };
 
-  const handleView = (vendor: Vendor) => {
-    setViewData(vendor);
-    setViewId(vendor.id);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim()) {
       toast({ title: 'Error', description: 'Name is required', variant: 'destructive' });
       return;
     }
-
     setIsSaving(true);
     try {
       if (editingId) {
         const response = await vendorService.updateVendor(editingId, formData);
-        if (response.success) {
-          toast({ title: 'Success', description: 'Vendor updated' });
-        }
+        if (response.success) toast({ title: 'Success', description: 'Vendor updated' });
       } else {
         const response = await vendorService.createVendor(formData);
-        if (response.success) {
-          toast({ title: 'Success', description: 'Vendor created' });
-        }
+        if (response.success) toast({ title: 'Success', description: 'Vendor created' });
       }
       setIsSheetOpen(false);
       setFormData(emptyForm);
@@ -174,7 +220,7 @@ export default function VendorsPage() {
     try {
       const response = await vendorService.deleteVendor(deleteId);
       if (response.success) {
-        setVendors(vendors.filter(v => v.id !== deleteId));
+        setVendors(vendors.filter((v) => v.id !== deleteId));
         toast({ title: 'Success', description: 'Vendor deleted' });
       }
       setDeleteId(null);
@@ -186,36 +232,99 @@ export default function VendorsPage() {
     }
   };
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return '—';
-    return new Date(dateString).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-  };
+  const kpiItems = [
+    { title: 'Total Vendors', value: String(kpiSummary.totalVendors), icon: <Truck className="h-5 w-5" /> },
+    { title: 'Active Vendors', value: String(kpiSummary.activeVendors), icon: <UserCheck className="h-5 w-5" /> },
+    { title: 'Pending Deliveries', value: String(kpiSummary.pendingDeliveries), icon: <PackageOpen className="h-5 w-5" /> },
+    { title: 'Open POs', value: String(kpiSummary.openPOs), icon: <ClipboardList className="h-5 w-5" /> },
+    { title: 'Monthly Spend', value: formatCurrency(kpiSummary.monthlySpend), icon: <IndianRupee className="h-5 w-5" /> },
+    { title: 'Top Vendor', value: kpiSummary.topVendor || '—', icon: <Crown className="h-5 w-5" /> },
+  ];
 
   return (
     <SignedIn>
       <div className="space-y-6 p-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Vendors</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Manage supplier relationships and track procurement activity
+          </p>
         </div>
 
-        <p className="text-sm text-muted-foreground">
-          Showing {filteredVendors.length} of {vendors.length} vendors
-        </p>
+        <KpiStrip items={kpiItems} />
 
-        <div className="flex items-center justify-between">
-          <div className="relative w-80">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search vendors..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
-            />
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {categoryCards.map((cat) => (
+            <div
+              key={cat.key}
+              className={`${cardShell} flex cursor-pointer items-center gap-4 p-5 transition-shadow hover:shadow-lg`}
+              onClick={() => setCategoryFilter(cat.key === '__others' ? 'all' : cat.key)}
+            >
+              <div className="rounded-xl bg-blue-500/10 p-2.5 text-blue-600 dark:text-blue-400">
+                {cat.icon}
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{cat.label}</p>
+                <p className="text-2xl font-semibold text-slate-900 dark:text-white">
+                  {categoryCounts[cat.key] ?? 0}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-1 flex-wrap items-center gap-2">
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search vendors..."
+                className="pl-9"
+              />
+            </div>
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="w-[150px]">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                {categories.map((cat) => (
+                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[130px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <Button onClick={handleOpenCreate} className="gap-2">
-            <Plus className="h-4 w-4" />
-            Add Vendor
-          </Button>
+          <div className="flex items-center gap-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span>
+                    <Button variant="outline" size="sm" disabled className="gap-1.5">
+                      <Upload className="h-3.5 w-3.5" />
+                      Upload Excel
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>Coming soon</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <Button onClick={handleOpenCreate} size="sm" className="gap-1.5">
+              <Plus className="h-3.5 w-3.5" />
+              Add Vendor
+            </Button>
+          </div>
         </div>
 
         <Card>
@@ -226,74 +335,84 @@ export default function VendorsPage() {
                 <span>Loading vendors...</span>
               </div>
             ) : filteredVendors.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
+              <div className="py-12 text-center text-muted-foreground">
                 {searchQuery ? 'No vendors found matching your search' : 'No vendors found'}
               </div>
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[200px]">Name</TableHead>
+                    <TableHead className="w-[220px]">Vendor</TableHead>
                     <TableHead>Category</TableHead>
-                    <TableHead>Contact Person</TableHead>
-                    <TableHead>City</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead className="w-[80px]">Actions</TableHead>
+                    <TableHead className="text-center">Materials</TableHead>
+                    <TableHead className="text-center">Pending PO</TableHead>
+                    <TableHead className="text-right">Total Spend</TableHead>
+                    <TableHead>Last Delivery</TableHead>
+                    <TableHead>Performance</TableHead>
+                    <TableHead className="w-[60px]">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredVendors.map((vendor) => (
-                    <TableRow
-                      key={vendor.id}
-                      className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => handleView(vendor)}
-                    >
-                      <TableCell className="font-medium">{vendor.name}</TableCell>
-                      <TableCell>
-                        {vendor.category ? (
-                          <Badge variant="outline">{vendor.category}</Badge>
-                        ) : '—'}
-                      </TableCell>
-                      <TableCell>{vendor.contact_person || '—'}</TableCell>
-                      <TableCell>{vendor.city || '—'}</TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={vendor.status === 'active' ? 'default' : 'secondary'}
-                          className={vendor.status === 'active' ? 'bg-green-500/10 text-green-600 hover:bg-green-500/20 dark:text-green-400' : ''}
-                        >
-                          {vendor.status === 'active' ? 'Active' : 'Inactive'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">{formatDate(vendor.created_at)}</TableCell>
-                      <TableCell onClick={(e) => e.stopPropagation()}>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleView(vendor)}>
-                              <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
-                              View
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleOpenEdit(vendor)}>
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => setDeleteId(vendor.id)}
-                              className="text-destructive focus:text-destructive"
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {filteredVendors.map((vendor) => {
+                    const row = getVendorTableRow(vendor);
+                    return (
+                      <TableRow
+                        key={vendor.id}
+                        className="cursor-pointer hover:bg-muted/50"
+                        onClick={() => router.push(`/vendors/${vendor.id}`)}
+                      >
+                        <TableCell>
+                          <div>
+                            <p className="font-medium">{vendor.name}</p>
+                            {vendor.contact_person && (
+                              <p className="text-xs text-muted-foreground">{vendor.contact_person}</p>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {vendor.category ? (
+                            <Badge variant="outline">{vendor.category}</Badge>
+                          ) : '—'}
+                        </TableCell>
+                        <TableCell className="text-center">{row.materials}</TableCell>
+                        <TableCell className="text-center">{row.pendingPO}</TableCell>
+                        <TableCell className="text-right font-medium">
+                          {formatCurrency(row.totalSpend)}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {row.lastDelivery ? formatRelativeDate(row.lastDelivery) : '—'}
+                        </TableCell>
+                        <TableCell>
+                          <HealthBadge value={row.performance} />
+                        </TableCell>
+                        <TableCell onClick={(e) => e.stopPropagation()}>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => router.push(`/vendors/${vendor.id}`)}>
+                                View Details
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleOpenEdit(vendor)}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => setDeleteId(vendor.id)}
+                                className="text-destructive focus:text-destructive"
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             )}
@@ -302,7 +421,7 @@ export default function VendorsPage() {
 
         {/* Create/Edit Sheet */}
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-          <SheetContent className="w-full sm:max-w-[500px] overflow-y-auto">
+          <SheetContent className="w-full overflow-y-auto sm:max-w-[500px]">
             <SheetHeader>
               <SheetTitle className="text-xl">{editingId ? 'Edit Vendor' : 'Add New Vendor'}</SheetTitle>
               <SheetDescription>
@@ -310,7 +429,7 @@ export default function VendorsPage() {
               </SheetDescription>
             </SheetHeader>
 
-            <form onSubmit={handleSubmit} className="space-y-5 mt-6">
+            <form onSubmit={handleSubmit} className="mt-6 space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="name">Name <span className="text-destructive">*</span></Label>
                 <Input id="name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="Company name" className="h-11" required />
@@ -358,108 +477,12 @@ export default function VendorsPage() {
                 </Select>
               </div>
               <div className="flex gap-3 pt-4">
-                <Button type="button" variant="outline" onClick={() => { setIsSheetOpen(false); setFormData(emptyForm); setEditingId(null); }} disabled={isSaving} className="flex-1 h-11">Cancel</Button>
-                <Button type="submit" disabled={isSaving} className="flex-1 h-11">
+                <Button type="button" variant="outline" onClick={() => { setIsSheetOpen(false); setFormData(emptyForm); setEditingId(null); }} disabled={isSaving} className="h-11 flex-1">Cancel</Button>
+                <Button type="submit" disabled={isSaving} className="h-11 flex-1">
                   {isSaving ? (editingId ? 'Updating...' : 'Creating...') : (editingId ? 'Update Vendor' : 'Create Vendor')}
                 </Button>
               </div>
             </form>
-          </SheetContent>
-        </Sheet>
-
-        {/* View Sheet */}
-        <Sheet open={!!viewId} onOpenChange={(open) => { if (!open) { setViewId(null); setViewData(null); } }}>
-          <SheetContent className="w-full sm:max-w-[500px] overflow-y-auto">
-            {viewData && (
-              <>
-                <SheetHeader>
-                  <div className="flex items-center gap-4 pb-4">
-                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-lg font-semibold text-primary">{viewData.name.charAt(0)}</span>
-                    </div>
-                    <div className="flex-1">
-                      <SheetTitle className="text-xl">{viewData.name}</SheetTitle>
-                      <p className="text-sm text-muted-foreground">
-                        {viewData.category || 'Vendor'}
-                        {viewData.city ? ` · ${viewData.city}` : ''}
-                      </p>
-                    </div>
-                  </div>
-                </SheetHeader>
-
-                <div className="space-y-6 mt-6">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-xs text-muted-foreground">Status</Label>
-                      <div className="mt-1">
-                        <Badge
-                          variant={viewData.status === 'active' ? 'default' : 'secondary'}
-                          className={viewData.status === 'active' ? 'bg-green-500/10 text-green-600 hover:bg-green-500/20 dark:text-green-400' : ''}
-                        >
-                          {viewData.status === 'active' ? 'Active' : 'Inactive'}
-                        </Badge>
-                      </div>
-                    </div>
-                    <div>
-                      <Label className="text-xs text-muted-foreground">Category</Label>
-                      <p className="text-sm font-medium mt-1">{viewData.category || '—'}</p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label className="text-xs text-muted-foreground">Created</Label>
-                    <p className="text-sm font-medium mt-1">{formatDate(viewData.created_at)}</p>
-                  </div>
-
-                  <div className="space-y-4">
-                    <Label className="text-sm font-semibold">Contact Information</Label>
-                    {viewData.contact_person && (
-                      <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30">
-                        <svg className="h-4 w-4 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-                        <span className="text-sm">{viewData.contact_person}</span>
-                      </div>
-                    )}
-                    {viewData.email && (
-                      <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30">
-                        <svg className="h-4 w-4 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
-                        <span className="text-sm">{viewData.email}</span>
-                      </div>
-                    )}
-                    {viewData.phone && (
-                      <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30">
-                        <svg className="h-4 w-4 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
-                        <span className="text-sm">{viewData.phone}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {viewData.address && (
-                    <div>
-                      <Label className="text-xs text-muted-foreground">Address</Label>
-                      <p className="text-sm mt-1">{viewData.address}</p>
-                      <p className="text-sm text-muted-foreground">{viewData.city}{viewData.state ? `, ${viewData.state}` : ''}</p>
-                    </div>
-                  )}
-
-                  <div className="flex gap-3 pt-6 border-t">
-                    <Button
-                      variant="outline"
-                      className="flex-1 h-11 text-destructive hover:text-destructive"
-                      onClick={() => { setViewId(null); setViewData(null); setDeleteId(viewData.id); }}
-                    >
-                      Delete
-                    </Button>
-                    <Button
-                      className="flex-1 h-11"
-                      onClick={() => { setViewId(null); setViewData(null); handleOpenEdit(viewData); }}
-                    >
-                      Edit Vendor
-                    </Button>
-                  </div>
-                  <Button variant="ghost" className="w-full h-11" onClick={() => { setViewId(null); setViewData(null); }}>Close</Button>
-                </div>
-              </>
-            )}
           </SheetContent>
         </Sheet>
 
@@ -470,7 +493,7 @@ export default function VendorsPage() {
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>
                 This will delete the vendor
-                {deleteId && vendors.find(v => v.id === deleteId) && ` "${vendors.find(v => v.id === deleteId)?.name}"`}.
+                {deleteId && vendors.find((v) => v.id === deleteId) && ` "${vendors.find((v) => v.id === deleteId)?.name}"`}.
                 This action cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>

@@ -1,7 +1,7 @@
-// Basic middleware for the application
+import { NextResponse } from 'next/server';
+
 export function middleware() {
-  // Add any custom middleware logic here if needed
-  return;
+  return NextResponse.next();
 }
 
 export const config = {

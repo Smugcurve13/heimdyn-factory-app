@@ -128,6 +128,105 @@ export interface Client {
   updated_at: string;
 }
 
+export interface Order {
+  orderId: string;
+  date: string;
+  products: string;
+  amount: number;
+  status: 'Confirmed' | 'Pending' | 'Cancelled' | 'Processing';
+  deliveryStatus: 'Delivered' | 'In Transit' | 'Pending' | 'Returned';
+}
+
+export interface Invoice {
+  invoiceId: string;
+  date: string;
+  amount: number;
+  dueDate: string;
+  status: 'Paid' | 'Pending' | 'Overdue';
+}
+
+export interface Payment {
+  date: string;
+  amount: number;
+  method: string;
+  referenceId: string;
+  status: 'Completed' | 'Pending' | 'Failed';
+}
+
+export interface ProductPurchase {
+  product: string;
+  unitsBought: number;
+  revenueContribution: number;
+  lastPurchased: string;
+}
+
+export interface ActivityEntry {
+  date: string;
+  description: string;
+}
+
+export interface DocumentEntry {
+  name: string;
+  type: string;
+  date: string;
+}
+
+export type ClientHealth = 'Good' | 'Delayed Payments' | 'Low Activity' | 'High Value';
+
+export interface ClientErpData {
+  industry: string;
+  clientSince: string;
+  creditLimit: number;
+  paymentTerms: string;
+  health: ClientHealth;
+  orders: Order[];
+  invoices: Invoice[];
+  payments: Payment[];
+  products: ProductPurchase[];
+  documents: DocumentEntry[];
+  activity: ActivityEntry[];
+}
+
+export interface PurchaseOrder {
+  poId: string;
+  date: string;
+  material: string;
+  quantity: number;
+  amount: number;
+  status: 'Approved' | 'Pending' | 'Delivered' | 'Cancelled';
+}
+
+export interface VendorMaterial {
+  material: string;
+  unitCost: number;
+  lastPurchased: string;
+  moq: number;
+  leadTime: string;
+}
+
+export interface Delivery {
+  shipmentId: string;
+  date: string;
+  status: 'Delivered' | 'In Transit' | 'Delayed' | 'Returned';
+  delay: string;
+}
+
+export type VendorPerformance = 'Excellent' | 'Average' | 'Delayed' | 'Critical';
+
+export interface VendorErpData {
+  vendorSince: string;
+  vendorScore: number;
+  performance: VendorPerformance;
+  paymentTerms: string;
+  purchaseOrders: PurchaseOrder[];
+  invoices: Invoice[];
+  payments: Payment[];
+  materials: VendorMaterial[];
+  deliveries: Delivery[];
+  documents: DocumentEntry[];
+  activity: ActivityEntry[];
+}
+
 export interface ClientsResponse {
   success: boolean;
   data: Client[];
