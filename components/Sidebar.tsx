@@ -13,10 +13,6 @@ import {
   ChevronDown,
   Layers,
   BarChart2,
-  Activity,
-  Factory,
-  Package,
-  TrendingUp,
   Users,
   Truck,
   Shield,
@@ -39,26 +35,6 @@ const navItems: NavItem[] = [
     href: "/main-dashboard",
     label: "Dashboard",
     icon: LayoutDashboard,
-  },
-  {
-    href: "/production",
-    label: "Production",
-    icon: Factory,
-  },
-  {
-    href: "/material",
-    label: "Material",
-    icon: Package,
-  },
-  {
-    href: "/sales",
-    label: "Sales",
-    icon: TrendingUp,
-  },
-  {
-    href: "/analysis",
-    label: "Analysis",
-    icon: Activity,
   },
   {
     href: "/clients",
