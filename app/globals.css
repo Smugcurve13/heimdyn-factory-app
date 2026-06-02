@@ -1,5 +1,5 @@
 /** @import must precede all other statements */
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -54,42 +54,47 @@
     --sidebar-ring: 221 83% 53%;
   }
 
+  /* Heimdyn ERP dark palette — source of truth: DESIGN.md §3 */
   .dark {
-    --background: 222 50% 5%;
-    --foreground: 210 40% 98%;
+    --background: 222 39% 8%;          /* #10131A app canvas */
+    --foreground: 222 20% 90%;         /* #E1E2EC primary text */
 
-    --card: 222 50% 6%;
-    --card-foreground: 210 40% 98%;
+    --card: 223 17% 14%;               /* #1D2027 cards / surfaces */
+    --card-foreground: 222 20% 90%;
 
-    --popover: 222 50% 6%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 223 17% 12%;            /* drawers, menus */
+    --popover-foreground: 222 20% 90%;
 
-    --primary: 221 83% 53%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 222 100% 84%;           /* #ADC6FF accent (actions, active) */
+    --primary-foreground: 220 100% 21%;/* #002E6A text on primary */
 
-    --secondary: 215 29% 12%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 220 30% 32%;          /* muted blue containers */
+    --secondary-foreground: 222 20% 90%;
 
-    --muted: 215 29% 12%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 223 14% 20%;              /* subtle backgrounds */
+    --muted-foreground: 220 14% 70%;   /* #C2C6D6 secondary text */
 
-    --accent: 215 29% 12%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 223 17% 18%;             /* hover surface */
+    --accent-foreground: 222 20% 90%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 4 100% 84%;         /* #FFB4AB error/reject */
+    --destructive-foreground: 356 100% 21%;
 
-    --border: 215 29% 14%;
-    --input: 215 29% 14%;
-    --ring: 221 83% 53%;
-    --sidebar-background: 222 50% 6%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 221 83% 53%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 13% 18%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 220 13% 18%;
-    --sidebar-ring: 221 83% 53%;
+    --border: 220 12% 30%;             /* #424754 1px borders */
+    --input: 220 12% 30%;
+    --ring: 222 100% 84%;              /* focus ring = primary */
+
+    --radius: 0.5rem;                  /* 8px default */
+
+    /* Sidebar (dedicated token group in tailwind.config) */
+    --sidebar-background: 224 28% 6%;  /* #0B0E15 deepest layer */
+    --sidebar-foreground: 220 14% 70%;
+    --sidebar-primary: 222 100% 84%;
+    --sidebar-primary-foreground: 220 100% 21%;
+    --sidebar-accent: 223 17% 18%;
+    --sidebar-accent-foreground: 222 20% 90%;
+    --sidebar-border: 220 12% 26%;
+    --sidebar-ring: 222 100% 84%;
   }
 }
 
@@ -100,7 +105,7 @@
 
     body {
     @apply bg-background text-foreground;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     user-select: none;
     cursor: default;
   }

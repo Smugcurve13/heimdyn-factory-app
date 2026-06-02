@@ -6,7 +6,8 @@ import { useAuth } from '@/components/AuthProvider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Factory, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { Factory, AlertCircle, Eye, EyeOff, Moon, Sun } from 'lucide-react';
+import { useTheme } from '@/components/ThemeProvider';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -15,11 +16,27 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { signIn, isSignedIn, loading: authLoading } = useAuth();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const resolvedTheme =
+    theme === 'system'
+      ? mounted && window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light'
+      : theme;
+  const isDark = resolvedTheme === 'dark';
+
+  const toggleTheme = () => setTheme(isDark ? 'light' : 'dark');
+
+  useEffect(() => {
     if (!authLoading && isSignedIn) {
-      router.replace('/main-dashboard');
+      router.replace('/dashboard');
     }
   }, [isSignedIn, authLoading, router]);
 
@@ -29,7 +46,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await signIn(email, password);
-      router.replace('/main-dashboard');
+      router.replace('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign in failed. Please try again.');
     } finally {
@@ -41,21 +58,32 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex">
+      {/* Theme toggle */}
+      <button
+        type="button"
+        onClick={toggleTheme}
+        aria-label="Toggle theme"
+        className="absolute right-4 top-4 z-10 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-background/60 text-foreground backdrop-blur hover:bg-accent"
+      >
+        {mounted && isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        <span className="sr-only">Toggle theme</span>
+      </button>
+
       {/* Left panel — branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-primary flex-col justify-between p-12">
+      <div className="hidden lg:flex lg:w-1/2 bg-blue-600 flex-col justify-between p-12">
         <div className="flex items-center gap-3">
-          <Factory className="h-8 w-8 text-primary-foreground" />
-          <span className="text-primary-foreground font-semibold text-xl">Heimdyn</span>
+          <Factory className="h-8 w-8 text-white" />
+          <span className="text-white font-semibold text-xl">Heimdyn</span>
         </div>
         <div>
-          <h1 className="text-4xl font-bold text-primary-foreground leading-tight">
+          <h1 className="text-4xl font-bold text-white leading-tight">
             Real-time visibility<br />across your factory floor.
           </h1>
-          <p className="mt-4 text-primary-foreground/70 text-lg">
+          <p className="mt-4 text-white/70 text-lg">
             Monitor OEE, machines, power, downtime, and tickets — all in one place.
           </p>
         </div>
-        <p className="text-primary-foreground/40 text-sm">
+        <p className="text-white/40 text-sm">
           © {new Date().getFullYear()} Heimdyn. All rights reserved.
         </p>
       </div>
@@ -121,7 +149,7 @@ export default function LoginPage() {
               </div>
             )}
 
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white" disabled={loading}>
               {loading ? 'Signing in…' : 'Sign in'}
             </Button>
           </form>
