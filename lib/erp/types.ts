@@ -44,6 +44,8 @@ export interface Product {
   status: ProductStatus;
   /** Finished-goods units currently on the shelf. */
   finishedStock: number;
+  /** At or below this level the item reads as Low Stock. */
+  reorderLevel: number;
 }
 
 export interface RawMaterial {
@@ -52,7 +54,11 @@ export interface RawMaterial {
   uom: UnitOfMeasure;
   /** Current quantity on hand, in the material's unit of measure. */
   stock: number;
+  /** At or below this level the material reads as Low Stock. */
+  reorderLevel: number;
 }
+
+export type StockStatus = 'In Stock' | 'Low Stock' | 'Out of Stock';
 
 export interface BomLine {
   materialId: string; // RM-2xx

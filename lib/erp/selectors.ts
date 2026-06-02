@@ -53,5 +53,23 @@ export const erpKpis = () => {
   };
 };
 
-export const formatUsd = (value: number) =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
+// --- Stock status (drives inventory pills) ---
+import { StockStatus } from './types';
+
+export const stockStatus = (stock: number, reorderLevel: number): StockStatus => {
+  if (stock <= 0) return 'Out of Stock';
+  if (stock <= reorderLevel) return 'Low Stock';
+  return 'In Stock';
+};
+
+/** Whole-dollar USD — for large totals (KPIs, order values). */
+export const formatUsd = (value: number, fractionDigits = 0) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  }).format(value);
+
+/** Cent-precision USD — for unit prices. */
+export const formatPrice = (value: number) => formatUsd(value, 2);
