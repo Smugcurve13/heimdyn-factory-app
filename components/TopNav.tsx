@@ -15,6 +15,29 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SignedIn } from "@/components/AuthProvider";
 import { UserButton } from "@/components/UserButton";
+import { useRole, ROLES } from "@/lib/erp/roles";
+import { UserCog } from "lucide-react";
+
+function RoleSwitcher() {
+  const { role, setRole } = useRole();
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="sm" className="gap-2">
+          <UserCog className="h-4 w-4" />
+          <span className="hidden sm:inline">{role}</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {ROLES.map((r) => (
+          <DropdownMenuItem key={r} onClick={() => setRole(r)} className={r === role ? "text-primary" : undefined}>
+            {r}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 function NavItem({ href, children }: { href: string; children: React.ReactNode }) {
   const pathname = usePathname();
@@ -116,6 +139,9 @@ export default function TopNav({ className }: { className?: string }) {
         <div className="flex items-center gap-4 text-sm">
           <DateDisplay />
           <div className="flex items-center gap-2">
+            <SignedIn>
+              <RoleSwitcher />
+            </SignedIn>
             <ThemeToggle />
             <SignedIn>
               <UserButton />

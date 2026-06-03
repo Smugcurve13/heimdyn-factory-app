@@ -6,6 +6,7 @@ import { Plus, Trash2, RotateCcw } from 'lucide-react';
 import { products, customers } from '@/lib/erp/seed';
 import { getProduct, getCustomer, formatPrice } from '@/lib/erp/selectors';
 import { useErpStore } from '@/lib/erp/store';
+import { useRole } from '@/lib/erp/roles';
 import { Quotation, QuotationStage } from '@/lib/erp/types';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -38,6 +39,7 @@ export default function QuotationsPage() {
 
 function Quotations() {
   const store = useErpStore();
+  const { can } = useRole();
   const focus = useSearchParams().get('focus');
   const { quotations } = store;
 
@@ -81,14 +83,18 @@ function Quotations() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => { store.reset(); setSelectedId(null); }} title="Reset all demo data">
-            <RotateCcw className="mr-1 h-4 w-4" />
-            Reset demo
-          </Button>
-          <Button onClick={() => setWizardOpen(true)}>
-            <Plus className="mr-1 h-4 w-4" />
-            New Quotation
-          </Button>
+          {can('demo:reset') && (
+            <Button variant="outline" onClick={() => { store.reset(); setSelectedId(null); }} title="Reset all demo data">
+              <RotateCcw className="mr-1 h-4 w-4" />
+              Reset demo
+            </Button>
+          )}
+          {can('quotation:create') && (
+            <Button onClick={() => setWizardOpen(true)}>
+              <Plus className="mr-1 h-4 w-4" />
+              New Quotation
+            </Button>
+          )}
         </div>
       </div>
 
@@ -205,7 +211,7 @@ function Quotations() {
                 </div>
 
                 {/* Approve / Reject — only at Pending Approval. No "Convert to SO" anywhere. */}
-                {selected.stage === 'Pending Approval' && (
+                {selected.stage === 'Pending Approval' && can('quotation:approve') && (
                   <div className="flex gap-2">
                     <Button className="flex-1" onClick={() => store.approveQuotation(selected.id)}>
                       Approve

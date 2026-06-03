@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getMaterial, getVendor, formatUsd } from '@/lib/erp/selectors';
 import { useErpStore } from '@/lib/erp/store';
+import { useRole } from '@/lib/erp/roles';
 import { PurchaseOrder } from '@/lib/erp/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -117,7 +118,27 @@ function PurchaseOrders() {
 
 function GoodsReceipt({ po, store }: { po: PurchaseOrder; store: ReturnType<typeof useErpStore> }) {
   const mat = getMaterial(po.materialId);
+  const { can } = useRole();
   const [value, setValue] = useState(String(po.quantity));
+
+  if (po.stage === 'Goods Received') {
+    return (
+      <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-4">
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Goods Receipt</p>
+        <p className="mt-2 text-sm text-foreground">
+          Received <span className="font-mono">{po.receivedQty.toLocaleString('en-US')}</span> {mat?.uom}.
+        </p>
+      </div>
+    );
+  }
+
+  if (!can('po:manage')) {
+    return (
+      <p className="text-center text-xs text-muted-foreground">
+        Only the Purchase Manager can approve and receive this order.
+      </p>
+    );
+  }
 
   if (po.stage === 'Pending Approval') {
     return (
@@ -127,17 +148,6 @@ function GoodsReceipt({ po, store }: { po: PurchaseOrder; store: ReturnType<type
         <Button className="mt-3 w-full" onClick={() => store.approvePurchaseOrder(po.id)}>
           Approve order
         </Button>
-      </div>
-    );
-  }
-
-  if (po.stage === 'Goods Received') {
-    return (
-      <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-4">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Goods Receipt</p>
-        <p className="mt-2 text-sm text-foreground">
-          Received <span className="font-mono">{po.receivedQty.toLocaleString('en-US')}</span> {mat?.uom}.
-        </p>
       </div>
     );
   }

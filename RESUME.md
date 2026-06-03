@@ -27,11 +27,24 @@
 | **3** | Purchase Orders + Manufacturing Orders + Document Trail | ✅ Done, **gate passed**; in-session store added (`lib/erp/store.tsx`) |
 | **4** | Quotations (Kanban + 3-step wizard) + Sales Orders | ✅ Done, **gate passed** |
 | **5** | The scripted demo flow (QT-1002 cascade) | ✅ Done, self-verified end-to-end (+ reset) |
-| **6** | Dashboard live counts + Activity feed + 6-role switcher + QA | ⏭️ **NEXT** |
+| **6** | Dashboard live counts + Activity feed + 6-role switcher + QA | ✅ Done, self-verified |
+
+**🎉 All 6 phases complete.** Phase 2 demo build is feature-complete and demo-ready.
 
 ---
 
-## RESUME HERE → Phase 6 (final glue + polish)
+## Build complete — what's next is Phase 3 (the real one: live DB)
+
+All 6 demo phases are built, self-verified, committed, and pushed on `feature/erp-phase2`.
+The remaining work is the **real Phase 3** (out of scope here): live Neon DB + persistence,
+server-side RBAC, real inventory math, multi-location, notifications. See "explicitly NOT in
+this build" in `HANDOFF.md`.
+
+Optional polish ideas if revisited: unify all Document Trails to start at QT; point Inventory's
+raw-material stock at the store so PO receipts reflect there too; persist the in-session store to
+localStorage so a refresh doesn't reset a demo in progress.
+
+### Phase 6 (just completed)
 
 **Goal:** dashboard wired to live counts, a realistic activity feed, a 6-role UI switcher, and a DESIGN.md QA pass.
 

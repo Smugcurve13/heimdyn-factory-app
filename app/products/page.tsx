@@ -5,11 +5,13 @@ import { products as seedProducts } from '@/lib/erp/seed';
 import { formatPrice, getBom } from '@/lib/erp/selectors';
 import { Product, ProductStatus } from '@/lib/erp/types';
 import { Button } from '@/components/ui/button';
+import { useRole } from '@/lib/erp/roles';
 import { ListDrawer, ListDrawerColumn } from '@/components/erp/ListDrawer';
 import { StatusPill } from '@/components/erp/StatusPill';
 import { DrawerField } from '@/components/erp/DrawerField';
 
 export default function ProductsPage() {
+  const { can } = useRole();
   // Status is mutable in-session (deactivate/activate); resets on refresh.
   const [statusById, setStatusById] = useState<Record<string, ProductStatus>>(() =>
     Object.fromEntries(seedProducts.map((p) => [p.id, p.status])),
@@ -81,13 +83,15 @@ export default function ProductsPage() {
                   value={<StatusPill label={p.status} tone={p.status === 'Active' ? 'green' : 'neutral'} />}
                 />
               </div>
-              <Button
-                variant={p.status === 'Active' ? 'outline' : 'default'}
-                className="w-full"
-                onClick={() => toggleStatus(p.id)}
-              >
-                {p.status === 'Active' ? 'Deactivate product' : 'Activate product'}
-              </Button>
+              {can('product:manage') && (
+                <Button
+                  variant={p.status === 'Active' ? 'outline' : 'default'}
+                  className="w-full"
+                  onClick={() => toggleStatus(p.id)}
+                >
+                  {p.status === 'Active' ? 'Deactivate product' : 'Activate product'}
+                </Button>
+              )}
             </div>
           );
         }}

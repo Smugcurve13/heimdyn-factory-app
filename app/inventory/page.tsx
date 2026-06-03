@@ -8,6 +8,7 @@ import { Product } from '@/lib/erp/types';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useRole } from '@/lib/erp/roles';
 import { ListDrawer, ListDrawerColumn } from '@/components/erp/ListDrawer';
 import { StatusPill, stockTone } from '@/components/erp/StatusPill';
 import { DrawerField } from '@/components/erp/DrawerField';
@@ -24,6 +25,7 @@ interface RawRow {
 }
 
 export default function InventoryPage() {
+  const { can } = useRole();
   const [pool, setPool] = useState<Pool>('finished');
   // Raw-material stock is mutable in-session via "Add Stock"; resets on refresh.
   const [rawStockById, setRawStockById] = useState<Record<string, number>>(() =>
@@ -195,7 +197,7 @@ export default function InventoryPage() {
                   <DrawerField label="Reorder Level" value={`${m.reorderLevel.toLocaleString('en-US')} ${m.uom}`} mono />
                   <DrawerField label="Status" value={<StatusPill label={s} tone={stockTone(s)} />} />
                 </div>
-                <AddStock uom={m.uom} onAdd={(qty) => addStock(m.id, qty)} />
+                {can('inventory:addStock') && <AddStock uom={m.uom} onAdd={(qty) => addStock(m.id, qty)} />}
               </div>
             );
           }}

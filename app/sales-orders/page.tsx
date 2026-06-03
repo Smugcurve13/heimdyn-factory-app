@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getProduct, getCustomer, formatUsd } from '@/lib/erp/selectors';
 import { useErpStore } from '@/lib/erp/store';
+import { useRole } from '@/lib/erp/roles';
 import { SalesOrder } from '@/lib/erp/types';
 import { Button } from '@/components/ui/button';
 import { ListDrawer, ListDrawerColumn } from '@/components/erp/ListDrawer';
@@ -27,6 +28,7 @@ export default function SalesOrdersPage() {
 
 function SalesOrders() {
   const store = useErpStore();
+  const { can } = useRole();
   const focus = useSearchParams().get('focus');
   const { salesOrders } = store;
 
@@ -107,10 +109,12 @@ function SalesOrders() {
               <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 text-center text-sm text-emerald-400">
                 Invoiced — order complete
               </div>
-            ) : (
+            ) : can('so:manage') ? (
               <Button className="w-full" onClick={() => store.advanceSalesOrder(so.id)}>
                 {SO_NEXT_LABEL[so.stage]}
               </Button>
+            ) : (
+              <p className="text-center text-xs text-muted-foreground">Only Accounts can progress this order.</p>
             )}
 
             <DocumentTrail nodes={trailFor(so)} currentId={so.id} />

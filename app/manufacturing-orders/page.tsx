@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getProduct, getMaterial, getBom } from '@/lib/erp/selectors';
 import { useErpStore } from '@/lib/erp/store';
+import { useRole } from '@/lib/erp/roles';
 import { ManufacturingOrder } from '@/lib/erp/types';
 import { Button } from '@/components/ui/button';
 import { ListDrawer, ListDrawerColumn } from '@/components/erp/ListDrawer';
@@ -182,6 +183,21 @@ function MoDrawer({
 }
 
 function MoActions({ mo, store }: { mo: ManufacturingOrder; store: ReturnType<typeof useErpStore> }) {
+  const { can } = useRole();
+  if (mo.stage === 'Done') {
+    return (
+      <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 text-center text-sm text-emerald-400">
+        Production complete
+      </div>
+    );
+  }
+  if (!can('mo:manage')) {
+    return (
+      <p className="text-center text-xs text-muted-foreground">
+        Only the Production Manager can advance this order.
+      </p>
+    );
+  }
   if (mo.stage === 'Pending Approval') {
     return (
       <Button className="w-full" onClick={() => store.approveManufacturingOrder(mo.id)}>

@@ -1,11 +1,8 @@
-import {
-  erpKpis,
-  formatUsd,
-  manufacturingByStage,
-  purchaseByStage,
-  quotationsByStage,
-  salesOrdersByStage,
-} from '@/lib/erp/selectors';
+'use client';
+
+import { products } from '@/lib/erp/seed';
+import { formatUsd } from '@/lib/erp/selectors';
+import { useErpStore } from '@/lib/erp/store';
 
 interface KpiCardProps {
   label: string;
@@ -40,12 +37,7 @@ function PipelineBar({ title, total, segments }: { title: string; total: number;
       <div className="mt-3 flex h-2.5 w-full overflow-hidden rounded-full bg-muted">
         {segments.map((s) =>
           s.value > 0 ? (
-            <div
-              key={s.label}
-              className={s.bar}
-              style={{ width: `${(s.value / total) * 100}%` }}
-              title={`${s.label}: ${s.value}`}
-            />
+            <div key={s.label} className={s.bar} style={{ width: `${(s.value / total) * 100}%` }} title={`${s.label}: ${s.value}`} />
           ) : null,
         )}
       </div>
@@ -69,13 +61,38 @@ const YELLOW = { bar: 'bg-yellow-400', dot: 'bg-yellow-400' };
 const BLUE = { bar: 'bg-blue-400', dot: 'bg-blue-400' };
 const GREEN = { bar: 'bg-emerald-400', dot: 'bg-emerald-400' };
 
-export default function DashboardPage() {
-  const kpis = erpKpis();
-  const q = quotationsByStage();
-  const so = salesOrdersByStage();
-  const mo = manufacturingByStage();
-  const po = purchaseByStage();
+const countBy = <T,>(items: T[], key: (i: T) => string) =>
+  items.reduce<Record<string, number>>((acc, i) => {
+    const k = key(i);
+    acc[k] = (acc[k] ?? 0) + 1;
+    return acc;
+  }, {});
 
+// Seeded, realistic activity feed (static — live logging is Phase 3).
+const ACTIVITY: { when: string; text: string; dot: string }[] = [
+  { when: '2h ago', text: 'PO-4001 goods received from Cascade Hardwoods', dot: 'bg-emerald-400' },
+  { when: '5h ago', text: 'MO-3003 moved to In Progress', dot: 'bg-blue-400' },
+  { when: 'Yesterday', text: 'Quotation QT-1004 approved — manufacturing required', dot: 'bg-amber-400' },
+  { when: 'Yesterday', text: 'SO-2003 dispatched to Northgate Retail', dot: 'bg-emerald-400' },
+  { when: '2 days ago', text: 'PO-4005 raised for Pine Stringer 2×4×48', dot: 'bg-amber-400' },
+  { when: '3 days ago', text: 'SO-2001 invoiced — Cascade Freight Co.', dot: 'bg-emerald-400' },
+];
+
+export default function DashboardPage() {
+  const { quotations, salesOrders, manufacturingOrders, purchaseOrders } = useErpStore();
+
+  const openQuotations = quotations.filter((q) => q.stage !== 'Sales Order Raised').length;
+  const requiresMo = quotations.filter((q) => q.stockShort && q.stage !== 'Sales Order Raised').length;
+  const openSalesOrders = salesOrders.filter((s) => s.stage !== 'Invoiced').length;
+  const activeManufacturing = manufacturingOrders.filter((m) => m.stage !== 'Done').length;
+  const openPOs = purchaseOrders.filter((p) => p.stage !== 'Goods Received');
+  const pendingPurchaseValue = openPOs.reduce((s, p) => s + p.valueUsd, 0);
+  const finishedGoodsUnits = products.reduce((s, p) => s + p.finishedStock, 0);
+
+  const q = countBy(quotations, (x) => x.stage);
+  const so = countBy(salesOrders, (x) => x.stage);
+  const mo = countBy(manufacturingOrders, (x) => x.stage);
+  const po = countBy(purchaseOrders, (x) => x.stage);
   const sum = (r: Record<string, number>) => Object.values(r).reduce((a, b) => a + b, 0);
 
   return (
@@ -83,22 +100,22 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">Dashboard</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Heimdyn ERP — live figures computed from seed data. Surrey, BC · USD.
+          Heimdyn ERP — live figures from the current session. Surrey, BC · USD.
         </p>
       </div>
 
       <section className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
-        <KpiCard label="Open Quotations" value={String(kpis.openQuotations)} hint={`${kpis.requiresMo} require manufacturing`} />
-        <KpiCard label="Open Sales Orders" value={String(kpis.openSalesOrders)} />
-        <KpiCard label="Active Manufacturing" value={String(kpis.activeManufacturing)} />
-        <KpiCard label="Open Purchase Orders" value={String(kpis.openPurchaseOrders)} hint={`${formatUsd(kpis.pendingPurchaseValue)} pending`} />
-        <KpiCard label="Finished Goods" value={kpis.finishedGoodsUnits.toLocaleString('en-US')} hint="units in stock" />
-        <KpiCard label="Pending PO Value" value={formatUsd(kpis.pendingPurchaseValue)} />
+        <KpiCard label="Open Quotations" value={String(openQuotations)} hint={`${requiresMo} require manufacturing`} />
+        <KpiCard label="Open Sales Orders" value={String(openSalesOrders)} />
+        <KpiCard label="Active Manufacturing" value={String(activeManufacturing)} />
+        <KpiCard label="Open Purchase Orders" value={String(openPOs.length)} hint={`${formatUsd(pendingPurchaseValue)} pending`} />
+        <KpiCard label="Finished Goods" value={finishedGoodsUnits.toLocaleString('en-US')} hint="units in stock" />
+        <KpiCard label="Pending PO Value" value={formatUsd(pendingPurchaseValue)} />
       </section>
 
-      <section className="space-y-4">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">Pipelines</h2>
-        <div className="grid gap-4 lg:grid-cols-2">
+      <section className="grid gap-6 lg:grid-cols-3">
+        <div className="space-y-4 lg:col-span-2">
+          <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">Pipelines</h2>
           <PipelineBar
             title="Quotations"
             total={sum(q)}
@@ -138,6 +155,23 @@ export default function DashboardPage() {
               { label: 'Goods Received', value: po['Goods Received'] ?? 0, ...GREEN },
             ]}
           />
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">Recent Activity</h2>
+          <div className="rounded-lg border border-border bg-card p-4">
+            <ul className="space-y-3">
+              {ACTIVITY.map((a, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${a.dot}`} />
+                  <div>
+                    <p className="text-sm text-foreground">{a.text}</p>
+                    <p className="text-xs text-muted-foreground">{a.when}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
     </div>
