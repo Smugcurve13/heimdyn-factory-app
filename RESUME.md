@@ -26,38 +26,36 @@
 | **2.5** | Master pages: Products, Raw Materials, BOM (SOW deliverables 1–3) | ✅ Built on `ListDrawer`; Products has in-session Active/Inactive toggle |
 | **3** | Purchase Orders + Manufacturing Orders + Document Trail | ✅ Done, **gate passed**; in-session store added (`lib/erp/store.tsx`) |
 | **4** | Quotations (Kanban + 3-step wizard) + Sales Orders | ✅ Done, **gate passed** |
-| **5** | The scripted demo flow (QT-1002 cascade) | ⏭️ **NEXT** |
-| 6 | Dashboard live counts + Activity feed + 6-role switcher + QA | ⬜ |
+| **5** | The scripted demo flow (QT-1002 cascade) | ✅ Done, self-verified end-to-end (+ reset) |
+| **6** | Dashboard live counts + Activity feed + 6-role switcher + QA | ⏭️ **NEXT** |
 
 ---
 
-## RESUME HERE → Phase 5 (the money phase)
+## RESUME HERE → Phase 6 (final glue + polish)
 
-**Goal:** ONE scripted happy-path chain that cascades end-to-end for the live demo, starting from **QT-1002** (Westport Logistics · PRD-102 ×500 · stock short). It must be flawless; other quotations can stay static.
+**Goal:** dashboard wired to live counts, a realistic activity feed, a 6-role UI switcher, and a DESIGN.md QA pass.
 
-**Cascade to wire (HANDOFF.md §PHASE 5):**
-1. Approve **QT-1002** → a **Manufacturing Order** (reserved **MO-3010**) appears in **Pending Approval**, and QT-1002 moves to Sales Order Raised / linked.
-2. Approve the MO → it moves to **Planned**, and a **Purchase Order** (reserved **PO-4010**, for the one short material **RM-203 Hardwood Block**) appears in Pending Approval.
-3. Approve the PO → **Confirm Goods Receipt** → RM-203 shows received; the linked MO's BOM row for RM-203 flips to **Sufficient**.
-4. Advance the MO: Planned → In Progress → Done.
-5. → a **Sales Order** (reserved **SO-2010**) appears in **Confirmed** automatically.
-6. Advance SO: Confirmed → … → Invoiced.
+**Build tasks (HANDOFF.md §PHASE 6):**
+- **Dashboard live counts**: `app/dashboard/page.tsx` currently computes KPIs/pipelines from **static seed** via `lib/erp/selectors.ts`. Rewire it to read from the **session store** (`useErpStore`) so it reflects demo cascade changes (make it a client component, or add store-based selectors). Pipeline bars = stage counts for Quotations/SO/MO/PO; KPI cards off live data.
+- **Recent Activity feed**: a seeded static list of realistic events (newest first) on the dashboard. Live wiring is out of scope (Phase 3-future).
+- **Role switcher**: a dropdown to switch among the 6 roles (Admin, Sales Executive, Sales Manager, Production Manager, Purchase Manager, Accounts). Client-side only — show/hide the relevant action buttons (e.g. only Sales Manager sees Approve on quotations; Production Manager approves/advances MOs; Purchase Manager approves/receives POs; Accounts sees invoicing; Sales Executive creates quotations but can't approve; Admin sees all). Suggest a `RoleContext` provider + a `useRole()` gate used to conditionally render the action buttons already built in each module.
+- **Visual QA** against DESIGN.md across every screen (dark `#10131A`, pills, 480px drawer, no shadows, mono numerals). Optional consistency tidy: unify all Document Trails to start at QT, and consider pointing Inventory's raw-material stock at the store so receipts reflect there too.
 
-**Phase 5 gate checklist:**
-- [ ] Approving QT-1002 makes MO-3010 appear (Pending Approval)
-- [ ] Approving the MO makes PO-4010 appear
-- [ ] Confirming PO receipt flips the MO's RM-203 BOM row to Sufficient
-- [ ] Completing the MO makes SO-2010 appear automatically (Confirmed)
-- [ ] Whole chain clicks through with no dead ends
-- [ ] Document Trail links every created document (QT → SO → MO → PO)
-- [ ] Can run the full demo twice in a row (a reset is acceptable)
+**Phase 6 gate checklist:**
+- [ ] Dashboard KPIs reflect actual counts from the data
+- [ ] Pipeline bars show correct stage counts for Sales / Manufacturing / Purchase
+- [ ] Recent Activity feed displays realistic events
+- [ ] Role switcher changes which action buttons are visible
+- [ ] Every screen matches DESIGN.md
+- [ ] Walk-through of all 13 SOW deliverables confirms each is present
 
-**How to build:** extend `lib/erp/store.tsx` so approving QT-1002 (the `DEMO_FLOW.quotationId`) triggers creation of the reserved docs from `DEMO_FLOW.reserved` (MO-3010 → PO-4010 → SO-2010) and wires their cross-refs, instead of the plain `approveQuotation` stage bump. The BOM "Sufficient/Insufficient" check should read **live RM-203 stock from the store** for the demo MO so Confirm Receipt visibly flips it (currently the MO BOM reads static seed stock — make confirmGoodsReceipt add to a store-held material stock the demo MO consults). Add a **reset** action (re-clone seed) and a small reset control for re-running the demo. Keep it scoped to QT-1002 — don't generalise.
+**Faked in Phase 6:** roles are a UI switcher (not real auth); activity feed is static. All Phase 3-future items (live DB, server RBAC, persistence) stay out of scope.
 
 ### Done so far (reference)
-- **Store** (`lib/erp/store.tsx`, mounted in `app/layout.tsx`): actions `addQuotation`, `approveQuotation`, `rejectQuotation`, `approvePurchaseOrder`, `confirmGoodsReceipt`, `approveManufacturingOrder`, `advanceManufacturingOrder`, `advanceSalesOrder`. Note: receipt does NOT yet update material stock (Phase 5 needs that for the BOM flip).
-- **Modules**: Inventory (P2), Products/RawMaterials/BOM masters (P2.5), Purchase Orders + Manufacturing Orders + `DocumentTrail` (P3), Quotations Kanban + 3-step wizard + Sales Orders (P4).
-- **Shared**: `ListDrawer` (`autoOpenId` deep-link + a11y `SheetTitle`), `StatusPill`+`statusTone`, `DrawerField`, `DocumentTrail` (QT/SO/MO/PO). Quote money uses `formatPrice` (cents); SO/PO/dashboard use `formatUsd` (whole).
+- **Store** (`lib/erp/store.tsx`, mounted in `app/layout.tsx`): `addQuotation`, `approveQuotation` (stock-short → spawns MO), `rejectQuotation`, `approveManufacturingOrder` (auto-raises POs for short materials), `advanceManufacturingOrder` (Done → auto-creates SO), `approvePurchaseOrder`, `confirmGoodsReceipt` (raises live `materialStock`), `advanceSalesOrder`, `reset`, `getMaterialStock`. MO BOM "Available" reads live store stock.
+- **Modules**: Inventory (P2), Products/RawMaterials/BOM masters (P2.5), PO + MO + `DocumentTrail` (P3), Quotations Kanban + 3-step wizard + Sales Orders (P4), demo cascade + Reset button on Quotations (P5).
+- **Shared**: `ListDrawer` (`autoOpenId`, a11y `SheetTitle`), `StatusPill`+`statusTone`, `DrawerField`, `DocumentTrail` (QT/SO/MO/PO). Quote money `formatPrice` (cents); SO/PO/dashboard `formatUsd` (whole).
+- **Demo note:** navigate via in-app sidebar links during the demo (a browser refresh resets the in-session store); use the **Reset demo** button on Quotations to re-run. Generated cascade IDs: MO-3006 → PO-4007 → SO-2005 (ids are computed, not the cosmetic reserved ones in `DEMO_FLOW`).
 
 ---
 

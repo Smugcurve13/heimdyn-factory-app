@@ -142,7 +142,7 @@ function MoDrawer({
               {bom?.lines.map((line, i) => {
                 const mat = getMaterial(line.materialId);
                 const required = line.qtyPerUnit * mo.quantity;
-                const available = mat?.stock ?? 0;
+                const available = store.getMaterialStock(line.materialId);
                 const sufficient = available >= required;
                 return (
                   <tr key={line.materialId} className={i % 2 === 1 ? 'bg-card/50' : undefined}>

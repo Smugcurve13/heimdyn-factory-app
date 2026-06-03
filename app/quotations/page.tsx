@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, RotateCcw } from 'lucide-react';
 import { products, customers } from '@/lib/erp/seed';
 import { getProduct, getCustomer, formatPrice } from '@/lib/erp/selectors';
 import { useErpStore } from '@/lib/erp/store';
@@ -80,10 +80,16 @@ function Quotations() {
             The pipeline for every enquiry. Pricing in USD; stock checked as you build.
           </p>
         </div>
-        <Button onClick={() => setWizardOpen(true)}>
-          <Plus className="mr-1 h-4 w-4" />
-          New Quotation
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => { store.reset(); setSelectedId(null); }} title="Reset all demo data">
+            <RotateCcw className="mr-1 h-4 w-4" />
+            Reset demo
+          </Button>
+          <Button onClick={() => setWizardOpen(true)}>
+            <Plus className="mr-1 h-4 w-4" />
+            New Quotation
+          </Button>
+        </div>
       </div>
 
       {/* Kanban board */}
