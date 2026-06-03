@@ -40,3 +40,31 @@ export function stockTone(status: string): PillTone {
   if (status === 'Low Stock') return 'amber';
   return 'green';
 }
+
+/** Maps any document/BOM status string to a pill tone (DESIGN.md §4). */
+export function statusTone(status: string): PillTone {
+  switch (status) {
+    case 'Pending Approval':
+      return 'amber';
+    case 'Planned':
+      return 'yellow';
+    case 'In Progress':
+    case 'Approved':
+    case 'Confirmed':
+    case 'Stock Committed':
+    case 'Proforma Invoice':
+      return 'blue';
+    case 'Done':
+    case 'Goods Received':
+    case 'Dispatched':
+    case 'Invoiced':
+    case 'Sales Order Raised':
+    case 'Sufficient':
+      return 'green';
+    case 'Insufficient':
+    case 'Rejected':
+      return 'red';
+    default:
+      return 'neutral';
+  }
+}

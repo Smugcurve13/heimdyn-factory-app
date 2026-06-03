@@ -24,35 +24,37 @@
 | **1** | Seed data + app shell (sidebar, dashboard, route stubs) | ✅ Done, gate passed, committed |
 | **2** | Reusable `<ListDrawer>` + Inventory module | ✅ Done, **gate passed** (user confirmed) |
 | **2.5** | Master pages: Products, Raw Materials, BOM (SOW deliverables 1–3) | ✅ Built on `ListDrawer`; Products has in-session Active/Inactive toggle |
-| **3** | Purchase Orders + Manufacturing Orders + Document Trail | ⏭️ **NEXT** |
-| 4 | Quotations (Kanban + 3-step wizard) + Sales Orders | ⬜ |
+| **3** | Purchase Orders + Manufacturing Orders + Document Trail | ✅ Done, **gate passed**; in-session store added (`lib/erp/store.tsx`) |
+| **4** | Quotations (Kanban + 3-step wizard) + Sales Orders | ⏭️ **NEXT** |
 | 5 | The scripted demo flow (QT-1002 cascade) | ⬜ |
 | 6 | Dashboard live counts + Activity feed + 6-role switcher + QA | ⬜ |
 
 ---
 
-## RESUME HERE → Phase 3
+## RESUME HERE → Phase 4
 
-**Goal:** the two reactive modules + the Document Trail component. Build both on the existing `<ListDrawer>`.
+**Goal:** the sales front end — Quotations (Kanban board + 3-step creation wizard) and Sales Orders. Heaviest UI; patterns are now proven.
 
-**Build tasks (from HANDOFF.md §PHASE 3):**
-- **Purchase Orders** (`app/purchase-orders/page.tsx`): list + drawer; summary bar (open orders, total pending value); status flow Pending Approval → Approved → Goods Received; **Approve** button; **Goods Receipt** section with received-qty input + **Confirm Receipt** button (status → Goods Received, in-session).
-- **Manufacturing Orders** (`app/manufacturing-orders/page.tsx`): list + drawer; status flow Pending Approval → Planned → In Progress → Done; **BOM breakdown table** (Material / Required / Available / Status) with **"PO Raised"** badge on insufficient rows; progress indicator (completedQty / quantity).
-- **Document Trail** component (new, `components/erp/DocumentTrail.tsx`): horizontal chain of clickable pill-boxes **SO → MO → PO**, current node highlighted (`border-primary ring-1 ring-primary/20`), others `bg-card border-border`. Render it in both the MO and PO drawers. Built from seed cross-reference IDs. Clicking a node navigates to that document.
+**Build tasks (from HANDOFF.md §PHASE 4):**
+- **Quotations** (`app/quotations/page.tsx`): **Kanban board**, four columns Draft → Pending Approval → Proforma Invoice → Sales Order Raised. Cards show customer, product, quantity, value; red **"Requires MO"** badge where `stockShort` is true. Card → drawer with line items + **Approve / Reject** (NO "Convert to SO" button). Plus a **3-step creation wizard** (Customer details → Line items → Review & Submit). **USD only, NO discount column.** Product dropdown shows **finished goods only** (active products; no raw materials/services).
+- **Sales Orders** (`app/sales-orders/page.tsx`): list + drawer (reuse `ListDrawer`), status flow Confirmed → Stock Committed → Dispatched → Invoiced. **NO manual create button** — SOs appear only from seed or the demo flow.
 
-**Phase 3 gate checklist (what the user verifies):**
-- [ ] PO list shows all seeded POs with correct status pills
-- [ ] PO drawer shows vendor, material, quantity, value, Goods Receipt section
-- [ ] Confirm Receipt visibly changes PO status to Goods Received
-- [ ] MO list shows all seeded MOs with correct 4-stage status pills
-- [ ] MO drawer shows BOM breakdown with Sufficient/Insufficient statuses
-- [ ] "PO Raised" badge appears on insufficient BOM rows
-- [ ] Document Trail (SO → MO → PO) renders in MO and PO drawers with correct linked IDs
-- [ ] Clicking a linked ID in the trail navigates to that document
+**Phase 4 gate checklist (what the user verifies):**
+- [ ] Quotations Kanban shows four correctly-labelled columns with seeded cards
+- [ ] "Requires MO" badge appears on the right cards (QT-1002, QT-1004, QT-1007 are stockShort)
+- [ ] New Quotation wizard opens, all 3 steps work, line items calculate totals
+- [ ] Product dropdown shows ONLY finished goods (no raw materials, no services)
+- [ ] No discount column anywhere; all amounts in USD
+- [ ] Quotation drawer shows Approve/Reject (no "Convert to SO" button)
+- [ ] Sales Orders list shows seeded SOs with correct status pills
+- [ ] There is NO manual "create Sales Order" button anywhere
 
-**Faked in Phase 3:** Approve / Confirm Receipt change status in-session only; no real inventory math.
+**Faked in Phase 4:** the wizard creates a quotation in-session (add it to the store — extend `lib/erp/store.tsx` with an `addQuotation`/quotation status actions). Stock check is a green/amber indicator from seed, not live math.
 
-**Reuse, don't rebuild:** `ListDrawer`, `StatusPill` (+ map MO/PO statuses to tones — see DESIGN §4), `DrawerField`, `formatUsd`, `selectors.get*` lookups. For the in-session status changes you'll likely lift the data into a shared session store (see "Session state" below).
+**Reuse, don't rebuild:** `ListDrawer` (Sales Orders), `StatusPill` + `statusTone`, `DrawerField`, `DocumentTrail` (QT → SO, and SO → MO → PO on Sales Orders), `formatUsd`/`formatPrice`, `useErpStore`. The Kanban board is the one bespoke layout (not `ListDrawer`) — build columns of cards, card click opens the same Sheet-style drawer.
+
+### Done in Phase 3 (reference)
+PO + MO modules + `DocumentTrail` + in-session `ErpStoreProvider` (mounted in `app/layout.tsx`). Store actions so far: `approvePurchaseOrder`, `confirmGoodsReceipt`, `approveManufacturingOrder`, `advanceManufacturingOrder`. `ListDrawer` gained `autoOpenId` (deep-link via `?focus=`) and a proper `SheetTitle`/`SheetDescription` (a11y). Seed reconciled so each MO's `raisedPOs` match its short materials (PO-4001/4003/4005/4006).
 
 ---
 

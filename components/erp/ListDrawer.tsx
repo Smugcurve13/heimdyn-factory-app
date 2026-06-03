@@ -1,10 +1,10 @@
 'use client';
 
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 
 export interface ListDrawerColumn<T> {
   /** Stable key for the column. */
@@ -31,6 +31,8 @@ export interface ListDrawerProps<T> {
   renderDrawerSubtitle?: (row: T) => ReactNode;
   renderDrawer: (row: T) => ReactNode;
   emptyLabel?: string;
+  /** When set (e.g. from a ?focus= deep link or Document Trail click), opens that row's drawer. */
+  autoOpenId?: string | null;
 }
 
 /**
@@ -52,9 +54,15 @@ export function ListDrawer<T>({
   renderDrawerSubtitle,
   renderDrawer,
   emptyLabel = 'No records found.',
+  autoOpenId,
 }: ListDrawerProps<T>) {
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  // Open a row's drawer when an external focus id is supplied (deep link / trail).
+  useEffect(() => {
+    if (autoOpenId) setSelectedId(autoOpenId);
+  }, [autoOpenId]);
 
   const filtered = useMemo(() => {
     if (!searchFilter || !query.trim()) return rows;
@@ -148,13 +156,15 @@ export function ListDrawer<T>({
           {selectedRow && (
             <div className="flex h-full flex-col">
               <div className="border-b border-border px-6 py-5">
-                <div className="text-lg font-semibold text-foreground">
+                <SheetTitle className="text-lg font-semibold text-foreground">
                   {renderDrawerTitle(selectedRow)}
-                </div>
-                {renderDrawerSubtitle && (
-                  <div className="mt-1 text-sm text-muted-foreground">
+                </SheetTitle>
+                {renderDrawerSubtitle ? (
+                  <SheetDescription className="mt-1 text-sm text-muted-foreground">
                     {renderDrawerSubtitle(selectedRow)}
-                  </div>
+                  </SheetDescription>
+                ) : (
+                  <SheetDescription className="sr-only">Detail view</SheetDescription>
                 )}
               </div>
               <div className="flex-1 overflow-y-auto px-6 py-5">{renderDrawer(selectedRow)}</div>

@@ -3,7 +3,12 @@ import { ManufacturingOrder } from '../types';
 /**
  * Manufacturing Orders (MO-3xxx). Auto-created when a quotation is short on stock,
  * or created manually to build ahead (MO-3005 — no source quotation/SO).
- * raisedPOs lists the Purchase Orders this MO auto-raised for short materials.
+ * raisedPOs lists the Purchase Orders this MO auto-raised for its short materials.
+ *
+ * Shortages (BOM requirement vs current raw-material stock) line up with raisedPOs:
+ *  - MO-3001 PRD-101 ×1000 → RM-203 short (9,000 vs 3,000)            → PO-4001
+ *  - MO-3003 PRD-103 ×800  → RM-203 short (7,200 vs 3,000)            → PO-4003
+ *  - MO-3005 PRD-104 ×2000 → RM-204 (6,000 vs 5,400) + RM-209 short   → PO-4005, PO-4006
  */
 export const manufacturingOrders: ManufacturingOrder[] = [
   {
@@ -15,7 +20,7 @@ export const manufacturingOrders: ManufacturingOrder[] = [
     completedQty: 1000,
     sourceQuotation: 'QT-1001',
     sourceSO: 'SO-2001',
-    raisedPOs: ['PO-4001', 'PO-4002'],
+    raisedPOs: ['PO-4001'],
   },
   {
     id: 'MO-3003',
@@ -33,10 +38,10 @@ export const manufacturingOrders: ManufacturingOrder[] = [
     date: '2026-05-24',
     stage: 'Planned',
     productId: 'PRD-104',
-    quantity: 500,
+    quantity: 2000,
     completedQty: 0,
     sourceQuotation: null,
     sourceSO: null,
-    raisedPOs: ['PO-4005'],
+    raisedPOs: ['PO-4005', 'PO-4006'],
   },
 ];
