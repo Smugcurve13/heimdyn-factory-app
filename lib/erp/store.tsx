@@ -31,10 +31,15 @@ interface ErpStoreValue {
   getManufacturingOrder: (id: string) => ManufacturingOrder | undefined;
   getPurchaseOrder: (id: string) => PurchaseOrder | undefined;
 
+  addQuotation: (q: Omit<Quotation, 'id'>) => string;
+  approveQuotation: (id: string) => void;
+  rejectQuotation: (id: string) => void;
+
   approvePurchaseOrder: (id: string) => void;
   confirmGoodsReceipt: (id: string, receivedQty: number) => void;
   approveManufacturingOrder: (id: string) => void;
   advanceManufacturingOrder: (id: string) => void;
+  advanceSalesOrder: (id: string) => void;
 }
 
 const ErpStoreContext = createContext<ErpStoreValue | undefined>(undefined);
@@ -47,11 +52,56 @@ const MO_NEXT: Record<string, ManufacturingOrder['stage']> = {
   'In Progress': 'Done',
 };
 
+const SO_NEXT: Record<string, SalesOrder['stage']> = {
+  Confirmed: 'Stock Committed',
+  'Stock Committed': 'Dispatched',
+  Dispatched: 'Invoiced',
+};
+
+const nextQuotationId = (existing: Quotation[]): string => {
+  const max = existing.reduce((m, q) => {
+    const n = parseInt(q.id.replace(/\D/g, ''), 10);
+    return Number.isNaN(n) ? m : Math.max(m, n);
+  }, 1000);
+  return `QT-${max + 1}`;
+};
+
 export function ErpStoreProvider({ children }: { children: ReactNode }) {
   const [quotations, setQuotations] = useState<Quotation[]>(() => clone(seedQuotations));
   const [salesOrders, setSalesOrders] = useState<SalesOrder[]>(() => clone(seedSOs));
   const [manufacturingOrders, setManufacturingOrders] = useState<ManufacturingOrder[]>(() => clone(seedMOs));
   const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>(() => clone(seedPOs));
+
+  const addQuotation = useCallback((q: Omit<Quotation, 'id'>) => {
+    let id = '';
+    setQuotations((prev) => {
+      id = nextQuotationId(prev);
+      return [{ ...q, id }, ...prev];
+    });
+    return id;
+  }, []);
+
+  const approveQuotation = useCallback((id: string) => {
+    setQuotations((prev) =>
+      prev.map((q) => (q.id === id && q.stage === 'Pending Approval' ? { ...q, stage: 'Proforma Invoice' } : q)),
+    );
+  }, []);
+
+  const rejectQuotation = useCallback((id: string) => {
+    setQuotations((prev) =>
+      prev.map((q) => (q.id === id && q.stage === 'Pending Approval' ? { ...q, stage: 'Draft' } : q)),
+    );
+  }, []);
+
+  const advanceSalesOrder = useCallback((id: string) => {
+    setSalesOrders((prev) =>
+      prev.map((so) => {
+        if (so.id !== id) return so;
+        const next = SO_NEXT[so.stage];
+        return next ? { ...so, stage: next } : so;
+      }),
+    );
+  }, []);
 
   const approvePurchaseOrder = useCallback((id: string) => {
     setPurchaseOrders((prev) =>
@@ -92,20 +142,28 @@ export function ErpStoreProvider({ children }: { children: ReactNode }) {
       getSalesOrder: (id) => salesOrders.find((s) => s.id === id),
       getManufacturingOrder: (id) => manufacturingOrders.find((m) => m.id === id),
       getPurchaseOrder: (id) => purchaseOrders.find((p) => p.id === id),
+      addQuotation,
+      approveQuotation,
+      rejectQuotation,
       approvePurchaseOrder,
       confirmGoodsReceipt,
       approveManufacturingOrder,
       advanceManufacturingOrder,
+      advanceSalesOrder,
     }),
     [
       quotations,
       salesOrders,
       manufacturingOrders,
       purchaseOrders,
+      addQuotation,
+      approveQuotation,
+      rejectQuotation,
       approvePurchaseOrder,
       confirmGoodsReceipt,
       approveManufacturingOrder,
       advanceManufacturingOrder,
+      advanceSalesOrder,
     ],
   );
 

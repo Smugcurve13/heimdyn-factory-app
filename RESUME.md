@@ -25,36 +25,39 @@
 | **2** | Reusable `<ListDrawer>` + Inventory module | ✅ Done, **gate passed** (user confirmed) |
 | **2.5** | Master pages: Products, Raw Materials, BOM (SOW deliverables 1–3) | ✅ Built on `ListDrawer`; Products has in-session Active/Inactive toggle |
 | **3** | Purchase Orders + Manufacturing Orders + Document Trail | ✅ Done, **gate passed**; in-session store added (`lib/erp/store.tsx`) |
-| **4** | Quotations (Kanban + 3-step wizard) + Sales Orders | ⏭️ **NEXT** |
-| 5 | The scripted demo flow (QT-1002 cascade) | ⬜ |
+| **4** | Quotations (Kanban + 3-step wizard) + Sales Orders | ✅ Done, **gate passed** |
+| **5** | The scripted demo flow (QT-1002 cascade) | ⏭️ **NEXT** |
 | 6 | Dashboard live counts + Activity feed + 6-role switcher + QA | ⬜ |
 
 ---
 
-## RESUME HERE → Phase 4
+## RESUME HERE → Phase 5 (the money phase)
 
-**Goal:** the sales front end — Quotations (Kanban board + 3-step creation wizard) and Sales Orders. Heaviest UI; patterns are now proven.
+**Goal:** ONE scripted happy-path chain that cascades end-to-end for the live demo, starting from **QT-1002** (Westport Logistics · PRD-102 ×500 · stock short). It must be flawless; other quotations can stay static.
 
-**Build tasks (from HANDOFF.md §PHASE 4):**
-- **Quotations** (`app/quotations/page.tsx`): **Kanban board**, four columns Draft → Pending Approval → Proforma Invoice → Sales Order Raised. Cards show customer, product, quantity, value; red **"Requires MO"** badge where `stockShort` is true. Card → drawer with line items + **Approve / Reject** (NO "Convert to SO" button). Plus a **3-step creation wizard** (Customer details → Line items → Review & Submit). **USD only, NO discount column.** Product dropdown shows **finished goods only** (active products; no raw materials/services).
-- **Sales Orders** (`app/sales-orders/page.tsx`): list + drawer (reuse `ListDrawer`), status flow Confirmed → Stock Committed → Dispatched → Invoiced. **NO manual create button** — SOs appear only from seed or the demo flow.
+**Cascade to wire (HANDOFF.md §PHASE 5):**
+1. Approve **QT-1002** → a **Manufacturing Order** (reserved **MO-3010**) appears in **Pending Approval**, and QT-1002 moves to Sales Order Raised / linked.
+2. Approve the MO → it moves to **Planned**, and a **Purchase Order** (reserved **PO-4010**, for the one short material **RM-203 Hardwood Block**) appears in Pending Approval.
+3. Approve the PO → **Confirm Goods Receipt** → RM-203 shows received; the linked MO's BOM row for RM-203 flips to **Sufficient**.
+4. Advance the MO: Planned → In Progress → Done.
+5. → a **Sales Order** (reserved **SO-2010**) appears in **Confirmed** automatically.
+6. Advance SO: Confirmed → … → Invoiced.
 
-**Phase 4 gate checklist (what the user verifies):**
-- [ ] Quotations Kanban shows four correctly-labelled columns with seeded cards
-- [ ] "Requires MO" badge appears on the right cards (QT-1002, QT-1004, QT-1007 are stockShort)
-- [ ] New Quotation wizard opens, all 3 steps work, line items calculate totals
-- [ ] Product dropdown shows ONLY finished goods (no raw materials, no services)
-- [ ] No discount column anywhere; all amounts in USD
-- [ ] Quotation drawer shows Approve/Reject (no "Convert to SO" button)
-- [ ] Sales Orders list shows seeded SOs with correct status pills
-- [ ] There is NO manual "create Sales Order" button anywhere
+**Phase 5 gate checklist:**
+- [ ] Approving QT-1002 makes MO-3010 appear (Pending Approval)
+- [ ] Approving the MO makes PO-4010 appear
+- [ ] Confirming PO receipt flips the MO's RM-203 BOM row to Sufficient
+- [ ] Completing the MO makes SO-2010 appear automatically (Confirmed)
+- [ ] Whole chain clicks through with no dead ends
+- [ ] Document Trail links every created document (QT → SO → MO → PO)
+- [ ] Can run the full demo twice in a row (a reset is acceptable)
 
-**Faked in Phase 4:** the wizard creates a quotation in-session (add it to the store — extend `lib/erp/store.tsx` with an `addQuotation`/quotation status actions). Stock check is a green/amber indicator from seed, not live math.
+**How to build:** extend `lib/erp/store.tsx` so approving QT-1002 (the `DEMO_FLOW.quotationId`) triggers creation of the reserved docs from `DEMO_FLOW.reserved` (MO-3010 → PO-4010 → SO-2010) and wires their cross-refs, instead of the plain `approveQuotation` stage bump. The BOM "Sufficient/Insufficient" check should read **live RM-203 stock from the store** for the demo MO so Confirm Receipt visibly flips it (currently the MO BOM reads static seed stock — make confirmGoodsReceipt add to a store-held material stock the demo MO consults). Add a **reset** action (re-clone seed) and a small reset control for re-running the demo. Keep it scoped to QT-1002 — don't generalise.
 
-**Reuse, don't rebuild:** `ListDrawer` (Sales Orders), `StatusPill` + `statusTone`, `DrawerField`, `DocumentTrail` (QT → SO, and SO → MO → PO on Sales Orders), `formatUsd`/`formatPrice`, `useErpStore`. The Kanban board is the one bespoke layout (not `ListDrawer`) — build columns of cards, card click opens the same Sheet-style drawer.
-
-### Done in Phase 3 (reference)
-PO + MO modules + `DocumentTrail` + in-session `ErpStoreProvider` (mounted in `app/layout.tsx`). Store actions so far: `approvePurchaseOrder`, `confirmGoodsReceipt`, `approveManufacturingOrder`, `advanceManufacturingOrder`. `ListDrawer` gained `autoOpenId` (deep-link via `?focus=`) and a proper `SheetTitle`/`SheetDescription` (a11y). Seed reconciled so each MO's `raisedPOs` match its short materials (PO-4001/4003/4005/4006).
+### Done so far (reference)
+- **Store** (`lib/erp/store.tsx`, mounted in `app/layout.tsx`): actions `addQuotation`, `approveQuotation`, `rejectQuotation`, `approvePurchaseOrder`, `confirmGoodsReceipt`, `approveManufacturingOrder`, `advanceManufacturingOrder`, `advanceSalesOrder`. Note: receipt does NOT yet update material stock (Phase 5 needs that for the BOM flip).
+- **Modules**: Inventory (P2), Products/RawMaterials/BOM masters (P2.5), Purchase Orders + Manufacturing Orders + `DocumentTrail` (P3), Quotations Kanban + 3-step wizard + Sales Orders (P4).
+- **Shared**: `ListDrawer` (`autoOpenId` deep-link + a11y `SheetTitle`), `StatusPill`+`statusTone`, `DrawerField`, `DocumentTrail` (QT/SO/MO/PO). Quote money uses `formatPrice` (cents); SO/PO/dashboard use `formatUsd` (whole).
 
 ---
 

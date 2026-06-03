@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export type TrailDocType = 'SO' | 'MO' | 'PO';
+export type TrailDocType = 'QT' | 'SO' | 'MO' | 'PO';
 
 export interface TrailNode {
   type: TrailDocType;
@@ -13,12 +13,14 @@ export interface TrailNode {
 }
 
 const ROUTE_BY_TYPE: Record<TrailDocType, string> = {
+  QT: '/quotations',
   SO: '/sales-orders',
   MO: '/manufacturing-orders',
   PO: '/purchase-orders',
 };
 
 const LABEL_BY_TYPE: Record<TrailDocType, string> = {
+  QT: 'Quotation',
   SO: 'Sales Order',
   MO: 'Manufacturing Order',
   PO: 'Purchase Order',
