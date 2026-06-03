@@ -1,10 +1,10 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Plus } from 'lucide-react';
-import { products, rawMaterials } from '@/lib/erp/seed';
 import { stockStatus, formatPrice } from '@/lib/erp/selectors';
-import { Product } from '@/lib/erp/types';
+import { useErpStore } from '@/lib/erp/store';
+import { Product, RawMaterial } from '@/lib/erp/types';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,37 +15,13 @@ import { DrawerField } from '@/components/erp/DrawerField';
 
 type Pool = 'finished' | 'raw';
 
-/** A raw-material row with its current (possibly topped-up) session stock. */
-interface RawRow {
-  id: string;
-  name: string;
-  uom: string;
-  stock: number;
-  reorderLevel: number;
-}
-
 export default function InventoryPage() {
   const { can } = useRole();
+  const { products, rawMaterials, addMaterialStock } = useErpStore();
   const [pool, setPool] = useState<Pool>('finished');
-  // Raw-material stock is mutable in-session via "Add Stock"; resets on refresh.
-  const [rawStockById, setRawStockById] = useState<Record<string, number>>(() =>
-    Object.fromEntries(rawMaterials.map((m) => [m.id, m.stock])),
-  );
 
-  const rawRows: RawRow[] = useMemo(
-    () =>
-      rawMaterials.map((m) => ({
-        id: m.id,
-        name: m.name,
-        uom: m.uom,
-        stock: rawStockById[m.id],
-        reorderLevel: m.reorderLevel,
-      })),
-    [rawStockById],
-  );
-
-  const addStock = (id: string, qty: number) =>
-    setRawStockById((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + qty }));
+  const rawRows = rawMaterials;
+  const addStock = (id: string, qty: number) => addMaterialStock(id, qty);
 
   const finishedUnits = products.reduce((s, p) => s + p.finishedStock, 0);
   const lowOrOut = [
@@ -85,7 +61,7 @@ export default function InventoryPage() {
     },
   ];
 
-  const rawColumns: ListDrawerColumn<RawRow>[] = [
+  const rawColumns: ListDrawerColumn<RawMaterial>[] = [
     {
       key: 'material',
       header: 'Material',
@@ -178,7 +154,7 @@ export default function InventoryPage() {
           }}
         />
       ) : (
-        <ListDrawer<RawRow>
+        <ListDrawer<RawMaterial>
           rows={rawRows}
           columns={rawColumns}
           getRowId={(m) => m.id}

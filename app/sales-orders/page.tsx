@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { getProduct, getCustomer, formatUsd } from '@/lib/erp/selectors';
+import { getCustomer, formatUsd } from '@/lib/erp/selectors';
 import { useErpStore } from '@/lib/erp/store';
 import { useRole } from '@/lib/erp/roles';
 import { SalesOrder } from '@/lib/erp/types';
@@ -41,7 +41,7 @@ function SalesOrders() {
       render: (so) => (
         <div>
           <div className="font-mono text-xs text-muted-foreground">{so.productId}</div>
-          <div className="text-foreground">{getProduct(so.productId)?.name ?? '—'}</div>
+          <div className="text-foreground">{store.getProduct(so.productId)?.name ?? '—'}</div>
         </div>
       ),
     },
@@ -84,7 +84,7 @@ function SalesOrders() {
         searchFilter={(so, q) =>
           so.id.toLowerCase().includes(q) ||
           (getCustomer(so.customerId)?.name.toLowerCase().includes(q) ?? false) ||
-          (getProduct(so.productId)?.name.toLowerCase().includes(q) ?? false)
+          (store.getProduct(so.productId)?.name.toLowerCase().includes(q) ?? false)
         }
         renderDrawerTitle={(so) => so.id}
         renderDrawerSubtitle={(so) => getCustomer(so.customerId)?.name ?? so.customerId}
@@ -96,7 +96,7 @@ function SalesOrders() {
                 label="Product"
                 value={
                   <span>
-                    <span className="font-mono">{so.productId}</span> · {getProduct(so.productId)?.name}
+                    <span className="font-mono">{so.productId}</span> · {store.getProduct(so.productId)?.name}
                   </span>
                 }
               />

@@ -2,7 +2,6 @@
 
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { getProduct, getMaterial, getBom } from '@/lib/erp/selectors';
 import { useErpStore } from '@/lib/erp/store';
 import { useRole } from '@/lib/erp/roles';
 import { ManufacturingOrder } from '@/lib/erp/types';
@@ -33,7 +32,7 @@ function ManufacturingOrders() {
       render: (mo) => (
         <div>
           <div className="font-mono text-xs text-muted-foreground">{mo.productId}</div>
-          <div className="text-foreground">{getProduct(mo.productId)?.name ?? '—'}</div>
+          <div className="text-foreground">{store.getProduct(mo.productId)?.name ?? '—'}</div>
         </div>
       ),
     },
@@ -78,10 +77,10 @@ function ManufacturingOrders() {
         searchFilter={(mo, q) =>
           mo.id.toLowerCase().includes(q) ||
           mo.productId.toLowerCase().includes(q) ||
-          (getProduct(mo.productId)?.name.toLowerCase().includes(q) ?? false)
+          (store.getProduct(mo.productId)?.name.toLowerCase().includes(q) ?? false)
         }
         renderDrawerTitle={(mo) => mo.id}
-        renderDrawerSubtitle={(mo) => getProduct(mo.productId)?.name ?? mo.productId}
+        renderDrawerSubtitle={(mo) => store.getProduct(mo.productId)?.name ?? mo.productId}
         renderDrawer={(mo) => <MoDrawer mo={mo} store={store} trail={trailFor(mo)} />}
       />
     </div>
@@ -97,7 +96,7 @@ function MoDrawer({
   store: ReturnType<typeof useErpStore>;
   trail: TrailNode[];
 }) {
-  const bom = getBom(mo.productId);
+  const bom = store.getBom(mo.productId);
   const pct = mo.quantity > 0 ? Math.round((mo.completedQty / mo.quantity) * 100) : 0;
 
   // Materials this MO raised a PO for (by material id) → drives the "PO Raised" badge.
@@ -141,9 +140,9 @@ function MoDrawer({
             </thead>
             <tbody>
               {bom?.lines.map((line, i) => {
-                const mat = getMaterial(line.materialId);
+                const mat = store.getMaterial(line.materialId);
                 const required = line.qtyPerUnit * mo.quantity;
-                const available = store.getMaterialStock(line.materialId);
+                const available = (store.getMaterial(line.materialId)?.stock ?? 0);
                 const sufficient = available >= required;
                 return (
                   <tr key={line.materialId} className={i % 2 === 1 ? 'bg-card/50' : undefined}>

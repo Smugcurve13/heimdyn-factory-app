@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { getMaterial, getVendor, formatUsd } from '@/lib/erp/selectors';
+import { getVendor, formatUsd } from '@/lib/erp/selectors';
 import { useErpStore } from '@/lib/erp/store';
 import { useRole } from '@/lib/erp/roles';
 import { PurchaseOrder } from '@/lib/erp/types';
@@ -38,7 +38,7 @@ function PurchaseOrders() {
       render: (po) => (
         <div>
           <div className="font-mono text-xs text-muted-foreground">{po.materialId}</div>
-          <div className="text-foreground">{getMaterial(po.materialId)?.name ?? '—'}</div>
+          <div className="text-foreground">{store.getMaterial(po.materialId)?.name ?? '—'}</div>
         </div>
       ),
     },
@@ -87,7 +87,7 @@ function PurchaseOrders() {
         renderDrawerTitle={(po) => po.id}
         renderDrawerSubtitle={(po) => getVendor(po.vendorId)?.name ?? po.vendorId}
         renderDrawer={(po) => {
-          const mat = getMaterial(po.materialId);
+          const mat = store.getMaterial(po.materialId);
           return (
             <div className="space-y-5">
               <div>
@@ -117,7 +117,7 @@ function PurchaseOrders() {
 }
 
 function GoodsReceipt({ po, store }: { po: PurchaseOrder; store: ReturnType<typeof useErpStore> }) {
-  const mat = getMaterial(po.materialId);
+  const mat = store.getMaterial(po.materialId);
   const { can } = useRole();
   const [value, setValue] = useState(String(po.quantity));
 

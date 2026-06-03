@@ -3,8 +3,8 @@
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Plus, Trash2, RotateCcw } from 'lucide-react';
-import { products, customers } from '@/lib/erp/seed';
-import { getProduct, getCustomer, formatPrice } from '@/lib/erp/selectors';
+import { customers } from '@/lib/erp/seed';
+import { getCustomer, formatPrice } from '@/lib/erp/selectors';
 import { useErpStore } from '@/lib/erp/store';
 import { useRole } from '@/lib/erp/roles';
 import { Quotation, QuotationStage } from '@/lib/erp/types';
@@ -111,7 +111,7 @@ function Quotations() {
                 <p className="px-1 py-4 text-center text-xs text-muted-foreground">No quotations</p>
               )}
               {byStage[stage].map((q) => {
-                const product = getProduct(q.lines[0]?.productId);
+                const product = store.getProduct(q.lines[0]?.productId);
                 return (
                   <button
                     key={q.id}
@@ -192,7 +192,7 @@ function Quotations() {
                           <tr key={l.productId} className={i % 2 === 1 ? 'bg-card/50' : undefined}>
                             <td className="px-3 py-2 text-foreground">
                               <div className="font-mono text-xs text-muted-foreground">{l.productId}</div>
-                              <div>{getProduct(l.productId)?.name ?? '—'}</div>
+                              <div>{store.getProduct(l.productId)?.name ?? '—'}</div>
                             </td>
                             <td className="px-3 py-2 text-right font-mono text-foreground">{l.quantity.toLocaleString('en-US')}</td>
                             <td className="px-3 py-2 text-right font-mono text-foreground">{formatPrice(l.unitPriceUsd)}</td>
@@ -233,7 +233,7 @@ function Quotations() {
         open={wizardOpen}
         onClose={() => setWizardOpen(false)}
         onCreate={(customerId, lines) => {
-          const stockShort = lines.some((l) => (getProduct(l.productId)?.finishedStock ?? 0) < l.quantity);
+          const stockShort = lines.some((l) => (store.getProduct(l.productId)?.finishedStock ?? 0) < l.quantity);
           const id = store.addQuotation({
             customerId,
             date: new Date().toISOString().slice(0, 10),
@@ -265,7 +265,8 @@ function NewQuotationWizard({
   onClose: () => void;
   onCreate: (customerId: string, lines: { productId: string; quantity: number; unitPriceUsd: number }[]) => void;
 }) {
-  const finishedGoods = useMemo(() => products.filter((p) => p.status === 'Active'), []);
+  const store = useErpStore();
+  const finishedGoods = useMemo(() => store.products.filter((p) => p.status === 'Active'), [store.products]);
   const [step, setStep] = useState(1);
   const [customerId, setCustomerId] = useState('');
   const [lines, setLines] = useState<WizardLine[]>([{ productId: '', quantity: 1 }]);
@@ -282,7 +283,7 @@ function NewQuotationWizard({
   };
 
   const validLines = lines.filter((l) => l.productId && l.quantity > 0);
-  const total = validLines.reduce((s, l) => s + (getProduct(l.productId)?.priceUsd ?? 0) * l.quantity, 0);
+  const total = validLines.reduce((s, l) => s + (store.getProduct(l.productId)?.priceUsd ?? 0) * l.quantity, 0);
 
   const step1Valid = customerId !== '';
   const step2Valid = validLines.length > 0;
@@ -335,7 +336,7 @@ function NewQuotationWizard({
         {step === 2 && (
           <div className="space-y-3">
             {lines.map((line, idx) => {
-              const product = getProduct(line.productId);
+              const product = store.getProduct(line.productId);
               const short = product ? product.finishedStock < line.quantity : false;
               return (
                 <div key={idx} className="rounded-lg border border-border p-3">
@@ -412,7 +413,7 @@ function NewQuotationWizard({
                 </thead>
                 <tbody>
                   {validLines.map((l) => {
-                    const p = getProduct(l.productId);
+                    const p = store.getProduct(l.productId);
                     return (
                       <tr key={l.productId}>
                         <td className="px-3 py-2 text-foreground">{p?.name}</td>
@@ -452,7 +453,7 @@ function NewQuotationWizard({
                   validLines.map((l) => ({
                     productId: l.productId,
                     quantity: l.quantity,
-                    unitPriceUsd: getProduct(l.productId)?.priceUsd ?? 0,
+                    unitPriceUsd: store.getProduct(l.productId)?.priceUsd ?? 0,
                   })),
                 )
               }

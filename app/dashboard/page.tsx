@@ -1,6 +1,5 @@
 'use client';
 
-import { products } from '@/lib/erp/seed';
 import { formatUsd } from '@/lib/erp/selectors';
 import { useErpStore } from '@/lib/erp/store';
 
@@ -79,7 +78,7 @@ const ACTIVITY: { when: string; text: string; dot: string }[] = [
 ];
 
 export default function DashboardPage() {
-  const { quotations, salesOrders, manufacturingOrders, purchaseOrders } = useErpStore();
+  const { products, quotations, salesOrders, manufacturingOrders, purchaseOrders } = useErpStore();
 
   const openQuotations = quotations.filter((q) => q.stage !== 'Sales Order Raised').length;
   const requiresMo = quotations.filter((q) => q.stockShort && q.stage !== 'Sales Order Raised').length;

@@ -23,7 +23,7 @@
 |---|---|---|
 | **1** | Seed data + app shell (sidebar, dashboard, route stubs) | ✅ Done, gate passed, committed |
 | **2** | Reusable `<ListDrawer>` + Inventory module | ✅ Done, **gate passed** (user confirmed) |
-| **2.5** | Master pages: Products, Raw Materials, BOM (SOW deliverables 1–3) | ✅ Built on `ListDrawer`; Products has in-session Active/Inactive toggle |
+| **2.5** | Master pages: Products, Raw Materials, BOM (SOW deliverables 1–3) | ✅ Full management — Add/Edit/Deactivate (Products, Raw Materials) + BOM editor; masters promoted into the store so edits propagate app-wide |
 | **3** | Purchase Orders + Manufacturing Orders + Document Trail | ✅ Done, **gate passed**; in-session store added (`lib/erp/store.tsx`) |
 | **4** | Quotations (Kanban + 3-step wizard) + Sales Orders | ✅ Done, **gate passed** |
 | **5** | The scripted demo flow (QT-1002 cascade) | ✅ Done, self-verified end-to-end (+ reset) |

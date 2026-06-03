@@ -56,6 +56,8 @@ export interface RawMaterial {
   stock: number;
   /** At or below this level the material reads as Low Stock. */
   reorderLevel: number;
+  /** Active by default; Inactive materials are retired from selection. */
+  status?: ProductStatus;
 }
 
 export type StockStatus = 'In Stock' | 'Low Stock' | 'Out of Stock';
