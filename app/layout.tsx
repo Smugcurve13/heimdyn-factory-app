@@ -11,6 +11,8 @@ import { AuthProvider } from '@/components/AuthProvider'
 import { AutoAuthModal } from '@/components/AutoAuthModal'
 import { ConditionalShell } from '@/components/ConditionalShell'
 import GlobalLoader from '@/components/GlobalLoader'
+import { ErpStoreProvider } from '@/lib/erp/store'
+import { RoleProvider } from '@/lib/erp/roles'
 
 export const metadata: Metadata = {
   title: 'Heimdyn',
@@ -51,9 +53,13 @@ export default function RootLayout({
                 <Suspense fallback={null}>
                   <GlobalLoader />
                 </Suspense>
-                <ConditionalShell>
-                  {children}
-                </ConditionalShell>
+                <RoleProvider>
+                  <ErpStoreProvider>
+                    <ConditionalShell>
+                      {children}
+                    </ConditionalShell>
+                  </ErpStoreProvider>
+                </RoleProvider>
               </TooltipProvider>
             </ThemeProvider>
           </ReactQueryProvider>

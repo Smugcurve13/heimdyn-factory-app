@@ -10,10 +10,14 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
-  ChevronDown,
+  FileText,
+  ShoppingCart,
+  Factory,
+  ClipboardList,
+  Boxes,
+  Package,
   Layers,
-  BarChart2,
-  Users,
+  Workflow,
   Truck,
   Shield,
 } from "lucide-react";
@@ -31,26 +35,17 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  {
-    href: "/main-dashboard",
-    label: "Dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    href: "/clients",
-    label: "Clients",
-    icon: Users,
-  },
-  {
-    href: "/vendors",
-    label: "Vendors",
-    icon: Truck,
-  },
-  {
-    href: "/users-and-roles",
-    label: "Users & Roles",
-    icon: Shield,
-  },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/quotations", label: "Quotations", icon: FileText },
+  { href: "/sales-orders", label: "Sales Orders", icon: ShoppingCart },
+  { href: "/manufacturing-orders", label: "Manufacturing Orders", icon: Factory },
+  { href: "/purchase-orders", label: "Purchase Orders", icon: ClipboardList },
+  { href: "/inventory", label: "Inventory", icon: Boxes },
+  { href: "/products", label: "Products", icon: Package },
+  { href: "/raw-materials", label: "Raw Materials", icon: Layers },
+  { href: "/bom", label: "BOM", icon: Workflow },
+  { href: "/vendors", label: "Vendors", icon: Truck },
+  { href: "/users-and-roles", label: "Users & Roles", icon: Shield },
 ];
 
 interface SidebarProps {
