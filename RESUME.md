@@ -22,7 +22,8 @@
 | Phase | Scope | Status |
 |---|---|---|
 | **1** | Seed data + app shell (sidebar, dashboard, route stubs) | ✅ Done, gate passed, committed |
-| **2** | Reusable `<ListDrawer>` + Inventory module | ✅ Built, self-tested green; **awaiting user gate sign-off** |
+| **2** | Reusable `<ListDrawer>` + Inventory module | ✅ Done, **gate passed** (user confirmed) |
+| **2.5** | Master pages: Products, Raw Materials, BOM (SOW deliverables 1–3) | ✅ Built on `ListDrawer`; Products has in-session Active/Inactive toggle |
 | **3** | Purchase Orders + Manufacturing Orders + Document Trail | ⏭️ **NEXT** |
 | 4 | Quotations (Kanban + 3-step wizard) + Sales Orders | ⬜ |
 | 5 | The scripted demo flow (QT-1002 cascade) | ⬜ |
@@ -83,8 +84,10 @@ components/erp/
 app/
   dashboard/page.tsx            # ERP dashboard (KPI cards + pipeline bars from seed)
   inventory/page.tsx            # Phase 2 module (two pools, tabs, Add Stock on raw only)
-  quotations|sales-orders|manufacturing-orders|purchase-orders|products|
-    raw-materials|bom/page.tsx  # stubs (replace as phases land)
+  products/page.tsx             # Product Master (list+drawer, in-session activate/deactivate)
+  raw-materials/page.tsx        # Raw Material Master (list+drawer, read)
+  bom/page.tsx                  # BOM viewer (list+drawer with recipe breakdown table)
+  quotations|sales-orders|manufacturing-orders|purchase-orders/page.tsx  # stubs (Phases 3–4)
 ```
 
 **Design tokens & fonts:** `app/globals.css` (`.dark` palette = DESIGN §3), `tailwind.config.ts` (fontFamily sans=Inter, mono=Geist Mono). Use semantic tokens only (`bg-card`, `text-foreground`, `bg-popover`…), no hardcoded hex. Numbers/IDs use `font-mono`.

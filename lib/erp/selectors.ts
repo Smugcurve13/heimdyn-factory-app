@@ -1,6 +1,7 @@
 import {
   products,
   rawMaterials,
+  boms,
   vendors,
   customers,
   quotations,
@@ -17,6 +18,7 @@ export const getQuotation = (id: string) => quotations.find((q) => q.id === id);
 export const getSalesOrder = (id: string) => salesOrders.find((s) => s.id === id);
 export const getManufacturingOrder = (id: string) => manufacturingOrders.find((m) => m.id === id);
 export const getPurchaseOrder = (id: string) => purchaseOrders.find((p) => p.id === id);
+export const getBom = (productId: string) => boms.find((b) => b.productId === productId);
 
 // --- Pipeline stage counts (drives dashboard pipeline bars) ---
 const countBy = <T>(items: T[], key: (item: T) => string) =>
