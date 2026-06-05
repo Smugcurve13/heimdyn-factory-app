@@ -3,6 +3,6 @@
 import type { DocumentEntry } from '@/services/api';
 import { DocumentList } from '@/components/features/erp/document-list';
 
-export function ClientDocumentsTab({ documents }: { documents: DocumentEntry[] }) {
+export function CustomerDocumentsTab({ documents }: { documents: DocumentEntry[] }) {
   return <DocumentList documents={documents} />;
 }

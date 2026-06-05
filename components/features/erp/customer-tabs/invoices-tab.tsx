@@ -21,7 +21,7 @@ const statusStyle: Record<string, string> = {
   Overdue: 'bg-red-500/10 text-red-600 dark:text-red-400',
 };
 
-export function ClientInvoicesTab({ invoices }: { invoices: Invoice[] }) {
+export function CustomerInvoicesTab({ invoices }: { invoices: Invoice[] }) {
   return (
     <Table>
       <TableHeader>

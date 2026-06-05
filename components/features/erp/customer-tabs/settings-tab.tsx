@@ -1,25 +1,25 @@
 'use client';
 
-import type { Client } from '@/services/api';
+import type { Customer } from '@/services/api';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Edit, UserCog, CreditCard, Ban, Trash2 } from 'lucide-react';
 
-export function ClientSettingsTab({
-  client,
+export function CustomerSettingsTab({
+  customer,
   onEdit,
   onDelete,
 }: {
-  client: Client;
+  customer: Customer;
   onEdit: () => void;
   onDelete: () => void;
 }) {
   const actions = [
-    { label: 'Edit Client', icon: <Edit className="h-4 w-4" />, onClick: onEdit, disabled: false },
+    { label: 'Edit Customer', icon: <Edit className="h-4 w-4" />, onClick: onEdit, disabled: false },
     { label: 'Assign Account Manager', icon: <UserCog className="h-4 w-4" />, disabled: true },
     { label: 'Change Credit Limit', icon: <CreditCard className="h-4 w-4" />, disabled: true },
-    { label: 'Deactivate Client', icon: <Ban className="h-4 w-4" />, disabled: true },
-    { label: 'Delete Client', icon: <Trash2 className="h-4 w-4" />, onClick: onDelete, disabled: false, destructive: true },
+    { label: 'Deactivate Customer', icon: <Ban className="h-4 w-4" />, disabled: true },
+    { label: 'Delete Customer', icon: <Trash2 className="h-4 w-4" />, onClick: onDelete, disabled: false, destructive: true },
   ];
 
   return (

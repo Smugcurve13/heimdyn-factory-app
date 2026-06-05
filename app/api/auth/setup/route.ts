@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import bcrypt from 'bcryptjs';
-import clientsSeed from '@/data/seed/clients.json';
+import customersSeed from '@/data/seed/customers.json';
 import vendorsSeed from '@/data/seed/vendors.json';
 
 // One-shot DB setup + seed. Protected by x-setup-secret header.
@@ -88,11 +88,14 @@ export async function POST(req: NextRequest) {
       ON CONFLICT (name) DO NOTHING
     `);
 
+    // Migrate any legacy 'clients' permission module to 'customers'
+    await client.query(`DELETE FROM permissions WHERE module_name = 'clients'`);
+
     // Seed permissions for all modules
     await client.query(`
       INSERT INTO permissions (module_name, permission_type)
       SELECT m, a FROM
-        unnest(ARRAY['dashboard','production','material','sales','analysis','clients','vendors','users','roles']) AS m
+        unnest(ARRAY['dashboard','production','material','sales','analysis','customers','vendors','users','roles']) AS m
         CROSS JOIN unnest(ARRAY['c','r','u','d']) AS a
       ON CONFLICT (module_name, permission_type) DO NOTHING
     `);
@@ -105,9 +108,21 @@ export async function POST(req: NextRequest) {
       ON CONFLICT (role_id, permission_id) DO NOTHING
     `);
 
-    // Create clients table
+    // Rename a legacy clients table to customers (preserves existing data),
+    // otherwise create the customers table fresh below.
     await client.query(`
-      CREATE TABLE IF NOT EXISTS clients (
+      DO $$
+      BEGIN
+        IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'clients')
+           AND NOT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'customers') THEN
+          ALTER TABLE clients RENAME TO customers;
+        END IF;
+      END $$;
+    `);
+
+    // Create customers table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS customers (
         id              SERIAL PRIMARY KEY,
         name            VARCHAR(200) NOT NULL,
         contact_person  VARCHAR(100),
@@ -142,14 +157,14 @@ export async function POST(req: NextRequest) {
       )
     `);
 
-    // Seed clients. No UNIQUE constraint exists, so insert each seed row only if
-    // a client of that name isn't already present — idempotent, backfills any
+    // Seed customers. No UNIQUE constraint exists, so insert each seed row only if
+    // a customer of that name isn't already present — idempotent, backfills any
     // missing rows, and never clobbers rows added via the UI.
-    for (const c of clientsSeed) {
+    for (const c of customersSeed) {
       await client.query(
-        `INSERT INTO clients (name, contact_person, email, phone, address, city, state, status)
+        `INSERT INTO customers (name, contact_person, email, phone, address, city, state, status)
          SELECT $1::varchar, $2, $3, $4, $5, $6, $7, $8
-         WHERE NOT EXISTS (SELECT 1 FROM clients WHERE name = $1)`,
+         WHERE NOT EXISTS (SELECT 1 FROM customers WHERE name = $1)`,
         [c.name, c.contact_person, c.email, c.phone, c.address, c.city, c.state, c.status]
       );
     }

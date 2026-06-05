@@ -1,10 +1,10 @@
 'use client';
 
-import type { Client, ClientErpData } from '@/services/api';
+import type { Customer, CustomerErpData } from '@/services/api';
 import { formatCurrency, formatDate } from '@/lib/mock-data';
 import { HealthBadge } from '@/components/features/erp/health-badge';
 
-export function ClientOverviewTab({ client, erp }: { client: Client; erp: ClientErpData | null }) {
+export function CustomerOverviewTab({ customer, erp }: { customer: Customer; erp: CustomerErpData | null }) {
   const revenue = erp ? erp.orders.reduce((s, o) => s + o.amount, 0) : 0;
   const outstanding = erp
     ? erp.invoices.filter((i) => i.status !== 'Paid').reduce((s, i) => s + i.amount, 0)
@@ -23,15 +23,15 @@ export function ClientOverviewTab({ client, erp }: { client: Client; erp: Client
       <div className="space-y-4 rounded-xl border border-slate-200 p-5 dark:border-slate-800">
         <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Basic Information</h3>
         <dl className="space-y-3 text-sm">
-          <Field label="Company Name" value={client.name} />
-          <Field label="Contact Person" value={client.contact_person} />
-          <Field label="Email" value={client.email} />
-          <Field label="Phone" value={client.phone} />
+          <Field label="Company Name" value={customer.name} />
+          <Field label="Contact Person" value={customer.contact_person} />
+          <Field label="Email" value={customer.email} />
+          <Field label="Phone" value={customer.phone} />
           <Field label="GST Number" value="—" />
           <Field label="PAN" value="—" />
-          <Field label="Address" value={client.address} />
-          <Field label="City" value={client.city} />
-          <Field label="State" value={client.state} />
+          <Field label="Address" value={customer.address} />
+          <Field label="City" value={customer.city} />
+          <Field label="State" value={customer.state} />
         </dl>
       </div>
 

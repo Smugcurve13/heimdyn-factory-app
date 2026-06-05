@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import type { Options } from 'highcharts';
 import { ChartCard } from '@/components/features/erp/chart-card';
 import { BASE_THEME, CHART_COLORS } from '@/lib/chart-theme';
-import type { ClientErpData } from '@/services/api';
+import type { CustomerErpData } from '@/services/api';
 
 const HighchartsReact = dynamic(() => import('highcharts-react-official'), { ssr: false });
 
@@ -12,7 +12,7 @@ function mergeTheme(opts: Partial<Options>): Options {
   return { ...BASE_THEME, ...opts } as Options;
 }
 
-export function ClientAnalyticsTab({ erp }: { erp: ClientErpData }) {
+export function CustomerAnalyticsTab({ erp }: { erp: CustomerErpData }) {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May'];
   const revenueByMonth = months.map((_, i) => {
     const month = String(i + 1).padStart(2, '0');

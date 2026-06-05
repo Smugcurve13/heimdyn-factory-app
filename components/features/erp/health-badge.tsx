@@ -1,6 +1,6 @@
 'use client';
 
-import type { ClientHealth, VendorPerformance } from '@/services/api';
+import type { CustomerHealth, VendorPerformance } from '@/services/api';
 
 const healthStyles: Record<string, string> = {
   Good: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300',
@@ -13,7 +13,7 @@ const healthStyles: Record<string, string> = {
   Critical: 'bg-red-500/15 text-red-700 dark:text-red-300',
 };
 
-export function HealthBadge({ value }: { value: ClientHealth | VendorPerformance }) {
+export function HealthBadge({ value }: { value: CustomerHealth | VendorPerformance }) {
   const style = healthStyles[value] ?? healthStyles['Average'];
   return (
     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${style}`}>

@@ -132,7 +132,7 @@ const getModuleIcon = (moduleName: string) => {
       return TrendingUp;
     case 'analysis':
       return Activity;
-    case 'clients':
+    case 'customers':
       return UsersIcon;
     case 'vendors':
       return Truck;
@@ -319,7 +319,7 @@ export default function SettingsPage() {
       'material': 'Material',
       'sales': 'Sales',
       'analysis': 'Analysis',
-      'clients': 'Clients',
+      'customers': 'Customers',
       'vendors': 'Vendors',
       'users': 'Users',
       'roles': 'Roles',
