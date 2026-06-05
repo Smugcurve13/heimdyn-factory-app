@@ -19,6 +19,8 @@
     "highcharts": "^12.6.0",
     "highcharts-react-official": "^3.2.3",
     "jose": "^6.2.3",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
     "next": "15.5.7",
     "pg": "^8.20.0",
     "react": "^18.3.1",

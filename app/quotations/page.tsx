@@ -2,9 +2,10 @@
 
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Plus, Trash2, RotateCcw } from 'lucide-react';
+import { Plus, Trash2, RotateCcw, Download } from 'lucide-react';
 import { customers } from '@/lib/erp/seed';
 import { getCustomer, formatPrice } from '@/lib/erp/selectors';
+import { downloadInvoicePdf } from '@/lib/erp/invoice';
 import { useErpStore } from '@/lib/erp/store';
 import { useRole } from '@/lib/erp/roles';
 import { Quotation, QuotationStage } from '@/lib/erp/types';
@@ -220,6 +221,32 @@ function Quotations() {
                       Reject
                     </Button>
                   </div>
+                )}
+
+                {/* Invoice — downloadable once the quotation is approved (Proforma Invoice onwards). */}
+                {(selected.stage === 'Proforma Invoice' || selected.stage === 'Sales Order Raised') && (
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      const customer = getCustomer(selected.customerId);
+                      downloadInvoicePdf({
+                        invoiceNumber: selected.invoice?.number ?? `INV-${selected.id.replace(/\D/g, '')}`,
+                        invoiceDate: selected.invoice?.date ?? selected.date,
+                        quotationId: selected.id,
+                        customer: { name: customer?.name ?? selected.customerId, city: customer?.city ?? '' },
+                        lines: selected.lines.map((l) => ({
+                          productId: l.productId,
+                          productName: store.getProduct(l.productId)?.name ?? l.productId,
+                          quantity: l.quantity,
+                          unitPriceUsd: l.unitPriceUsd,
+                        })),
+                      });
+                    }}
+                  >
+                    <Download className="mr-1 h-4 w-4" />
+                    Download Invoice
+                  </Button>
                 )}
 
                 <DocumentTrail nodes={trailFor(selected)} currentId={selected.id} />
