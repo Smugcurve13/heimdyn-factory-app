@@ -2,6 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import bcrypt from 'bcryptjs';
+import clientsSeed from '@/data/seed/clients.json';
+import vendorsSeed from '@/data/seed/vendors.json';
 
 // One-shot DB setup + seed. Protected by x-setup-secret header.
 // Call: POST /api/auth/setup  with header  x-setup-secret: <SETUP_SECRET env value>
@@ -139,6 +141,28 @@ export async function POST(req: NextRequest) {
         updated_at      TIMESTAMPTZ DEFAULT NOW()
       )
     `);
+
+    // Seed clients. No UNIQUE constraint exists, so insert each seed row only if
+    // a client of that name isn't already present — idempotent, backfills any
+    // missing rows, and never clobbers rows added via the UI.
+    for (const c of clientsSeed) {
+      await client.query(
+        `INSERT INTO clients (name, contact_person, email, phone, address, city, state, status)
+         SELECT $1::varchar, $2, $3, $4, $5, $6, $7, $8
+         WHERE NOT EXISTS (SELECT 1 FROM clients WHERE name = $1)`,
+        [c.name, c.contact_person, c.email, c.phone, c.address, c.city, c.state, c.status]
+      );
+    }
+
+    // Seed vendors with the same name-guarded, idempotent approach
+    for (const v of vendorsSeed) {
+      await client.query(
+        `INSERT INTO vendors (name, contact_person, email, phone, category, address, city, state, status)
+         SELECT $1::varchar, $2, $3, $4, $5, $6, $7, $8, $9
+         WHERE NOT EXISTS (SELECT 1 FROM vendors WHERE name = $1)`,
+        [v.name, v.contact_person, v.email, v.phone, v.category, v.address, v.city, v.state, v.status]
+      );
+    }
 
     // Seed superadmin
     const adminEmail = 'sambhavsoni14@gmail.com';

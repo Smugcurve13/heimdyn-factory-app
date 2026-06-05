@@ -18,6 +18,7 @@ import {
   Package,
   Layers,
   Workflow,
+  Users,
   Truck,
   Shield,
 } from "lucide-react";
@@ -44,6 +45,7 @@ const navItems: NavItem[] = [
   { href: "/products", label: "Products", icon: Package },
   { href: "/raw-materials", label: "Raw Materials", icon: Layers },
   { href: "/bom", label: "BOM", icon: Workflow },
+  { href: "/clients", label: "Clients", icon: Users },
   { href: "/vendors", label: "Vendors", icon: Truck },
   { href: "/users-and-roles", label: "Users & Roles", icon: Shield },
 ];
