@@ -104,6 +104,8 @@ export interface Quotation {
   linkedMO?: string | null;
   /** Set once the system has raised the Sales Order (never created by hand). */
   linkedSO?: string | null;
+  /** Frozen at approval — drives the downloadable invoice. Once set, never changes. */
+  invoice?: { number: string; date: string } | null;
 }
 
 export interface SalesOrder {

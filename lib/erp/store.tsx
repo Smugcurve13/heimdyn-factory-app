@@ -156,6 +156,7 @@ export function ErpStoreProvider({ children }: { children: ReactNode }) {
   const approveQuotation = (id: string) => {
     const q = quotations.find((x) => x.id === id);
     if (!q || q.stage !== 'Pending Approval') return;
+    const invoice = { number: `INV-${q.id.replace(/\D/g, '')}`, date: today() };
     if (q.stockShort) {
       const moId = `MO-${maxNum(manufacturingOrders.map((m) => m.id), 3000) + 1}`;
       const line = q.lines[0];
@@ -171,9 +172,9 @@ export function ErpStoreProvider({ children }: { children: ReactNode }) {
         raisedPOs: [],
       };
       setManufacturingOrders((prev) => [mo, ...prev]);
-      setQuotations((prev) => prev.map((x) => (x.id === id ? { ...x, stage: 'Proforma Invoice', linkedMO: moId } : x)));
+      setQuotations((prev) => prev.map((x) => (x.id === id ? { ...x, stage: 'Proforma Invoice', linkedMO: moId, invoice } : x)));
     } else {
-      setQuotations((prev) => prev.map((x) => (x.id === id ? { ...x, stage: 'Proforma Invoice' } : x)));
+      setQuotations((prev) => prev.map((x) => (x.id === id ? { ...x, stage: 'Proforma Invoice', invoice } : x)));
     }
   };
 

@@ -22,6 +22,7 @@ export const quotations: Quotation[] = [
     lines: [{ productId: 'PRD-101', quantity: 1000, unitPriceUsd: 18.5 }],
     linkedMO: 'MO-3001',
     linkedSO: 'SO-2001',
+    invoice: { number: 'INV-1001', date: '2026-03-05' },
   },
   {
     id: 'QT-1002',
@@ -42,6 +43,7 @@ export const quotations: Quotation[] = [
     lines: [{ productId: 'PRD-107', quantity: 200, unitPriceUsd: 9.0 }],
     linkedMO: null,
     linkedSO: 'SO-2003',
+    invoice: { number: 'INV-1003', date: '2026-05-13' },
   },
   {
     id: 'QT-1004',
@@ -52,6 +54,7 @@ export const quotations: Quotation[] = [
     lines: [{ productId: 'PRD-103', quantity: 800, unitPriceUsd: 21.0 }],
     linkedMO: 'MO-3003',
     linkedSO: 'SO-2004',
+    invoice: { number: 'INV-1004', date: '2026-04-23' },
   },
   {
     id: 'QT-1005',
@@ -82,6 +85,7 @@ export const quotations: Quotation[] = [
     lines: [{ productId: 'PRD-110', quantity: 150, unitPriceUsd: 27.5 }],
     linkedMO: null,
     linkedSO: null,
+    invoice: { number: 'INV-1007', date: '2026-05-21' },
   },
   {
     id: 'QT-1008',
