@@ -19,7 +19,7 @@ const statusStyle: Record<string, string> = {
   Failed: 'bg-red-500/10 text-red-600 dark:text-red-400',
 };
 
-export function ClientPaymentsTab({
+export function CustomerPaymentsTab({
   payments,
   invoices,
 }: {

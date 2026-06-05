@@ -29,7 +29,7 @@ const deliveryStyle: Record<string, string> = {
 
 const filters = ['All', 'Pending', 'Confirmed', 'Delivered'] as const;
 
-export function ClientOrdersTab({ orders }: { orders: Order[] }) {
+export function CustomerOrdersTab({ orders }: { orders: Order[] }) {
   const [filter, setFilter] = useState<string>('All');
 
   const filtered = filter === 'All'

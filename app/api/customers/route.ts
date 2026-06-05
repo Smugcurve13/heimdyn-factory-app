@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
 
   const client = await pool.connect();
   try {
-    let query = `SELECT * FROM clients WHERE is_deleted = FALSE`;
+    let query = `SELECT * FROM customers WHERE is_deleted = FALSE`;
     const params: string[] = [];
     let idx = 1;
 
@@ -33,8 +33,8 @@ export async function GET(req: NextRequest) {
     const result = await client.query(query, params);
     return NextResponse.json({ success: true, data: result.rows });
   } catch (err) {
-    console.error('[clients GET]', err);
-    return NextResponse.json({ success: false, message: 'Failed to fetch clients' }, { status: 500 });
+    console.error('[customers GET]', err);
+    return NextResponse.json({ success: false, message: 'Failed to fetch customers' }, { status: 500 });
   } finally {
     client.release();
   }
@@ -54,15 +54,15 @@ export async function POST(req: NextRequest) {
   const client = await pool.connect();
   try {
     const result = await client.query(
-      `INSERT INTO clients (name, contact_person, email, phone, address, city, state, status)
+      `INSERT INTO customers (name, contact_person, email, phone, address, city, state, status)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
        RETURNING *`,
       [name, contact_person || null, email || null, phone || null, address || null, city || null, state || null, status || 'active']
     );
-    return NextResponse.json({ success: true, message: 'Client created', data: result.rows[0] });
+    return NextResponse.json({ success: true, message: 'Customer created', data: result.rows[0] });
   } catch (err) {
-    console.error('[clients POST]', err);
-    return NextResponse.json({ success: false, message: 'Failed to create client' }, { status: 500 });
+    console.error('[customers POST]', err);
+    return NextResponse.json({ success: false, message: 'Failed to create customer' }, { status: 500 });
   } finally {
     client.release();
   }

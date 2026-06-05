@@ -114,7 +114,7 @@ export interface PermissionsResponse {
   [key: string]: string[];
 }
 
-export interface Client {
+export interface Customer {
   id: number;
   name: string;
   contact_person: string | null;
@@ -171,14 +171,14 @@ export interface DocumentEntry {
   date: string;
 }
 
-export type ClientHealth = 'Good' | 'Delayed Payments' | 'Low Activity' | 'High Value';
+export type CustomerHealth = 'Good' | 'Delayed Payments' | 'Low Activity' | 'High Value';
 
-export interface ClientErpData {
+export interface CustomerErpData {
   industry: string;
-  clientSince: string;
+  customerSince: string;
   creditLimit: number;
   paymentTerms: string;
-  health: ClientHealth;
+  health: CustomerHealth;
   orders: Order[];
   invoices: Invoice[];
   payments: Payment[];
@@ -227,18 +227,18 @@ export interface VendorErpData {
   activity: ActivityEntry[];
 }
 
-export interface ClientsResponse {
+export interface CustomersResponse {
   success: boolean;
-  data: Client[];
+  data: Customer[];
 }
 
-export interface ClientResponse {
+export interface CustomerResponse {
   success: boolean;
-  data: Client;
+  data: Customer;
   message?: string;
 }
 
-export interface ClientRequest {
+export interface CustomerRequest {
   name: string;
   contact_person?: string;
   email?: string;
@@ -287,22 +287,22 @@ export interface VendorRequest {
   status?: string;
 }
 
-export const clientService = {
-  getClients: (search?: string, status?: string) => {
+export const customerService = {
+  getCustomers: (search?: string, status?: string) => {
     const params = new URLSearchParams();
     if (search) params.set('search', search);
     if (status) params.set('status', status);
     const qs = params.toString();
-    return apiClient.get<ClientsResponse>(`/api/clients${qs ? `?${qs}` : ''}`, true);
+    return apiClient.get<CustomersResponse>(`/api/customers${qs ? `?${qs}` : ''}`, true);
   },
-  getClient: (id: number) =>
-    apiClient.get<ClientResponse>(`/api/clients/${id}`, true),
-  createClient: (data: ClientRequest) =>
-    apiClient.post<ClientResponse>('/api/clients', data, true),
-  updateClient: (id: number, data: ClientRequest) =>
-    apiClient.put<ClientResponse>(`/api/clients/${id}`, data, true),
-  deleteClient: (id: number) =>
-    apiClient.delete<{ success: boolean; message: string }>(`/api/clients/${id}`, true),
+  getCustomer: (id: number) =>
+    apiClient.get<CustomerResponse>(`/api/customers/${id}`, true),
+  createCustomer: (data: CustomerRequest) =>
+    apiClient.post<CustomerResponse>('/api/customers', data, true),
+  updateCustomer: (id: number, data: CustomerRequest) =>
+    apiClient.put<CustomerResponse>(`/api/customers/${id}`, data, true),
+  deleteCustomer: (id: number) =>
+    apiClient.delete<{ success: boolean; message: string }>(`/api/customers/${id}`, true),
 };
 
 export const vendorService = {

@@ -1,7 +1,7 @@
 {
   "Pinnacle Distributors": {
     "industry": "Distribution",
-    "clientSince": "2024-08-15",
+    "customerSince": "2024-08-15",
     "creditLimit": 200000,
     "paymentTerms": "Net 30",
     "health": "Good",
@@ -43,7 +43,7 @@
   },
   "Eastern Supply Co.": {
     "industry": "Wholesale Supply",
-    "clientSince": "2025-01-10",
+    "customerSince": "2025-01-10",
     "creditLimit": 150000,
     "paymentTerms": "Net 15",
     "health": "Good",
@@ -79,7 +79,7 @@
   },
   "Metro Industrial": {
     "industry": "Manufacturing",
-    "clientSince": "2024-05-12",
+    "customerSince": "2024-05-12",
     "creditLimit": 500000,
     "paymentTerms": "Net 30",
     "health": "High Value",
@@ -121,7 +121,7 @@
   },
   "Shree Enterprises": {
     "industry": "Trading",
-    "clientSince": "2025-03-20",
+    "customerSince": "2025-03-20",
     "creditLimit": 100000,
     "paymentTerms": "Net 15",
     "health": "Good",
@@ -157,7 +157,7 @@
   },
   "Reliable Trading": {
     "industry": "Retail Distribution",
-    "clientSince": "2024-11-05",
+    "customerSince": "2024-11-05",
     "creditLimit": 180000,
     "paymentTerms": "Net 30",
     "health": "Good",
@@ -193,7 +193,7 @@
   },
   "Apex Components": {
     "industry": "Auto Components",
-    "clientSince": "2025-06-01",
+    "customerSince": "2025-06-01",
     "creditLimit": 120000,
     "paymentTerms": "Net 15",
     "health": "Good",
@@ -229,7 +229,7 @@
   },
   "Star Agencies": {
     "industry": "Agency & Distribution",
-    "clientSince": "2025-02-14",
+    "customerSince": "2025-02-14",
     "creditLimit": 250000,
     "paymentTerms": "Net 30",
     "health": "High Value",
@@ -266,7 +266,7 @@
   },
   "National Parts Hub": {
     "industry": "Industrial Parts",
-    "clientSince": "2024-09-22",
+    "customerSince": "2024-09-22",
     "creditLimit": 175000,
     "paymentTerms": "Net 30",
     "health": "Delayed Payments",
@@ -301,7 +301,7 @@
   },
   "Heritage Industries": {
     "industry": "Textiles",
-    "clientSince": "2025-07-10",
+    "customerSince": "2025-07-10",
     "creditLimit": 80000,
     "paymentTerms": "Net 15",
     "health": "Low Activity",
@@ -333,7 +333,7 @@
   },
   "Landmark Supplies": {
     "industry": "General Supplies",
-    "clientSince": "2025-04-18",
+    "customerSince": "2025-04-18",
     "creditLimit": 90000,
     "paymentTerms": "Net 15",
     "health": "Low Activity",
@@ -364,7 +364,7 @@
   },
   "Pioneer Parts": {
     "industry": "Precision Engineering",
-    "clientSince": "2025-05-30",
+    "customerSince": "2025-05-30",
     "creditLimit": 100000,
     "paymentTerms": "Net 30",
     "health": "Low Activity",
@@ -396,7 +396,7 @@
   },
   "Prime Engineering": {
     "industry": "Engineering Services",
-    "clientSince": "2024-12-01",
+    "customerSince": "2024-12-01",
     "creditLimit": 300000,
     "paymentTerms": "Net 30",
     "health": "Good",

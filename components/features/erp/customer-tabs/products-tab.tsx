@@ -11,7 +11,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-export function ClientProductsTab({ products }: { products: ProductPurchase[] }) {
+export function CustomerProductsTab({ products }: { products: ProductPurchase[] }) {
   return (
     <Table>
       <TableHeader>

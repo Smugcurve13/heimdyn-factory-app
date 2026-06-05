@@ -67,14 +67,14 @@ import {
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { clientService, type Client } from '@/services/api';
+import { customerService, type Customer } from '@/services/api';
 import { KpiStrip } from '@/components/features/erp/kpi-strip';
 import { InsightCard } from '@/components/features/erp/insight-card';
 import { HealthBadge } from '@/components/features/erp/health-badge';
 import {
-  getClientKpiSummary,
-  getClientTableRow,
-  getAllClientErpData,
+  getCustomerKpiSummary,
+  getCustomerTableRow,
+  getAllCustomerErpData,
   formatCurrency,
   formatRelativeDate,
 } from '@/lib/mock-data';
@@ -90,9 +90,9 @@ const emptyForm = {
   status: 'active',
 };
 
-export default function ClientsPage() {
+export default function CustomersPage() {
   const router = useRouter();
-  const [clients, setClients] = useState<Client[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -105,26 +105,26 @@ export default function ClientsPage() {
   const [formData, setFormData] = useState(emptyForm);
   const { toast } = useToast();
 
-  const fetchClients = useCallback(async () => {
+  const fetchCustomers = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await clientService.getClients();
-      setClients(response.data);
+      const response = await customerService.getCustomers();
+      setCustomers(response.data);
     } catch (error) {
-      console.error('Error fetching clients:', error);
-      toast({ title: 'Error', description: 'Failed to load clients', variant: 'destructive' });
+      console.error('Error fetching customers:', error);
+      toast({ title: 'Error', description: 'Failed to load customers', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
   }, [toast]);
 
-  useEffect(() => { fetchClients(); }, [fetchClients]);
+  useEffect(() => { fetchCustomers(); }, [fetchCustomers]);
 
-  const kpiSummary = useMemo(() => getClientKpiSummary(clients), [clients]);
+  const kpiSummary = useMemo(() => getCustomerKpiSummary(customers), [customers]);
 
-  const allErp = useMemo(() => getAllClientErpData(), []);
+  const allErp = useMemo(() => getAllCustomerErpData(), []);
   const insights = useMemo(() => {
-    const withRevenue = clients.map((c) => {
+    const withRevenue = customers.map((c) => {
       const erp = allErp[c.name];
       const revenue = erp ? erp.orders.reduce((s, o) => s + o.amount, 0) : 0;
       const orders = erp ? erp.orders.length : 0;
@@ -139,15 +139,15 @@ export default function ClientsPage() {
       highRevenue: sorted.filter((c) => c.revenue > 200000).slice(0, 4).map((c) => ({ name: c.name, revenue: c.revenue, orders: c.orders })),
       inactive: withRevenue.filter((c) => c.status === 'inactive').slice(0, 4).map((c) => ({ name: c.name, revenue: c.revenue, orders: c.orders })),
     };
-  }, [clients, allErp]);
+  }, [customers, allErp]);
 
   const cities = useMemo(() => {
-    const set = new Set(clients.map((c) => c.city).filter(Boolean) as string[]);
+    const set = new Set(customers.map((c) => c.city).filter(Boolean) as string[]);
     return Array.from(set).sort();
-  }, [clients]);
+  }, [customers]);
 
-  const filteredClients = useMemo(() => {
-    return clients.filter((c) => {
+  const filteredCustomers = useMemo(() => {
+    return customers.filter((c) => {
       const q = searchQuery.toLowerCase();
       const matchesSearch =
         !q ||
@@ -159,7 +159,7 @@ export default function ClientsPage() {
       const matchesCity = cityFilter === 'all' || c.city === cityFilter;
       return matchesSearch && matchesStatus && matchesCity;
     });
-  }, [clients, searchQuery, statusFilter, cityFilter]);
+  }, [customers, searchQuery, statusFilter, cityFilter]);
 
   const handleOpenCreate = () => {
     setEditingId(null);
@@ -167,17 +167,17 @@ export default function ClientsPage() {
     setIsSheetOpen(true);
   };
 
-  const handleOpenEdit = (client: Client) => {
-    setEditingId(client.id);
+  const handleOpenEdit = (customer: Customer) => {
+    setEditingId(customer.id);
     setFormData({
-      name: client.name,
-      contact_person: client.contact_person || '',
-      email: client.email || '',
-      phone: client.phone || '',
-      address: client.address || '',
-      city: client.city || '',
-      state: client.state || '',
-      status: client.status,
+      name: customer.name,
+      contact_person: customer.contact_person || '',
+      email: customer.email || '',
+      phone: customer.phone || '',
+      address: customer.address || '',
+      city: customer.city || '',
+      state: customer.state || '',
+      status: customer.status,
     });
     setIsSheetOpen(true);
   };
@@ -192,19 +192,19 @@ export default function ClientsPage() {
     setIsSaving(true);
     try {
       if (editingId) {
-        const response = await clientService.updateClient(editingId, formData);
-        if (response.success) toast({ title: 'Success', description: 'Client updated' });
+        const response = await customerService.updateCustomer(editingId, formData);
+        if (response.success) toast({ title: 'Success', description: 'Customer updated' });
       } else {
-        const response = await clientService.createClient(formData);
-        if (response.success) toast({ title: 'Success', description: 'Client created' });
+        const response = await customerService.createCustomer(formData);
+        if (response.success) toast({ title: 'Success', description: 'Customer created' });
       }
       setIsSheetOpen(false);
       setFormData(emptyForm);
       setEditingId(null);
-      fetchClients();
+      fetchCustomers();
     } catch (error) {
-      console.error('Error saving client:', error);
-      toast({ title: 'Error', description: `Failed to ${editingId ? 'update' : 'create'} client`, variant: 'destructive' });
+      console.error('Error saving customer:', error);
+      toast({ title: 'Error', description: `Failed to ${editingId ? 'update' : 'create'} customer`, variant: 'destructive' });
     } finally {
       setIsSaving(false);
     }
@@ -214,23 +214,23 @@ export default function ClientsPage() {
     if (!deleteId) return;
     setIsDeleting(true);
     try {
-      const response = await clientService.deleteClient(deleteId);
+      const response = await customerService.deleteCustomer(deleteId);
       if (response.success) {
-        setClients(clients.filter((c) => c.id !== deleteId));
-        toast({ title: 'Success', description: 'Client deleted' });
+        setCustomers(customers.filter((c) => c.id !== deleteId));
+        toast({ title: 'Success', description: 'Customer deleted' });
       }
       setDeleteId(null);
     } catch (error) {
-      console.error('Error deleting client:', error);
-      toast({ title: 'Error', description: 'Failed to delete client', variant: 'destructive' });
+      console.error('Error deleting customer:', error);
+      toast({ title: 'Error', description: 'Failed to delete customer', variant: 'destructive' });
     } finally {
       setIsDeleting(false);
     }
   };
 
   const kpiItems = [
-    { title: 'Total Clients', value: String(kpiSummary.totalClients), icon: <Users className="h-5 w-5" /> },
-    { title: 'Active Clients', value: String(kpiSummary.activeClients), icon: <UserCheck className="h-5 w-5" /> },
+    { title: 'Total Customers', value: String(kpiSummary.totalCustomers), icon: <Users className="h-5 w-5" /> },
+    { title: 'Active Customers', value: String(kpiSummary.activeCustomers), icon: <UserCheck className="h-5 w-5" /> },
     { title: 'Pending Orders', value: String(kpiSummary.pendingOrders), icon: <ShoppingCart className="h-5 w-5" /> },
     { title: 'Revenue This Month', value: formatCurrency(kpiSummary.revenueThisMonth), icon: <IndianRupee className="h-5 w-5" /> },
     { title: 'Avg Order Value', value: formatCurrency(kpiSummary.avgOrderValue), icon: <BarChart3 className="h-5 w-5" /> },
@@ -241,7 +241,7 @@ export default function ClientsPage() {
     <SignedIn>
       <div className="space-y-6 p-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Clients</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Customers</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Manage customer relationships and track business activity
           </p>
@@ -263,7 +263,7 @@ export default function ClientsPage() {
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search clients..."
+                placeholder="Search customers..."
                 className="pl-9"
               />
             </div>
@@ -305,7 +305,7 @@ export default function ClientsPage() {
             </TooltipProvider>
             <Button onClick={handleOpenCreate} size="sm" className="gap-1.5">
               <Plus className="h-3.5 w-3.5" />
-              Add Client
+              Add Customer
             </Button>
           </div>
         </div>
@@ -315,11 +315,11 @@ export default function ClientsPage() {
             {loading ? (
               <div className="flex items-center justify-center gap-2 py-12 text-muted-foreground">
                 <Loader2 className="h-5 w-5 animate-spin" />
-                <span>Loading clients...</span>
+                <span>Loading customers...</span>
               </div>
-            ) : filteredClients.length === 0 ? (
+            ) : filteredCustomers.length === 0 ? (
               <div className="py-12 text-center text-muted-foreground">
-                {searchQuery ? 'No clients found matching your search' : 'No clients found'}
+                {searchQuery ? 'No customers found matching your search' : 'No customers found'}
               </div>
             ) : (
               <Table>
@@ -336,19 +336,19 @@ export default function ClientsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredClients.map((client) => {
-                    const row = getClientTableRow(client);
+                  {filteredCustomers.map((customer) => {
+                    const row = getCustomerTableRow(customer);
                     return (
                       <TableRow
-                        key={client.id}
+                        key={customer.id}
                         className="cursor-pointer hover:bg-muted/50"
-                        onClick={() => router.push(`/clients/${client.id}`)}
+                        onClick={() => router.push(`/customers/${customer.id}`)}
                       >
                         <TableCell>
                           <div>
-                            <p className="font-medium">{client.name}</p>
-                            {client.contact_person && (
-                              <p className="text-xs text-muted-foreground">{client.contact_person}</p>
+                            <p className="font-medium">{customer.name}</p>
+                            {customer.contact_person && (
+                              <p className="text-xs text-muted-foreground">{customer.contact_person}</p>
                             )}
                           </div>
                         </TableCell>
@@ -364,14 +364,14 @@ export default function ClientsPage() {
                         </TableCell>
                         <TableCell>
                           <Badge
-                            variant={client.status === 'active' ? 'default' : 'secondary'}
+                            variant={customer.status === 'active' ? 'default' : 'secondary'}
                             className={
-                              client.status === 'active'
+                              customer.status === 'active'
                                 ? 'bg-green-500/10 text-green-600 hover:bg-green-500/20 dark:text-green-400'
                                 : ''
                             }
                           >
-                            {client.status === 'active' ? 'Active' : 'Inactive'}
+                            {customer.status === 'active' ? 'Active' : 'Inactive'}
                           </Badge>
                         </TableCell>
                         <TableCell>
@@ -385,15 +385,15 @@ export default function ClientsPage() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => router.push(`/clients/${client.id}`)}>
+                              <DropdownMenuItem onClick={() => router.push(`/customers/${customer.id}`)}>
                                 View Details
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleOpenEdit(client)}>
+                              <DropdownMenuItem onClick={() => handleOpenEdit(customer)}>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Edit
                               </DropdownMenuItem>
                               <DropdownMenuItem
-                                onClick={() => setDeleteId(client.id)}
+                                onClick={() => setDeleteId(customer.id)}
                                 className="text-destructive focus:text-destructive"
                               >
                                 <Trash2 className="mr-2 h-4 w-4" />
@@ -415,9 +415,9 @@ export default function ClientsPage() {
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetContent className="w-full overflow-y-auto sm:max-w-[500px]">
             <SheetHeader>
-              <SheetTitle className="text-xl">{editingId ? 'Edit Client' : 'Add New Client'}</SheetTitle>
+              <SheetTitle className="text-xl">{editingId ? 'Edit Customer' : 'Add New Customer'}</SheetTitle>
               <SheetDescription>
-                {editingId ? 'Update client information.' : 'Add a new client to the system.'}
+                {editingId ? 'Update customer information.' : 'Add a new customer to the system.'}
               </SheetDescription>
             </SheetHeader>
 
@@ -467,7 +467,7 @@ export default function ClientsPage() {
               <div className="flex gap-3 pt-4">
                 <Button type="button" variant="outline" onClick={() => { setIsSheetOpen(false); setFormData(emptyForm); setEditingId(null); }} disabled={isSaving} className="h-11 flex-1">Cancel</Button>
                 <Button type="submit" disabled={isSaving} className="h-11 flex-1">
-                  {isSaving ? (editingId ? 'Updating...' : 'Creating...') : (editingId ? 'Update Client' : 'Create Client')}
+                  {isSaving ? (editingId ? 'Updating...' : 'Creating...') : (editingId ? 'Update Customer' : 'Create Customer')}
                 </Button>
               </div>
             </form>
@@ -480,8 +480,8 @@ export default function ClientsPage() {
             <AlertDialogHeader>
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>
-                This will delete the client
-                {deleteId && clients.find((c) => c.id === deleteId) && ` "${clients.find((c) => c.id === deleteId)?.name}"`}.
+                This will delete the customer
+                {deleteId && customers.find((c) => c.id === deleteId) && ` "${customers.find((c) => c.id === deleteId)?.name}"`}.
                 This action cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
@@ -492,7 +492,7 @@ export default function ClientsPage() {
                 disabled={isDeleting}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
-                {isDeleting ? 'Deleting...' : 'Delete Client'}
+                {isDeleting ? 'Deleting...' : 'Delete Customer'}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

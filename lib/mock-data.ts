@@ -1,47 +1,47 @@
-import type { Client, ClientErpData, Vendor, VendorErpData } from '@/services/api';
-import clientMockData from '@/data/clients/mock-erp.json';
+import type { Customer, CustomerErpData, Vendor, VendorErpData } from '@/services/api';
+import customerMockData from '@/data/customers/mock-erp.json';
 import vendorMockData from '@/data/vendors/mock-erp.json';
 
-const clientErp = clientMockData as Record<string, ClientErpData>;
+const customerErp = customerMockData as Record<string, CustomerErpData>;
 const vendorErp = vendorMockData as Record<string, VendorErpData>;
 
-export function getClientErpData(clientName: string): ClientErpData | null {
-  return clientErp[clientName] ?? null;
+export function getCustomerErpData(customerName: string): CustomerErpData | null {
+  return customerErp[customerName] ?? null;
 }
 
 export function getVendorErpData(vendorName: string): VendorErpData | null {
   return vendorErp[vendorName] ?? null;
 }
 
-export function getAllClientErpData(): Record<string, ClientErpData> {
-  return clientErp;
+export function getAllCustomerErpData(): Record<string, CustomerErpData> {
+  return customerErp;
 }
 
 export function getAllVendorErpData(): Record<string, VendorErpData> {
   return vendorErp;
 }
 
-function sumOrders(erp: ClientErpData) {
+function sumOrders(erp: CustomerErpData) {
   return erp.orders.length;
 }
 
-function sumRevenue(erp: ClientErpData) {
+function sumRevenue(erp: CustomerErpData) {
   return erp.orders.reduce((sum, o) => sum + o.amount, 0);
 }
 
-function sumOutstanding(erp: ClientErpData) {
+function sumOutstanding(erp: CustomerErpData) {
   return erp.invoices
     .filter((inv) => inv.status === 'Pending' || inv.status === 'Overdue')
     .reduce((sum, inv) => sum + inv.amount, 0);
 }
 
-function lastPurchaseDate(erp: ClientErpData): string | null {
+function lastPurchaseDate(erp: CustomerErpData): string | null {
   if (!erp.orders.length) return null;
   return erp.orders.sort((a, b) => b.date.localeCompare(a.date))[0].date;
 }
 
-export function getClientTableRow(client: Client) {
-  const erp = getClientErpData(client.name);
+export function getCustomerTableRow(customer: Customer) {
+  const erp = getCustomerErpData(customer.name);
   if (!erp) {
     return {
       orders: 0,
@@ -60,16 +60,16 @@ export function getClientTableRow(client: Client) {
   };
 }
 
-export function getClientKpiSummary(clients: Client[]) {
+export function getCustomerKpiSummary(customers: Customer[]) {
   let totalOrders = 0;
   let pendingOrders = 0;
   let totalRevenue = 0;
   let topCustomer = '';
   let topRevenue = 0;
-  const activeCount = clients.filter((c) => c.status === 'active').length;
+  const activeCount = customers.filter((c) => c.status === 'active').length;
 
-  for (const client of clients) {
-    const erp = getClientErpData(client.name);
+  for (const customer of customers) {
+    const erp = getCustomerErpData(customer.name);
     if (!erp) continue;
     const rev = sumRevenue(erp);
     totalRevenue += rev;
@@ -79,15 +79,15 @@ export function getClientKpiSummary(clients: Client[]) {
     ).length;
     if (rev > topRevenue) {
       topRevenue = rev;
-      topCustomer = client.name;
+      topCustomer = customer.name;
     }
   }
 
   const avgOrderValue = totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
 
   return {
-    totalClients: clients.length,
-    activeClients: activeCount,
+    totalCustomers: customers.length,
+    activeCustomers: activeCount,
     pendingOrders,
     revenueThisMonth: totalRevenue,
     avgOrderValue,

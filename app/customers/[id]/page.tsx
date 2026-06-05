@@ -34,20 +34,20 @@ import {
 } from '@/components/ui/select';
 import { Loader2, ShoppingCart, FileText, CreditCard, Edit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { clientService, type Client, type ClientErpData } from '@/services/api';
-import { getClientErpData, formatCurrency } from '@/lib/mock-data';
+import { customerService, type Customer, type CustomerErpData } from '@/services/api';
+import { getCustomerErpData, formatCurrency } from '@/lib/mock-data';
 
 import { DetailHeader } from '@/components/features/erp/detail-header';
 import { DetailSidebar } from '@/components/features/erp/detail-sidebar';
-import { ClientOverviewTab } from '@/components/features/erp/client-tabs/overview-tab';
-import { ClientOrdersTab } from '@/components/features/erp/client-tabs/orders-tab';
-import { ClientInvoicesTab } from '@/components/features/erp/client-tabs/invoices-tab';
-import { ClientPaymentsTab } from '@/components/features/erp/client-tabs/payments-tab';
-import { ClientProductsTab } from '@/components/features/erp/client-tabs/products-tab';
-import { ClientAnalyticsTab } from '@/components/features/erp/client-tabs/analytics-tab';
-import { ClientDocumentsTab } from '@/components/features/erp/client-tabs/documents-tab';
-import { ClientActivityTab } from '@/components/features/erp/client-tabs/activity-tab';
-import { ClientSettingsTab } from '@/components/features/erp/client-tabs/settings-tab';
+import { CustomerOverviewTab } from '@/components/features/erp/customer-tabs/overview-tab';
+import { CustomerOrdersTab } from '@/components/features/erp/customer-tabs/orders-tab';
+import { CustomerInvoicesTab } from '@/components/features/erp/customer-tabs/invoices-tab';
+import { CustomerPaymentsTab } from '@/components/features/erp/customer-tabs/payments-tab';
+import { CustomerProductsTab } from '@/components/features/erp/customer-tabs/products-tab';
+import { CustomerAnalyticsTab } from '@/components/features/erp/customer-tabs/analytics-tab';
+import { CustomerDocumentsTab } from '@/components/features/erp/customer-tabs/documents-tab';
+import { CustomerActivityTab } from '@/components/features/erp/customer-tabs/activity-tab';
+import { CustomerSettingsTab } from '@/components/features/erp/customer-tabs/settings-tab';
 
 const emptyForm = {
   name: '',
@@ -60,14 +60,14 @@ const emptyForm = {
   status: 'active',
 };
 
-export default function ClientDetailPage() {
+export default function CustomerDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
-  const clientId = Number(params.id);
+  const customerId = Number(params.id);
 
-  const [client, setClient] = useState<Client | null>(null);
-  const [erp, setErp] = useState<ClientErpData | null>(null);
+  const [customer, setCustomer] = useState<Customer | null>(null);
+  const [erp, setErp] = useState<CustomerErpData | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -75,33 +75,33 @@ export default function ClientDetailPage() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchClient = useCallback(async () => {
+  const fetchCustomer = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await clientService.getClient(clientId);
-      setClient(response.data);
-      setErp(getClientErpData(response.data.name));
+      const response = await customerService.getCustomer(customerId);
+      setCustomer(response.data);
+      setErp(getCustomerErpData(response.data.name));
     } catch {
-      toast({ title: 'Error', description: 'Failed to load client', variant: 'destructive' });
-      router.push('/clients');
+      toast({ title: 'Error', description: 'Failed to load customer', variant: 'destructive' });
+      router.push('/customers');
     } finally {
       setLoading(false);
     }
-  }, [clientId, router, toast]);
+  }, [customerId, router, toast]);
 
-  useEffect(() => { fetchClient(); }, [fetchClient]);
+  useEffect(() => { fetchCustomer(); }, [fetchCustomer]);
 
   const handleOpenEdit = () => {
-    if (!client) return;
+    if (!customer) return;
     setFormData({
-      name: client.name,
-      contact_person: client.contact_person || '',
-      email: client.email || '',
-      phone: client.phone || '',
-      address: client.address || '',
-      city: client.city || '',
-      state: client.state || '',
-      status: client.status,
+      name: customer.name,
+      contact_person: customer.contact_person || '',
+      email: customer.email || '',
+      phone: customer.phone || '',
+      address: customer.address || '',
+      city: customer.city || '',
+      state: customer.state || '',
+      status: customer.status,
     });
     setIsEditOpen(true);
   };
@@ -114,14 +114,14 @@ export default function ClientDetailPage() {
     }
     setIsSaving(true);
     try {
-      const response = await clientService.updateClient(clientId, formData);
+      const response = await customerService.updateCustomer(customerId, formData);
       if (response.success) {
-        toast({ title: 'Success', description: 'Client updated' });
+        toast({ title: 'Success', description: 'Customer updated' });
         setIsEditOpen(false);
-        fetchClient();
+        fetchCustomer();
       }
     } catch {
-      toast({ title: 'Error', description: 'Failed to update client', variant: 'destructive' });
+      toast({ title: 'Error', description: 'Failed to update customer', variant: 'destructive' });
     } finally {
       setIsSaving(false);
     }
@@ -130,13 +130,13 @@ export default function ClientDetailPage() {
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      const response = await clientService.deleteClient(clientId);
+      const response = await customerService.deleteCustomer(customerId);
       if (response.success) {
-        toast({ title: 'Success', description: 'Client deleted' });
-        router.push('/clients');
+        toast({ title: 'Success', description: 'Customer deleted' });
+        router.push('/customers');
       }
     } catch {
-      toast({ title: 'Error', description: 'Failed to delete client', variant: 'destructive' });
+      toast({ title: 'Error', description: 'Failed to delete customer', variant: 'destructive' });
     } finally {
       setIsDeleting(false);
     }
@@ -147,13 +147,13 @@ export default function ClientDetailPage() {
       <SignedIn>
         <div className="flex items-center justify-center gap-2 py-24 text-muted-foreground">
           <Loader2 className="h-5 w-5 animate-spin" />
-          Loading client...
+          Loading customer...
         </div>
       </SignedIn>
     );
   }
 
-  if (!client) return null;
+  if (!customer) return null;
 
   const revenue = erp ? erp.orders.reduce((s, o) => s + o.amount, 0) : 0;
   const outstanding = erp
@@ -167,14 +167,14 @@ export default function ClientDetailPage() {
       <div className="flex gap-6 p-6">
         <div className="min-w-0 flex-1 space-y-6">
           <DetailHeader
-            title={client.name}
-            subtitle={erp ? `${erp.industry} · ${client.city ?? ''}` : client.city ?? undefined}
-            backHref="/clients"
-            status={client.status}
+            title={customer.name}
+            subtitle={erp ? `${erp.industry} · ${customer.city ?? ''}` : customer.city ?? undefined}
+            backHref="/customers"
+            status={customer.status}
             metadata={[
               ...(erp ? [{ label: 'Industry', value: erp.industry }] : []),
-              { label: 'Location', value: `${client.city ?? ''}${client.state ? `, ${client.state}` : ''}` },
-              ...(erp ? [{ label: 'Client Since', value: new Date(erp.clientSince).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) }] : []),
+              { label: 'Location', value: `${customer.city ?? ''}${customer.state ? `, ${customer.state}` : ''}` },
+              ...(erp ? [{ label: 'Customer Since', value: new Date(erp.customerSince).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) }] : []),
             ]}
             metrics={[
               { label: 'Revenue', value: formatCurrency(revenue) },
@@ -186,7 +186,7 @@ export default function ClientDetailPage() {
               { label: 'Create Order', icon: <ShoppingCart className="h-3.5 w-3.5" />, disabled: true },
               { label: 'Generate Invoice', icon: <FileText className="h-3.5 w-3.5" />, disabled: true },
               { label: 'Add Payment', icon: <CreditCard className="h-3.5 w-3.5" />, disabled: true },
-              { label: 'Edit Client', icon: <Edit className="h-3.5 w-3.5" />, onClick: handleOpenEdit },
+              { label: 'Edit Customer', icon: <Edit className="h-3.5 w-3.5" />, onClick: handleOpenEdit },
             ]}
           />
 
@@ -204,31 +204,31 @@ export default function ClientDetailPage() {
             </TabsList>
 
             <TabsContent value="overview" className="mt-4">
-              <ClientOverviewTab client={client} erp={erp} />
+              <CustomerOverviewTab customer={customer} erp={erp} />
             </TabsContent>
             <TabsContent value="orders" className="mt-4">
-              <ClientOrdersTab orders={erp?.orders ?? []} />
+              <CustomerOrdersTab orders={erp?.orders ?? []} />
             </TabsContent>
             <TabsContent value="invoices" className="mt-4">
-              <ClientInvoicesTab invoices={erp?.invoices ?? []} />
+              <CustomerInvoicesTab invoices={erp?.invoices ?? []} />
             </TabsContent>
             <TabsContent value="payments" className="mt-4">
-              <ClientPaymentsTab payments={erp?.payments ?? []} invoices={erp?.invoices ?? []} />
+              <CustomerPaymentsTab payments={erp?.payments ?? []} invoices={erp?.invoices ?? []} />
             </TabsContent>
             <TabsContent value="products" className="mt-4">
-              <ClientProductsTab products={erp?.products ?? []} />
+              <CustomerProductsTab products={erp?.products ?? []} />
             </TabsContent>
             <TabsContent value="analytics" className="mt-4">
-              {erp ? <ClientAnalyticsTab erp={erp} /> : <p className="text-muted-foreground">No analytics data available</p>}
+              {erp ? <CustomerAnalyticsTab erp={erp} /> : <p className="text-muted-foreground">No analytics data available</p>}
             </TabsContent>
             <TabsContent value="documents" className="mt-4">
-              <ClientDocumentsTab documents={erp?.documents ?? []} />
+              <CustomerDocumentsTab documents={erp?.documents ?? []} />
             </TabsContent>
             <TabsContent value="activity" className="mt-4">
-              <ClientActivityTab activity={erp?.activity ?? []} />
+              <CustomerActivityTab activity={erp?.activity ?? []} />
             </TabsContent>
             <TabsContent value="settings" className="mt-4">
-              <ClientSettingsTab client={client} onEdit={handleOpenEdit} onDelete={() => setDeleteOpen(true)} />
+              <CustomerSettingsTab customer={customer} onEdit={handleOpenEdit} onDelete={() => setDeleteOpen(true)} />
             </TabsContent>
           </Tabs>
         </div>
@@ -257,8 +257,8 @@ export default function ClientDetailPage() {
       <Sheet open={isEditOpen} onOpenChange={setIsEditOpen}>
         <SheetContent className="w-full overflow-y-auto sm:max-w-[500px]">
           <SheetHeader>
-            <SheetTitle>Edit Client</SheetTitle>
-            <SheetDescription>Update client information.</SheetDescription>
+            <SheetTitle>Edit Customer</SheetTitle>
+            <SheetDescription>Update customer information.</SheetDescription>
           </SheetHeader>
           <form onSubmit={handleSubmit} className="mt-6 space-y-5">
             <div className="space-y-2">
@@ -306,7 +306,7 @@ export default function ClientDetailPage() {
             <div className="flex gap-3 pt-4">
               <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)} disabled={isSaving} className="h-11 flex-1">Cancel</Button>
               <Button type="submit" disabled={isSaving} className="h-11 flex-1">
-                {isSaving ? 'Updating...' : 'Update Client'}
+                {isSaving ? 'Updating...' : 'Update Customer'}
               </Button>
             </div>
           </form>
@@ -317,9 +317,9 @@ export default function ClientDetailPage() {
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete client?</AlertDialogTitle>
+            <AlertDialogTitle>Delete customer?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will delete &quot;{client.name}&quot;. This action cannot be undone.
+              This will delete &quot;{customer.name}&quot;. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -329,7 +329,7 @@ export default function ClientDetailPage() {
               disabled={isDeleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {isDeleting ? 'Deleting...' : 'Delete Client'}
+              {isDeleting ? 'Deleting...' : 'Delete Customer'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
