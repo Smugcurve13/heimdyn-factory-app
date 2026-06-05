@@ -316,12 +316,12 @@ function NewQuotationWizard({
         </div>
 
         {step === 1 && (
-          <div className="space-y-2">
+          <div className="min-w-0 space-y-2">
             <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Customer</label>
             <select
               value={customerId}
               onChange={(e) => setCustomerId(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
+              className="w-full min-w-0 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
             >
               <option value="">Select a customer…</option>
               {customers.map((c) => (
@@ -334,7 +334,7 @@ function NewQuotationWizard({
         )}
 
         {step === 2 && (
-          <div className="space-y-3">
+          <div className="min-w-0 space-y-3">
             {lines.map((line, idx) => {
               const product = store.getProduct(line.productId);
               const short = product ? product.finishedStock < line.quantity : false;
@@ -346,7 +346,7 @@ function NewQuotationWizard({
                       onChange={(e) =>
                         setLines((prev) => prev.map((l, i) => (i === idx ? { ...l, productId: e.target.value } : l)))
                       }
-                      className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
+                      className="min-w-0 flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
                     >
                       <option value="">Select product (finished goods)…</option>
                       {finishedGoods.map((p) => (
@@ -400,7 +400,7 @@ function NewQuotationWizard({
         )}
 
         {step === 3 && (
-          <div className="space-y-3 text-sm">
+          <div className="min-w-0 space-y-3 text-sm">
             <DrawerField label="Customer" value={getCustomer(customerId)?.name ?? '—'} />
             <div className="overflow-hidden rounded-lg border border-border">
               <table className="w-full text-sm">
