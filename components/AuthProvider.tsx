@@ -2,6 +2,16 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { bypassActive, BYPASS_USER } from '@/lib/bypass';
+
+// ponytail: temporary login bypass, auto-expires. See lib/bypass.ts.
+const BYPASS_GUEST: User = {
+  id: String(BYPASS_USER.user_id),
+  email: BYPASS_USER.email,
+  username: BYPASS_USER.username,
+  name: BYPASS_USER.username,
+  role: BYPASS_USER.role,
+};
 
 export interface User {
   id: string;
@@ -97,10 +107,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(JSON.parse(storedUser) as User);
         } else {
           const refreshed = await tryRefresh();
-          if (!refreshed) setShowAuthModal(true);
+          if (!refreshed) {
+            if (bypassActive()) setUser(BYPASS_GUEST);
+            else setShowAuthModal(true);
+          }
         }
       } else {
-        setShowAuthModal(true);
+        if (bypassActive()) setUser(BYPASS_GUEST);
+        else setShowAuthModal(true);
       }
       setLoading(false);
     };

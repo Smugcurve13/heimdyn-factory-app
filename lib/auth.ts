@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken, type TokenPayload } from './jwt';
+import { bypassActive, BYPASS_USER } from './bypass';
 
 type AuthSuccess = { user: TokenPayload; error: null };
 type AuthFailure = { user: null; error: NextResponse };
 
 export async function requireAuth(req: NextRequest): Promise<AuthSuccess | AuthFailure> {
+  // ponytail: temporary login bypass, auto-expires. See lib/bypass.ts.
+  if (bypassActive()) {
+    return { user: BYPASS_USER as TokenPayload, error: null };
+  }
+
   const authHeader = req.headers.get('Authorization');
   if (!authHeader?.startsWith('Bearer ')) {
     return {
