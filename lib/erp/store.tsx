@@ -17,6 +17,7 @@ import {
   Product,
   PurchaseOrder,
   Quotation,
+  RejectedQuotation,
   RawMaterial,
   SalesOrder,
 } from './types';
@@ -38,6 +39,7 @@ interface ErpStoreValue {
   rawMaterials: RawMaterial[];
   boms: Bom[];
   quotations: Quotation[];
+  rejectedQuotations: RejectedQuotation[];
   salesOrders: SalesOrder[];
   manufacturingOrders: ManufacturingOrder[];
   purchaseOrders: PurchaseOrder[];
@@ -62,8 +64,10 @@ interface ErpStoreValue {
 
   // Documents
   addQuotation: (q: Omit<Quotation, 'id'>) => string;
+  updateQuotation: (id: string, customerId: string, lines: Quotation['lines']) => void;
+  submitQuotationForApproval: (id: string) => void;
   approveQuotation: (id: string) => void;
-  rejectQuotation: (id: string) => void;
+  rejectQuotation: (id: string, reason: string) => void;
   approvePurchaseOrder: (id: string) => void;
   confirmGoodsReceipt: (id: string, receivedQty: number) => void;
   approveManufacturingOrder: (id: string) => void;
@@ -102,11 +106,48 @@ const vendorForMaterial = (materialId: string) =>
   : materialId === 'RM-215' ? 'VEN-506'
   : 'VEN-501';
 
+export const updateDraftQuotation = (
+  quotations: Quotation[],
+  id: string,
+  customerId: string,
+  lines: Quotation['lines'],
+  products: Pick<Product, 'id' | 'finishedStock'>[],
+) =>
+  quotations.map((q) =>
+    q.id === id && q.stage === 'Draft'
+      ? {
+          ...q,
+          customerId,
+          lines,
+          stockShort: lines.some((line) => (products.find((product) => product.id === line.productId)?.finishedStock ?? 0) < line.quantity),
+        }
+      : q,
+  );
+
+export const submitDraftQuotation = (quotations: Quotation[], id: string) =>
+  quotations.map((q) => (q.id === id && q.stage === 'Draft' ? { ...q, stage: 'Pending Approval' as const } : q));
+
+export const archiveRejectedQuotation = (
+  quotations: Quotation[],
+  id: string,
+  reason: string,
+  rejectedAt: string,
+): { quotations: Quotation[]; archived: RejectedQuotation | null } => {
+  const rejectionReason = reason.trim();
+  const quotation = quotations.find((q) => q.id === id && q.stage === 'Pending Approval');
+  if (!quotation || !rejectionReason) return { quotations, archived: null };
+  return {
+    quotations: quotations.filter((q) => q.id !== id),
+    archived: { ...quotation, rejectionReason, rejectedAt },
+  };
+};
+
 export function ErpStoreProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Product[]>(() => clone(seedProducts));
   const [rawMaterials, setRawMaterials] = useState<RawMaterial[]>(() => clone(seedRawMaterials));
   const [boms, setBoms] = useState<Bom[]>(() => clone(seedBoms));
   const [quotations, setQuotations] = useState<Quotation[]>(() => clone(seedQuotations));
+  const [rejectedQuotations, setRejectedQuotations] = useState<RejectedQuotation[]>([]);
   const [salesOrders, setSalesOrders] = useState<SalesOrder[]>(() => clone(seedSOs));
   const [manufacturingOrders, setManufacturingOrders] = useState<ManufacturingOrder[]>(() => clone(seedMOs));
   const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>(() => clone(seedPOs));
@@ -153,6 +194,12 @@ export function ErpStoreProvider({ children }: { children: ReactNode }) {
     return id;
   };
 
+  const updateQuotation = (id: string, customerId: string, lines: Quotation['lines']) =>
+    setQuotations((prev) => updateDraftQuotation(prev, id, customerId, lines, products));
+
+  const submitQuotationForApproval = (id: string) =>
+    setQuotations((prev) => submitDraftQuotation(prev, id));
+
   const approveQuotation = (id: string) => {
     const q = quotations.find((x) => x.id === id);
     if (!q || q.stage !== 'Pending Approval') return;
@@ -178,8 +225,12 @@ export function ErpStoreProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const rejectQuotation = (id: string) =>
-    setQuotations((prev) => prev.map((q) => (q.id === id && q.stage === 'Pending Approval' ? { ...q, stage: 'Draft' } : q)));
+  const rejectQuotation = (id: string, reason: string) => {
+    const result = archiveRejectedQuotation(quotations, id, reason, today());
+    if (!result.archived) return;
+    setQuotations(result.quotations);
+    setRejectedQuotations((prev) => [result.archived!, ...prev]);
+  };
 
   const approveManufacturingOrder = (id: string) => {
     const mo = manufacturingOrders.find((m) => m.id === id);
@@ -267,6 +318,7 @@ export function ErpStoreProvider({ children }: { children: ReactNode }) {
     setRawMaterials(clone(seedRawMaterials));
     setBoms(clone(seedBoms));
     setQuotations(clone(seedQuotations));
+    setRejectedQuotations([]);
     setSalesOrders(clone(seedSOs));
     setManufacturingOrders(clone(seedMOs));
     setPurchaseOrders(clone(seedPOs));
@@ -277,6 +329,7 @@ export function ErpStoreProvider({ children }: { children: ReactNode }) {
     rawMaterials,
     boms,
     quotations,
+    rejectedQuotations,
     salesOrders,
     manufacturingOrders,
     purchaseOrders,
@@ -296,6 +349,8 @@ export function ErpStoreProvider({ children }: { children: ReactNode }) {
     addMaterialStock,
     setBomLines,
     addQuotation,
+    updateQuotation,
+    submitQuotationForApproval,
     approveQuotation,
     rejectQuotation,
     approvePurchaseOrder,

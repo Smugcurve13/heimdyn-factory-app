@@ -12,6 +12,7 @@ import { Quotation, QuotationStage } from '@/lib/erp/types';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import {
   Dialog,
@@ -46,6 +47,9 @@ function Quotations() {
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [editingDraft, setEditingDraft] = useState<Quotation | null>(null);
+  const [rejectionTarget, setRejectionTarget] = useState<Quotation | null>(null);
+  const [rejectionReason, setRejectionReason] = useState('');
 
   useEffect(() => {
     if (focus) setSelectedId(focus);
@@ -91,7 +95,7 @@ function Quotations() {
             </Button>
           )}
           {can('quotation:create') && (
-            <Button onClick={() => setWizardOpen(true)}>
+            <Button onClick={() => { setEditingDraft(null); setWizardOpen(true); }}>
               <Plus className="mr-1 h-4 w-4" />
               New Quotation
             </Button>
@@ -211,13 +215,24 @@ function Quotations() {
                   </div>
                 </div>
 
+                {selected.stage === 'Draft' && can('quotation:create') && (
+                  <div className="flex gap-2">
+                    <Button className="flex-1" variant="outline" onClick={() => { setEditingDraft(selected); setWizardOpen(true); }}>
+                      Edit draft
+                    </Button>
+                    <Button className="flex-1" onClick={() => store.submitQuotationForApproval(selected.id)}>
+                      Submit for approval
+                    </Button>
+                  </div>
+                )}
+
                 {/* Approve / Reject — only at Pending Approval. No "Convert to SO" anywhere. */}
                 {selected.stage === 'Pending Approval' && can('quotation:approve') && (
                   <div className="flex gap-2">
                     <Button className="flex-1" onClick={() => store.approveQuotation(selected.id)}>
                       Approve
                     </Button>
-                    <Button variant="outline" className="flex-1" onClick={() => store.rejectQuotation(selected.id)}>
+                    <Button variant="outline" className="flex-1" onClick={() => setRejectionTarget(selected)}>
                       Reject
                     </Button>
                   </div>
@@ -256,21 +271,51 @@ function Quotations() {
         </SheetContent>
       </Sheet>
 
+      <Dialog open={rejectionTarget !== null} onOpenChange={(open) => !open && (setRejectionTarget(null), setRejectionReason(''))}>
+        <DialogContent className="max-w-md border-border bg-popover">
+          <DialogHeader>
+            <DialogTitle>Reject quotation</DialogTitle>
+            <DialogDescription>This quotation will move to the admin-only archive.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <label htmlFor="rejection-reason" className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Reason</label>
+            <Textarea id="rejection-reason" value={rejectionReason} onChange={(event) => setRejectionReason(event.target.value)} placeholder="Explain why this quotation was rejected…" />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setRejectionTarget(null); setRejectionReason(''); }}>Cancel</Button>
+            <Button
+              disabled={!rejectionReason.trim()}
+              onClick={() => {
+                if (!rejectionTarget) return;
+                store.rejectQuotation(rejectionTarget.id, rejectionReason);
+                setRejectionTarget(null);
+                setRejectionReason('');
+                setSelectedId(null);
+              }}
+            >
+              Reject quotation
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <NewQuotationWizard
         open={wizardOpen}
-        onClose={() => setWizardOpen(false)}
-        onCreate={(customerId, lines) => {
-          const stockShort = lines.some((l) => (store.getProduct(l.productId)?.finishedStock ?? 0) < l.quantity);
-          const id = store.addQuotation({
+        quotation={editingDraft}
+        onClose={() => { setWizardOpen(false); setEditingDraft(null); }}
+        onSave={(customerId, lines) => {
+          const id = editingDraft?.id ?? store.addQuotation({
             customerId,
             date: new Date().toISOString().slice(0, 10),
             stage: 'Draft',
-            stockShort,
+            stockShort: lines.some((l) => (store.getProduct(l.productId)?.finishedStock ?? 0) < l.quantity),
             lines,
             linkedMO: null,
             linkedSO: null,
           });
+          if (editingDraft) store.updateQuotation(editingDraft.id, customerId, lines);
           setWizardOpen(false);
+          setEditingDraft(null);
           setSelectedId(id);
         }}
       />
@@ -285,18 +330,29 @@ interface WizardLine {
 
 function NewQuotationWizard({
   open,
+  quotation,
   onClose,
-  onCreate,
+  onSave,
 }: {
   open: boolean;
+  quotation: Quotation | null;
   onClose: () => void;
-  onCreate: (customerId: string, lines: { productId: string; quantity: number; unitPriceUsd: number }[]) => void;
+  onSave: (customerId: string, lines: { productId: string; quantity: number; unitPriceUsd: number }[]) => void;
 }) {
   const store = useErpStore();
   const finishedGoods = useMemo(() => store.products.filter((p) => p.status === 'Active'), [store.products]);
   const [step, setStep] = useState(1);
   const [customerId, setCustomerId] = useState('');
   const [lines, setLines] = useState<WizardLine[]>([{ productId: '', quantity: 1 }]);
+
+  const [syncKey, setSyncKey] = useState('');
+  const key = `${open}-${quotation?.id ?? 'new'}`;
+  if (key !== syncKey) {
+    setSyncKey(key);
+    setStep(1);
+    setCustomerId(quotation?.customerId ?? '');
+    setLines(quotation?.lines.map(({ productId, quantity }) => ({ productId, quantity })) ?? [{ productId: '', quantity: 1 }]);
+  }
 
   const reset = () => {
     setStep(1);
@@ -319,7 +375,7 @@ function NewQuotationWizard({
     <Dialog open={open} onOpenChange={(o) => !o && close()}>
       <DialogContent className="max-w-lg border-border bg-popover">
         <DialogHeader>
-          <DialogTitle>New Quotation</DialogTitle>
+          <DialogTitle>{quotation ? `Edit ${quotation.id}` : 'New Quotation'}</DialogTitle>
           <DialogDescription>Step {step} of 3 · USD pricing</DialogDescription>
         </DialogHeader>
 
@@ -475,7 +531,7 @@ function NewQuotationWizard({
           ) : (
             <Button
               onClick={() =>
-                onCreate(
+                onSave(
                   customerId,
                   validLines.map((l) => ({
                     productId: l.productId,
@@ -485,7 +541,7 @@ function NewQuotationWizard({
                 )
               }
             >
-              Create quotation
+              {quotation ? 'Save changes' : 'Create quotation'}
             </Button>
           )}
         </DialogFooter>

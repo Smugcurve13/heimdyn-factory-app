@@ -108,6 +108,11 @@ export interface Quotation {
   invoice?: { number: string; date: string } | null;
 }
 
+export interface RejectedQuotation extends Quotation {
+  rejectionReason: string;
+  rejectedAt: string;
+}
+
 export interface SalesOrder {
   id: string; // SO-2xxx
   customerId: string;

@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuth } from './AuthProvider';
+import { useRole } from '@/lib/erp/roles';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -10,10 +11,13 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback } from './ui/avatar';
-import { User, LogOut } from 'lucide-react';
+import { Archive, User, LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export function UserButton() {
   const { user, signOut } = useAuth();
+  const { can } = useRole();
+  const router = useRouter();
 
   if (!user) return null;
 
@@ -40,6 +44,12 @@ export function UserButton() {
           </div>
         </div>
         <DropdownMenuSeparator />
+        {can('demo:reset') && (
+          <DropdownMenuItem className="cursor-pointer" onSelect={() => router.push('/quotations/rejected')}>
+            <Archive className="mr-2 h-4 w-4" />
+            Rejected Quotations
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem className="cursor-pointer" onClick={signOut}>
           <LogOut className="mr-2 h-4 w-4" />
           Sign out
