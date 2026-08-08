@@ -62,6 +62,8 @@ interface ErpStoreValue {
 
   // Documents
   addQuotation: (q: Omit<Quotation, 'id'>) => string;
+  updateQuotation: (id: string, customerId: string, lines: Quotation['lines']) => void;
+  submitQuotationForApproval: (id: string) => void;
   approveQuotation: (id: string) => void;
   rejectQuotation: (id: string) => void;
   approvePurchaseOrder: (id: string) => void;
@@ -101,6 +103,27 @@ const vendorForMaterial = (materialId: string) =>
   : materialId === 'RM-205' || materialId === 'RM-206' || materialId === 'RM-207' ? 'VEN-503'
   : materialId === 'RM-215' ? 'VEN-506'
   : 'VEN-501';
+
+export const updateDraftQuotation = (
+  quotations: Quotation[],
+  id: string,
+  customerId: string,
+  lines: Quotation['lines'],
+  products: Pick<Product, 'id' | 'finishedStock'>[],
+) =>
+  quotations.map((q) =>
+    q.id === id && q.stage === 'Draft'
+      ? {
+          ...q,
+          customerId,
+          lines,
+          stockShort: lines.some((line) => (products.find((product) => product.id === line.productId)?.finishedStock ?? 0) < line.quantity),
+        }
+      : q,
+  );
+
+export const submitDraftQuotation = (quotations: Quotation[], id: string) =>
+  quotations.map((q) => (q.id === id && q.stage === 'Draft' ? { ...q, stage: 'Pending Approval' as const } : q));
 
 export function ErpStoreProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Product[]>(() => clone(seedProducts));
@@ -152,6 +175,12 @@ export function ErpStoreProvider({ children }: { children: ReactNode }) {
     setQuotations((prev) => [{ ...q, id }, ...prev]);
     return id;
   };
+
+  const updateQuotation = (id: string, customerId: string, lines: Quotation['lines']) =>
+    setQuotations((prev) => updateDraftQuotation(prev, id, customerId, lines, products));
+
+  const submitQuotationForApproval = (id: string) =>
+    setQuotations((prev) => submitDraftQuotation(prev, id));
 
   const approveQuotation = (id: string) => {
     const q = quotations.find((x) => x.id === id);
@@ -296,6 +325,8 @@ export function ErpStoreProvider({ children }: { children: ReactNode }) {
     addMaterialStock,
     setBomLines,
     addQuotation,
+    updateQuotation,
+    submitQuotationForApproval,
     approveQuotation,
     rejectQuotation,
     approvePurchaseOrder,
