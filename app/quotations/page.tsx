@@ -12,6 +12,7 @@ import { Quotation, QuotationStage } from '@/lib/erp/types';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import {
   Dialog,
@@ -47,6 +48,8 @@ function Quotations() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [wizardOpen, setWizardOpen] = useState(false);
   const [editingDraft, setEditingDraft] = useState<Quotation | null>(null);
+  const [rejectionTarget, setRejectionTarget] = useState<Quotation | null>(null);
+  const [rejectionReason, setRejectionReason] = useState('');
 
   useEffect(() => {
     if (focus) setSelectedId(focus);
@@ -229,7 +232,7 @@ function Quotations() {
                     <Button className="flex-1" onClick={() => store.approveQuotation(selected.id)}>
                       Approve
                     </Button>
-                    <Button variant="outline" className="flex-1" onClick={() => store.rejectQuotation(selected.id)}>
+                    <Button variant="outline" className="flex-1" onClick={() => setRejectionTarget(selected)}>
                       Reject
                     </Button>
                   </div>
@@ -267,6 +270,34 @@ function Quotations() {
           )}
         </SheetContent>
       </Sheet>
+
+      <Dialog open={rejectionTarget !== null} onOpenChange={(open) => !open && (setRejectionTarget(null), setRejectionReason(''))}>
+        <DialogContent className="max-w-md border-border bg-popover">
+          <DialogHeader>
+            <DialogTitle>Reject quotation</DialogTitle>
+            <DialogDescription>This quotation will move to the admin-only archive.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <label htmlFor="rejection-reason" className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Reason</label>
+            <Textarea id="rejection-reason" value={rejectionReason} onChange={(event) => setRejectionReason(event.target.value)} placeholder="Explain why this quotation was rejected…" />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setRejectionTarget(null); setRejectionReason(''); }}>Cancel</Button>
+            <Button
+              disabled={!rejectionReason.trim()}
+              onClick={() => {
+                if (!rejectionTarget) return;
+                store.rejectQuotation(rejectionTarget.id, rejectionReason);
+                setRejectionTarget(null);
+                setRejectionReason('');
+                setSelectedId(null);
+              }}
+            >
+              Reject quotation
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <NewQuotationWizard
         open={wizardOpen}

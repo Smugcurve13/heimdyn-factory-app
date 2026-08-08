@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { submitDraftQuotation, updateDraftQuotation } from './store';
+import { archiveRejectedQuotation, submitDraftQuotation, updateDraftQuotation } from './store';
 
 const quotations = [
   {
@@ -45,5 +45,18 @@ describe('submitDraftQuotation', () => {
   it('moves only a draft quotation to pending approval', () => {
     expect(submitDraftQuotation(quotations, 'QT-1001')[0]).toMatchObject({ stage: 'Pending Approval' });
     expect(submitDraftQuotation(quotations, 'QT-1002')).toEqual(quotations);
+  });
+});
+
+describe('archiveRejectedQuotation', () => {
+  it('removes a pending quotation and records its rejection reason', () => {
+    const result = archiveRejectedQuotation(quotations, 'QT-1002', 'Pricing needs revision', '2026-08-08');
+
+    expect(result.quotations).toEqual([quotations[0]]);
+    expect(result.archived).toMatchObject({ id: 'QT-1002', rejectionReason: 'Pricing needs revision', rejectedAt: '2026-08-08' });
+  });
+
+  it('keeps a quotation when the reason is blank', () => {
+    expect(archiveRejectedQuotation(quotations, 'QT-1002', '  ', '2026-08-08')).toEqual({ quotations, archived: null });
   });
 });
