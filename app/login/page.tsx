@@ -73,14 +73,14 @@ export default function LoginPage() {
       <div className="hidden lg:flex lg:w-1/2 bg-blue-600 flex-col justify-between p-12">
         <div className="flex items-center gap-3">
           <Factory className="h-8 w-8 text-white" />
-          <span className="text-white font-semibold text-xl">Heimdyn ERP</span>
+          <span className="text-white font-semibold text-xl">Heimdyn</span>
         </div>
         <div>
           <h1 className="text-4xl font-bold text-white leading-tight">
-            From quote to cash,<br />on one screen.
+            Real-time visibility<br />across your factory floor.
           </h1>
           <p className="mt-4 text-white/70 text-lg">
-            Quotations, sales orders, manufacturing, purchasing, and inventory — managed in one place.
+            Monitor OEE, machines, power, downtime, and tickets — all in one place.
           </p>
         </div>
         <p className="text-white/40 text-sm">
@@ -94,7 +94,7 @@ export default function LoginPage() {
           {/* Mobile logo */}
           <div className="flex items-center gap-2 lg:hidden">
             <Factory className="h-6 w-6" />
-            <span className="font-semibold text-lg">Heimdyn ERP</span>
+            <span className="font-semibold text-lg">Heimdyn</span>
           </div>
 
           <div>
