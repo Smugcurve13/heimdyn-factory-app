@@ -74,6 +74,8 @@ import { useToast } from '@/hooks/use-toast';
 import { vendorService, type Vendor } from '@/services/api';
 import { KpiStrip } from '@/components/features/erp/kpi-strip';
 import { HealthBadge } from '@/components/features/erp/health-badge';
+import { PaginationControls } from '@/components/erp/PaginationControls';
+import { paginate, type PageSize } from '@/lib/pagination';
 import { cardShell } from '@/lib/styles';
 import {
   getVendorKpiSummary,
@@ -108,6 +110,8 @@ export default function VendorsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<PageSize>(10);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
@@ -164,6 +168,17 @@ export default function VendorsPage() {
       return matchesSearch && matchesStatus && matchesCategory;
     });
   }, [vendors, searchQuery, statusFilter, categoryFilter]);
+
+  useEffect(() => { setPage(1); }, [searchQuery, statusFilter, categoryFilter]);
+
+  const paginatedVendors = useMemo(
+    () => paginate(filteredVendors, page, pageSize),
+    [filteredVendors, page, pageSize],
+  );
+
+  useEffect(() => {
+    if (page !== paginatedVendors.page) setPage(paginatedVendors.page);
+  }, [page, paginatedVendors.page]);
 
   const handleOpenCreate = () => {
     setEditingId(null);
@@ -339,6 +354,7 @@ export default function VendorsPage() {
                 {searchQuery ? 'No vendors found matching your search' : 'No vendors found'}
               </div>
             ) : (
+              <>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -353,7 +369,7 @@ export default function VendorsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredVendors.map((vendor) => {
+                  {paginatedVendors.items.map((vendor) => {
                     const row = getVendorTableRow(vendor);
                     return (
                       <TableRow
@@ -415,6 +431,15 @@ export default function VendorsPage() {
                   })}
                 </TableBody>
               </Table>
+              <PaginationControls
+                totalItems={filteredVendors.length}
+                page={paginatedVendors.page}
+                pageCount={paginatedVendors.pageCount}
+                pageSize={pageSize}
+                onPageChange={setPage}
+                onPageSizeChange={(size) => { setPageSize(size); setPage(1); }}
+              />
+              </>
             )}
           </CardContent>
         </Card>

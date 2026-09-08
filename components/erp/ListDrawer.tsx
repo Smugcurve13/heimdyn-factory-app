@@ -3,8 +3,10 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { paginate, type PageSize } from '@/lib/pagination';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { PaginationControls } from '@/components/erp/PaginationControls';
 
 export interface ListDrawerColumn<T> {
   /** Stable key for the column. */
@@ -58,6 +60,8 @@ export function ListDrawer<T>({
 }: ListDrawerProps<T>) {
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<PageSize>(10);
 
   // Open a row's drawer when an external focus id is supplied (deep link / trail).
   useEffect(() => {
@@ -68,6 +72,16 @@ export function ListDrawer<T>({
     if (!searchFilter || !query.trim()) return rows;
     return rows.filter((r) => searchFilter(r, query.trim().toLowerCase()));
   }, [rows, query, searchFilter]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [query, rows]);
+
+  const paginated = useMemo(() => paginate(filtered, page, pageSize), [filtered, page, pageSize]);
+
+  useEffect(() => {
+    if (page !== paginated.page) setPage(paginated.page);
+  }, [page, paginated.page]);
 
   const selectedRow = selectedId ? rows.find((r) => getRowId(r) === selectedId) ?? null : null;
 
@@ -115,7 +129,7 @@ export function ListDrawer<T>({
                 </td>
               </tr>
             ) : (
-              filtered.map((row, i) => {
+              paginated.items.map((row, i) => {
                 const id = getRowId(row);
                 return (
                   <tr
@@ -146,6 +160,16 @@ export function ListDrawer<T>({
             )}
           </tbody>
         </table>
+        {filtered.length > 0 && (
+          <PaginationControls
+            totalItems={filtered.length}
+            page={paginated.page}
+            pageCount={paginated.pageCount}
+            pageSize={pageSize}
+            onPageChange={setPage}
+            onPageSizeChange={(size) => { setPageSize(size); setPage(1); }}
+          />
+        )}
       </div>
 
       <Sheet open={selectedRow !== null} onOpenChange={(open) => !open && setSelectedId(null)}>

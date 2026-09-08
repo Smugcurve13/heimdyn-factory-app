@@ -71,6 +71,8 @@ import { customerService, type Customer } from '@/services/api';
 import { KpiStrip } from '@/components/features/erp/kpi-strip';
 import { InsightCard } from '@/components/features/erp/insight-card';
 import { HealthBadge } from '@/components/features/erp/health-badge';
+import { PaginationControls } from '@/components/erp/PaginationControls';
+import { paginate, type PageSize } from '@/lib/pagination';
 import {
   getCustomerKpiSummary,
   getCustomerTableRow,
@@ -97,6 +99,8 @@ export default function CustomersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [cityFilter, setCityFilter] = useState('all');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<PageSize>(10);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
@@ -160,6 +164,17 @@ export default function CustomersPage() {
       return matchesSearch && matchesStatus && matchesCity;
     });
   }, [customers, searchQuery, statusFilter, cityFilter]);
+
+  useEffect(() => { setPage(1); }, [searchQuery, statusFilter, cityFilter]);
+
+  const paginatedCustomers = useMemo(
+    () => paginate(filteredCustomers, page, pageSize),
+    [filteredCustomers, page, pageSize],
+  );
+
+  useEffect(() => {
+    if (page !== paginatedCustomers.page) setPage(paginatedCustomers.page);
+  }, [page, paginatedCustomers.page]);
 
   const handleOpenCreate = () => {
     setEditingId(null);
@@ -322,6 +337,7 @@ export default function CustomersPage() {
                 {searchQuery ? 'No customers found matching your search' : 'No customers found'}
               </div>
             ) : (
+              <>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -336,7 +352,7 @@ export default function CustomersPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredCustomers.map((customer) => {
+                  {paginatedCustomers.items.map((customer) => {
                     const row = getCustomerTableRow(customer);
                     return (
                       <TableRow
@@ -407,6 +423,15 @@ export default function CustomersPage() {
                   })}
                 </TableBody>
               </Table>
+              <PaginationControls
+                totalItems={filteredCustomers.length}
+                page={paginatedCustomers.page}
+                pageCount={paginatedCustomers.pageCount}
+                pageSize={pageSize}
+                onPageChange={setPage}
+                onPageSizeChange={(size) => { setPageSize(size); setPage(1); }}
+              />
+              </>
             )}
           </CardContent>
         </Card>

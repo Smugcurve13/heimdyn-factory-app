@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { SignedIn } from '@/components/AuthProvider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -81,6 +81,8 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { userService, type Role } from '@/services/api';
+import { PaginationControls } from '@/components/erp/PaginationControls';
+import { paginate, type PageSize } from '@/lib/pagination';
 
 interface User {
   id: string;
@@ -171,6 +173,10 @@ export default function SettingsPage() {
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [loadingUserData, setLoadingUserData] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [userPage, setUserPage] = useState(1);
+  const [userPageSize, setUserPageSize] = useState<PageSize>(10);
+  const [rolePage, setRolePage] = useState(1);
+  const [rolePageSize, setRolePageSize] = useState<PageSize>(10);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('users');
@@ -599,6 +605,24 @@ export default function SettingsPage() {
     user.roleName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  useEffect(() => { setUserPage(1); }, [searchQuery]);
+
+  const paginatedUsers = useMemo(
+    () => paginate(filteredUsers, userPage, userPageSize),
+    [filteredUsers, userPage, userPageSize],
+  );
+  const paginatedRoles = useMemo(
+    () => paginate(rolesWithStats, rolePage, rolePageSize),
+    [rolesWithStats, rolePage, rolePageSize],
+  );
+
+  useEffect(() => {
+    if (userPage !== paginatedUsers.page) setUserPage(paginatedUsers.page);
+  }, [userPage, paginatedUsers.page]);
+  useEffect(() => {
+    if (rolePage !== paginatedRoles.page) setRolePage(paginatedRoles.page);
+  }, [rolePage, paginatedRoles.page]);
+
   const handleDeleteUser = async () => {
     if (!deleteUserId) return;
     
@@ -782,6 +806,7 @@ export default function SettingsPage() {
                     {searchQuery ? 'No users found matching your search' : 'No users found'}
                   </div>
                 ) : (
+                  <>
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -794,7 +819,7 @@ export default function SettingsPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredUsers.map((user) => (
+                      {paginatedUsers.items.map((user) => (
                         <TableRow 
                           key={user.id}
                           className="cursor-pointer hover:bg-muted/50"
@@ -861,6 +886,15 @@ export default function SettingsPage() {
                       ))}
                     </TableBody>
                   </Table>
+                  <PaginationControls
+                    totalItems={filteredUsers.length}
+                    page={paginatedUsers.page}
+                    pageCount={paginatedUsers.pageCount}
+                    pageSize={userPageSize}
+                    onPageChange={setUserPage}
+                    onPageSizeChange={(size) => { setUserPageSize(size); setUserPage(1); }}
+                  />
+                  </>
                 )}
               </CardContent>
             </Card>
@@ -877,8 +911,9 @@ export default function SettingsPage() {
                 No roles found
               </div>
             ) : (
+              <>
               <div className="grid gap-6 md:grid-cols-2">
-                {rolesWithStats.map((role) => {
+                {paginatedRoles.items.map((role) => {
                   // Use totalGranted and totalPossible from the role object
                   const permissionPercentage = role.totalPossible > 0 
                     ? Math.round((role.totalGranted / role.totalPossible) * 100) 
@@ -992,6 +1027,15 @@ export default function SettingsPage() {
                   );
                 })}
               </div>
+              <PaginationControls
+                totalItems={rolesWithStats.length}
+                page={paginatedRoles.page}
+                pageCount={paginatedRoles.pageCount}
+                pageSize={rolePageSize}
+                onPageChange={setRolePage}
+                onPageSizeChange={(size) => { setRolePageSize(size); setRolePage(1); }}
+              />
+              </>
             )}
           </TabsContent>
         </Tabs>
