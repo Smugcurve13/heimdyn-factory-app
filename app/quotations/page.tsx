@@ -4,6 +4,7 @@ import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Plus, Trash2, RotateCcw, Download } from 'lucide-react';
 import { customers } from '@/lib/erp/seed';
+import { filterCustomers } from '@/lib/erp/customer-search';
 import { getCustomer, formatPrice } from '@/lib/erp/selectors';
 import { downloadInvoicePdf } from '@/lib/erp/invoice';
 import { useErpStore } from '@/lib/erp/store';
@@ -343,6 +344,7 @@ function NewQuotationWizard({
   const finishedGoods = useMemo(() => store.products.filter((p) => p.status === 'Active'), [store.products]);
   const [step, setStep] = useState(1);
   const [customerId, setCustomerId] = useState('');
+  const [customerSearch, setCustomerSearch] = useState('');
   const [lines, setLines] = useState<WizardLine[]>([{ productId: '', quantity: 1 }]);
 
   const [syncKey, setSyncKey] = useState('');
@@ -351,12 +353,14 @@ function NewQuotationWizard({
     setSyncKey(key);
     setStep(1);
     setCustomerId(quotation?.customerId ?? '');
+    setCustomerSearch('');
     setLines(quotation?.lines.map(({ productId, quantity }) => ({ productId, quantity })) ?? [{ productId: '', quantity: 1 }]);
   }
 
   const reset = () => {
     setStep(1);
     setCustomerId('');
+    setCustomerSearch('');
     setLines([{ productId: '', quantity: 1 }]);
   };
 
@@ -366,6 +370,7 @@ function NewQuotationWizard({
   };
 
   const validLines = lines.filter((l) => l.productId && l.quantity > 0);
+  const matchingCustomers = useMemo(() => filterCustomers(customers, customerSearch), [customerSearch]);
   const total = validLines.reduce((s, l) => s + (store.getProduct(l.productId)?.priceUsd ?? 0) * l.quantity, 0);
 
   const step1Valid = customerId !== '';
@@ -399,20 +404,30 @@ function NewQuotationWizard({
         </div>
 
         {step === 1 && (
-          <div className="min-w-0 space-y-2">
+          <div className="min-w-0 space-y-3">
             <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Customer</label>
+            <Input
+              type="search"
+              value={customerSearch}
+              onChange={(e) => setCustomerSearch(e.target.value)}
+              placeholder="Search by customer, city, or ID…"
+              aria-label="Search customers"
+            />
             <select
               value={customerId}
               onChange={(e) => setCustomerId(e.target.value)}
               className="w-full min-w-0 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
             >
               <option value="">Select a customer…</option>
-              {customers.map((c) => (
+              {matchingCustomers.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name} — {c.city}
                 </option>
               ))}
             </select>
+            {customerSearch && matchingCustomers.length === 0 && (
+              <p className="text-xs text-muted-foreground">No customers match your search.</p>
+            )}
           </div>
         )}
 
