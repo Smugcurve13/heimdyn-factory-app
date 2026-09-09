@@ -4,7 +4,7 @@ import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Plus, Trash2, RotateCcw, Download } from 'lucide-react';
 import { customers } from '@/lib/erp/seed';
-import { filterCustomers } from '@/lib/erp/customer-search';
+import { filterCustomers, findCustomerByName } from '@/lib/erp/customer-search';
 import { getCustomer, formatPrice } from '@/lib/erp/selectors';
 import { downloadInvoicePdf } from '@/lib/erp/invoice';
 import { useErpStore } from '@/lib/erp/store';
@@ -353,7 +353,7 @@ function NewQuotationWizard({
     setSyncKey(key);
     setStep(1);
     setCustomerId(quotation?.customerId ?? '');
-    setCustomerSearch('');
+    setCustomerSearch(getCustomer(quotation?.customerId ?? '')?.name ?? '');
     setLines(quotation?.lines.map(({ productId, quantity }) => ({ productId, quantity })) ?? [{ productId: '', quantity: 1 }]);
   }
 
@@ -409,22 +409,21 @@ function NewQuotationWizard({
             <Input
               type="search"
               value={customerSearch}
-              onChange={(e) => setCustomerSearch(e.target.value)}
-              placeholder="Search by customer, city, or ID…"
-              aria-label="Search customers"
+              onChange={(e) => {
+                const value = e.target.value;
+                setCustomerSearch(value);
+                setCustomerId(findCustomerByName(customers, value)?.id ?? '');
+              }}
+              list="quotation-customer-options"
+              placeholder="Start typing a customer name…"
+              aria-label="Customer"
+              autoComplete="off"
             />
-            <select
-              value={customerId}
-              onChange={(e) => setCustomerId(e.target.value)}
-              className="w-full min-w-0 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
-            >
-              <option value="">Select a customer…</option>
+            <datalist id="quotation-customer-options">
               {matchingCustomers.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name} — {c.city}
-                </option>
+                <option key={c.id} value={c.name} label={`${c.city} · ${c.id}`} />
               ))}
-            </select>
+            </datalist>
             {customerSearch && matchingCustomers.length === 0 && (
               <p className="text-xs text-muted-foreground">No customers match your search.</p>
             )}
